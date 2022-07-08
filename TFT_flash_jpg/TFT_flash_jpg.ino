@@ -57,33 +57,36 @@ void setup() {
 // Main loop
 //####################################################################################################
 void loop() {
-
-
-  drawArrayJpeg(a5_0, sizeof(a5_0), 0, 0); // Draw a jpeg image stored in memory at x,y
-  delay(100);
-  drawArrayJpeg(a5_1, sizeof(a5_1), 0, 0); // Draw a jpeg image stored in memory at x,y
-  delay(100); 
-  drawArrayJpeg(a5_2, sizeof(a5_2), 0, 0); // Draw a jpeg image stored in memory at x,y
-  delay(100);
-  drawArrayJpeg(a5_3, sizeof(a5_3), 0, 0); // Draw a jpeg image stored in memory at x,y
-  delay(100); 
-  drawArrayJpeg(a5_4, sizeof(a5_4), 0, 0); // Draw a jpeg image stored in memory at x,y
-  delay(100);
-  drawArrayJpeg(a5_5, sizeof(a5_5), 0, 0); // Draw a jpeg image stored in memory at x,y
-  delay(100);  
-  drawArrayJpeg(a5_6, sizeof(a5_6), 0, 0); // Draw a jpeg image stored in memory at x,y
-  delay(100);
-  drawArrayJpeg(a5_7, sizeof(a5_7), 0, 0); // Draw a jpeg image stored in memory at x,y
-  delay(100); 
-  drawArrayJpeg(a5_8, sizeof(a5_8), 0, 0); // Draw a jpeg image stored in memory at x,y
-  delay(100);
-  drawArrayJpeg(a5_9, sizeof(a5_9), 0, 0); // Draw a jpeg image stored in memory at x,y
-  delay(100); 
-  drawArrayJpeg(a5_10, sizeof(a5_10), 0, 0); // Draw a jpeg image stored in memory at x,y
-  delay(100);
-  drawArrayJpeg(a5_11, sizeof(a5_11), 0, 0); // Draw a jpeg image stored in memory at x,y
-  delay(100);  
-  
+  for (i=0;i<16;i++ ){
+    drawArrayJpeg(a5[i], a5_size[i], 0, 0);
+    delay(100);
+  }
+//
+//  drawArrayJpeg(a5_0, sizeof(a5_0), 0, 0); // Draw a jpeg image stored in memory at x,y
+//  delay(100);
+//  drawArrayJpeg(a5_1, sizeof(a5_1), 0, 0); // Draw a jpeg image stored in memory at x,y
+//  delay(100); 
+//  drawArrayJpeg(a5_2, sizeof(a5_2), 0, 0); // Draw a jpeg image stored in memory at x,y
+//  delay(100);
+//  drawArrayJpeg(a5_3, sizeof(a5_3), 0, 0); // Draw a jpeg image stored in memory at x,y
+//  delay(100); 
+//  drawArrayJpeg(a5_4, sizeof(a5_4), 0, 0); // Draw a jpeg image stored in memory at x,y
+//  delay(100);
+//  drawArrayJpeg(a5_5, sizeof(a5_5), 0, 0); // Draw a jpeg image stored in memory at x,y
+//  delay(100);  
+//  drawArrayJpeg(a5_6, sizeof(a5_6), 0, 0); // Draw a jpeg image stored in memory at x,y
+//  delay(100);
+//  drawArrayJpeg(a5_7, sizeof(a5_7), 0, 0); // Draw a jpeg image stored in memory at x,y
+//  delay(100); 
+//  drawArrayJpeg(a5_8, sizeof(a5_8), 0, 0); // Draw a jpeg image stored in memory at x,y
+//  delay(100);
+//  drawArrayJpeg(a5_9, sizeof(a5_9), 0, 0); // Draw a jpeg image stored in memory at x,y
+//  delay(100); 
+//  drawArrayJpeg(a5_10, sizeof(a5_10), 0, 0); // Draw a jpeg image stored in memory at x,y
+//  delay(100);
+//  drawArrayJpeg(a5_11, sizeof(a5_11), 0, 0); // Draw a jpeg image stored in memory at x,y
+//  delay(100);  
+//  
 // 
 //  for (i=0;i<16;i++ ){
 //  drawArrayJpeg(a5[i], sizeof(a5[i]), 0, 0); // Draw a jpeg image stored in memory at x,y
