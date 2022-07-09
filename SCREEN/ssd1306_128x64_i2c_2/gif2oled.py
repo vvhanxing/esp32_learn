@@ -41,10 +41,10 @@ def processImage(in_file, saveImg=True):
                 # 缩放图像，
                 width = new_im.size[0]  # 获取原始图像宽度
                 height = new_im.size[1]  # 获取原始图像高度
-                new_height = 180  # 等比例缩放后的图像高度，根据实际需要调整
+                new_width = 240  # 等比例缩放后的图像高度，根据实际需要调整
                 # print(width, " ", height)
-                if height > new_height:
-                    ratio = round(new_height / height, 3)  # 缩放系数
+                if width > new_width:
+                    ratio = round(new_width / width, 3)  # 缩放系数
                     new_im = new_im.resize((int(width * ratio), int(height * ratio)), Image.ANTIALIAS)
                     print("new size w,h",int(width * ratio), int(height * ratio))
                 # 获取图像字节流，转16进制格式
@@ -97,6 +97,6 @@ def processImage(in_file, saveImg=True):
 
 
 if __name__ == '__main__':
-    processImage("a6.gif", True)
+    processImage("a9.gif", True)
     # im=Image.open("foo0.bmp")
     # print ("img info:",im.format,im.size)

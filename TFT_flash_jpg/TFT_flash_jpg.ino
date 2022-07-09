@@ -34,8 +34,13 @@ int array [] ={0,0,0,0};
 uint32_t icount = 0;
 int i=0;
 //----------------------------------------------------------------------------------------------------
-
+const int touchPin = 4; // 使用 T0 获取数据
+const int threshold = 40;
+// variable for storing the touch pin value 
+int touchValue;
 bool click();
+//----------------------------------------------------------------------------------------------------
+
 int click_push_count = 0;
 int click_once_count = 0;
 void drawArrayJpeg(const uint8_t arrayname[], uint32_t array_size, int xpos, int ypos) ;
@@ -122,8 +127,10 @@ void loop() {
       for (i=0;i<41;i++ ){
              drawArrayJpeg(a6[i], a6_size[i], 0, 0);
              if (click()){break;}
-             else delay(100);
+             else delay(50);
              }
+
+             
 
         }
 
@@ -134,7 +141,11 @@ void loop() {
              array[1]=0;
              array[2]=0;
              array[3]=1;
-          drawArrayJpeg(Mouse160, sizeof(Mouse160), 0, 11); // Draw a jpeg image stored in memory
+      for (i=0;i<44;i++ ){
+             drawArrayJpeg(a9[i], a9_size[i], 0, 0);
+             if (click()){break;}
+             else delay(50);
+             }
           delay(100);
         } 
                
@@ -298,10 +309,7 @@ void showTime(uint32_t msTime) {
 
 
 bool click(){
-  const int touchPin = 4; // 使用 T0 获取数据
-  const int threshold = 40;
-  // variable for storing the touch pin value 
-  int touchValue;
+
 
   // read the state of the pushbutton value:
   touchValue = touchRead(touchPin);
