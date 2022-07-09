@@ -26,16 +26,20 @@ TFT_eSPI tft = TFT_eSPI();
 // Include the sketch header file that contains the image stored as an array of bytes
 // More than one image array could be stored in each header file.
 #include "jpeg1.h"
-//#include "jpeg2.h"
-//#include "jpeg3.h"
-//#include "jpeg4.h"
-
+#include "jpeg2.h"
+#include "jpeg3.h"
+#include "jpeg4.h"
+int array [] ={0,0,0,0};
 // Count how many times the image is drawn for test purposes
 uint32_t icount = 0;
 int i=0;
 //----------------------------------------------------------------------------------------------------
 
-
+bool click();
+int click_push_count = 0;
+int click_once_count = 0;
+void drawArrayJpeg(const uint8_t arrayname[], uint32_t array_size, int xpos, int ypos) ;
+//
 //####################################################################################################
 // Setup
 //####################################################################################################
@@ -44,12 +48,7 @@ void setup() {
   tft.begin();
   tft.setRotation(0);  // portrait
   tft.fillScreen(TFT_WHITE);
-  tft.setCursor(0, 100, 1);
-  // 设置文本颜色为白色
-  tft.setTextColor(TFT_BLACK);
-  // 设置文字的大小
-  tft.setTextSize(4);
-  tft.println("VVsky");
+
   
 }
 
@@ -57,10 +56,134 @@ void setup() {
 // Main loop
 //####################################################################################################
 void loop() {
-  for (i=0;i<16;i++ ){
-    drawArrayJpeg(a5[i], a5_size[i], 0, 0);
-    delay(100);
-  }
+
+
+
+
+
+//如果点击click()便会返回true
+
+  if(click()){
+
+    
+
+      click_push_count = click_push_count+1;
+      if (click_push_count==2){
+        click_once_count +=1;
+        }
+
+
+        
+    }
+  else{
+
+    click_push_count = 1;
+     
+      
+
+      if (click_once_count==0){
+          if (array[0]==0){
+             tft.fillScreen(TFT_WHITE);}
+          array[0]=1;
+          array[1]=0;
+          array[2]=0;
+          array[3]=0;
+         
+          for (i=0;i<16;i++ ){
+             drawArrayJpeg(a5[i], a5_size[i], 0, 0);
+             if (click()){break;}
+             else delay(100);
+             }
+
+
+          
+        }
+
+      if (click_once_count==1){
+           if (array[1]==0){
+             tft.fillScreen(TFT_WHITE);}
+             array[0]=0;
+             array[1]=1;
+             array[2]=0;
+             array[3]=0;
+            
+            drawArrayJpeg(Tiger, sizeof(Tiger), 4, 0); // Draw a jpeg image stored in memory
+            delay(100);
+
+  
+        }
+      if (click_once_count==2){
+           if (array[2]==0){
+             tft.fillScreen(TFT_WHITE);}
+             array[0]=0;
+             array[1]=0;
+             array[2]=1;
+             array[3]=0;  
+  
+
+           drawArrayJpeg(Baboon, sizeof(Baboon), 0, 4); // Draw a jpeg image stored in memory
+           delay(100);
+
+
+
+
+        }
+
+      if (click_once_count==3){
+          if (array[3]==0){
+             tft.fillScreen(TFT_WHITE);}
+             array[0]=0;
+             array[1]=0;
+             array[2]=0;
+             array[3]=1;
+
+
+          drawArrayJpeg(Mouse160, sizeof(Mouse160), 0, 11); // Draw a jpeg image stored in memory
+          delay(100);
+        }        
+        
+      if (click_once_count>3){
+          //testdrawstyles();
+          click_once_count = 0;
+        }
+
+
+      
+    Serial.print("click_once_count\n");
+    Serial.print(click_once_count);
+    Serial.print("click_once_count\n");
+    }
+
+
+
+
+
+
+
+
+//
+//
+//  
+//  if  (click()!=true){
+//     tft.fillScreen(TFT_WHITE);
+//    for (i=0;i<16;i++ ){
+//    drawArrayJpeg(a5[i], a5_size[i], 0, 0);
+//    delay(100);
+//  }
+//  }
+//
+//  else{
+//    
+//      tft.setCursor(0, 100, 1);
+//      // 设置文本颜色为白色
+//  tft.setTextColor(TFT_BLACK);
+//  // 设置文字的大小
+//  tft.setTextSize(4);
+//  tft.println("VVsky");
+//    }
+
+ 
+
 //
 //  drawArrayJpeg(a5_0, sizeof(a5_0), 0, 0); // Draw a jpeg image stored in memory at x,y
 //  delay(100);
@@ -192,8 +315,8 @@ void renderJPEG(int xpos, int ypos) {
   drawTime = millis() - drawTime;
 
   // print the results to the serial port
-  Serial.print(F(  "Total render time was    : ")); Serial.print(drawTime); Serial.println(F(" ms"));
-  Serial.println(F(""));
+  //Serial.print(F(  "Total render time was    : ")); Serial.print(drawTime); Serial.println(F(" ms"));
+  //Serial.println(F(""));
 }
 
 //####################################################################################################
@@ -234,3 +357,35 @@ void showTime(uint32_t msTime) {
   Serial.print(msTime);
   Serial.println(F(" ms "));
 }
+
+
+
+
+
+bool click(){
+  const int touchPin = 4; // 使用 T0 获取数据
+  const int threshold = 40;
+  // variable for storing the touch pin value 
+  int touchValue;
+
+  // read the state of the pushbutton value:
+  touchValue = touchRead(touchPin);
+  //Serial.print(touchValue);
+  //Serial.print("\n");
+
+  // check if the touchValue is below the threshold
+  // if it is, set ledPin to HIGH
+  if(touchValue < threshold){
+    // turn LED on
+    //digitalWrite(ledPin, HIGH);
+     //Serial.println("有触控，灯亮");
+    return true;
+  }
+  else{
+    // turn LED off
+    //digitalWrite(ledPin, LOW);
+    //Serial.println(" - LED off");
+    return false;
+  }
+  //delay(500);  
+  }
