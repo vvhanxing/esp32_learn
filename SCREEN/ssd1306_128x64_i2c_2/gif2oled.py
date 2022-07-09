@@ -41,7 +41,7 @@ def processImage(in_file, saveImg=True):
                 # 缩放图像，
                 width = new_im.size[0]  # 获取原始图像宽度
                 height = new_im.size[1]  # 获取原始图像高度
-                new_height = 100  # 等比例缩放后的图像高度，根据实际需要调整
+                new_height = 180  # 等比例缩放后的图像高度，根据实际需要调整
                 # print(width, " ", height)
                 if height > new_height:
                     ratio = round(new_height / height, 3)  # 缩放系数
@@ -97,6 +97,6 @@ def processImage(in_file, saveImg=True):
 
 
 if __name__ == '__main__':
-    processImage("a5.gif", True)
+    processImage("a6.gif", True)
     # im=Image.open("foo0.bmp")
     # print ("img info:",im.format,im.size)

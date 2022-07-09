@@ -64,17 +64,14 @@ void loop() {
 //如果点击click()便会返回true
 
   if(click()){
-
     
-
       click_push_count = click_push_count+1;
       if (click_push_count==2){
         click_once_count +=1;
         }
-
-
-        
     }
+
+    
   else{
 
     click_push_count = 1;
@@ -112,6 +109,8 @@ void loop() {
 
   
         }
+
+        
       if (click_once_count==2){
            if (array[2]==0){
              tft.fillScreen(TFT_WHITE);}
@@ -119,13 +118,12 @@ void loop() {
              array[1]=0;
              array[2]=1;
              array[3]=0;  
-  
 
-           drawArrayJpeg(Baboon, sizeof(Baboon), 0, 4); // Draw a jpeg image stored in memory
-           delay(100);
-
-
-
+      for (i=0;i<41;i++ ){
+             drawArrayJpeg(a6[i], a6_size[i], 0, 0);
+             if (click()){break;}
+             else delay(100);
+             }
 
         }
 
@@ -136,85 +134,22 @@ void loop() {
              array[1]=0;
              array[2]=0;
              array[3]=1;
-
-
           drawArrayJpeg(Mouse160, sizeof(Mouse160), 0, 11); // Draw a jpeg image stored in memory
           delay(100);
-        }        
+        } 
+               
         
       if (click_once_count>3){
-          //testdrawstyles();
+
           click_once_count = 0;
+          
         }
 
 
-      
-    Serial.print("click_once_count\n");
-    Serial.print(click_once_count);
-    Serial.print("click_once_count\n");
     }
 
 
 
-
-
-
-
-
-//
-//
-//  
-//  if  (click()!=true){
-//     tft.fillScreen(TFT_WHITE);
-//    for (i=0;i<16;i++ ){
-//    drawArrayJpeg(a5[i], a5_size[i], 0, 0);
-//    delay(100);
-//  }
-//  }
-//
-//  else{
-//    
-//      tft.setCursor(0, 100, 1);
-//      // 设置文本颜色为白色
-//  tft.setTextColor(TFT_BLACK);
-//  // 设置文字的大小
-//  tft.setTextSize(4);
-//  tft.println("VVsky");
-//    }
-
- 
-
-//
-//  drawArrayJpeg(a5_0, sizeof(a5_0), 0, 0); // Draw a jpeg image stored in memory at x,y
-//  delay(100);
-//  drawArrayJpeg(a5_1, sizeof(a5_1), 0, 0); // Draw a jpeg image stored in memory at x,y
-//  delay(100); 
-//  drawArrayJpeg(a5_2, sizeof(a5_2), 0, 0); // Draw a jpeg image stored in memory at x,y
-//  delay(100);
-//  drawArrayJpeg(a5_3, sizeof(a5_3), 0, 0); // Draw a jpeg image stored in memory at x,y
-//  delay(100); 
-//  drawArrayJpeg(a5_4, sizeof(a5_4), 0, 0); // Draw a jpeg image stored in memory at x,y
-//  delay(100);
-//  drawArrayJpeg(a5_5, sizeof(a5_5), 0, 0); // Draw a jpeg image stored in memory at x,y
-//  delay(100);  
-//  drawArrayJpeg(a5_6, sizeof(a5_6), 0, 0); // Draw a jpeg image stored in memory at x,y
-//  delay(100);
-//  drawArrayJpeg(a5_7, sizeof(a5_7), 0, 0); // Draw a jpeg image stored in memory at x,y
-//  delay(100); 
-//  drawArrayJpeg(a5_8, sizeof(a5_8), 0, 0); // Draw a jpeg image stored in memory at x,y
-//  delay(100);
-//  drawArrayJpeg(a5_9, sizeof(a5_9), 0, 0); // Draw a jpeg image stored in memory at x,y
-//  delay(100); 
-//  drawArrayJpeg(a5_10, sizeof(a5_10), 0, 0); // Draw a jpeg image stored in memory at x,y
-//  delay(100);
-//  drawArrayJpeg(a5_11, sizeof(a5_11), 0, 0); // Draw a jpeg image stored in memory at x,y
-//  delay(100);  
-//  
-// 
-//  for (i=0;i<16;i++ ){
-//  drawArrayJpeg(a5[i], sizeof(a5[i]), 0, 0); // Draw a jpeg image stored in memory at x,y
-//  delay(500);
-//  }
 
 
 }
