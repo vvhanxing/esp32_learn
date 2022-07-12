@@ -43,7 +43,8 @@ void loop() {
 String HTML = "<!DOCTYPE html>\
 <html>\
 <body>\
-<h1>My First Web Server with ESP32 - Station Mode 😊</h1>\
+<h2>Vivi</h1>\
+<h1>My First Web Server with ESP32 - Station Mode</h1>\
 </body>\
 </html>";
 

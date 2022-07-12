@@ -122,8 +122,8 @@ if (error) {
   return;
 }
 
-const char* name = doc["name"]; // "Everyone is a genius. But if you judge a fish by its ability to ...
-int number = doc["number"]; // 18
+const char* info = doc["info"]; // "Everyone is a genius. But if you judge a fish by its ability to ...
+int fontSize = doc["fontSize"]; // 18
 
 
 ///////////////////
@@ -132,10 +132,10 @@ int number = doc["number"]; // 18
   tft.fillScreen(TFT_WHITE);
   tft.setCursor(0, 0);
   // 设置文本颜色为白色，黑色文本背景
-  tft.setTextFont(number);
+  tft.setTextFont(fontSize);
   tft.setTextColor( TFT_BLACK,TFT_WHITE);
   // 设置显示的文字，注意这里有个换行符 \n 产生的效果
-  tft.println(name);
+  tft.println(info);
 
  
 

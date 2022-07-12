@@ -17,26 +17,43 @@ print(extract_ip())
 IP = extract_ip()
 
 
-
+data = {
+        "info":"""  Everyone is a genius. But if you judge a fish by its ability to climb a tree, it will live its whole life believing that it is stupid.
+        """,
+        "fontSize":2
+    }
 
 
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET', 'POST'])
-def view():
 
-    return "Everyone is a genius"
+
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    return "home"
+
+
+@app.route('/put_info', methods=['GET', 'POST'])
+def put_info():
+    
+    j_data = request.get_data(as_text=True)
+    print(j_data)
+    # print(r_data)
+    # data = r_data
+    # info = request.form['info']
+    # fontSize = request.form['fontSize']
+    # return jsonify({"info":info,"info":fontSize })  # 
+    # j_data = json.loads(j_data)
+    # data = jsonify(j_data)
+    return {'data': j_data}
 
 
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     # 返回json数据的方法
-    data = {
-        "name":"Everyone is a genius. \nBut if you judge a fish by its ability to climb a tree, it will live its whole life believing that it is stupid.",
-        "number":2
-    }
+
     # 第二种 jsonify帮助转为json数据，并设置响应头 Content-Type 为 application/json
     return jsonify(data)
 
