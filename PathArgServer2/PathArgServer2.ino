@@ -80,22 +80,9 @@ void initServer(){
 
 void runServer(){
   initServer();
-  server.on(F("/"), []() {
-    server.send(200, "text/plain", "hello from esp32!");
-  });
-
-  server.on(UriBraces("/users/{}"), []() {
-    String user = server.pathArg(0);
-    info = user;
-    screenInfo(info);
-    server.send(200, "text/plain", "User: '" + user + "'");
-  });
-  
-  server.on(UriRegex("^\\/users\\/([0-9]+)\\/devices\\/([0-9]+)$"), []() {
-    String user = server.pathArg(0);
-    String device = server.pathArg(1);
-    server.send(200, "text/plain", "User: '" + user + "' and Device: '" + device + "'");
-  });
+  //server.on(F("/"), []() {
+    //server.send(200, "text/plain", "hello from esp32!");
+  //});
 
   server.on("/info",HTTP_GET,putInfo);
   server.on("/info",HTTP_POST,getInfo);
