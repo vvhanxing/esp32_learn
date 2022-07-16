@@ -19,16 +19,46 @@ TFT_eSPI tft = TFT_eSPI();  // Invoke library, pins defined in User_Setup.h
 
 
 
-String info="i love you";
+String info="hello vivi";
 //
 
+///////////////////
+void screenInfo(String info){
+  // 设置起始坐标(20, 10)，4 号字体
+  tft.fillScreen(TFT_WHITE);
+  tft.setCursor(0, 0);
+  // 设置文本颜色为白色，黑色文本背景
+  tft.setTextFont(2);
+  tft.setTextColor( TFT_BLACK,TFT_WHITE);
+  // 设置显示的文字，注意这里有个换行符 \n 产生的效果
+  tft.println(info);
 
+ 
+
+/////////////////  
+  
+  }
 
 
 WebServer server(80);
 
+
+void getInfo(){
+  info = server.arg("info") ;
+  screenInfo(info);
+  }
+
+
+void putInfo(){
+  server.send(200,"text/html",(String)"<!DOCTYPE html><body><h1>"+info+"</h1></body></html>");
+ 
+  }
+
+
+
 void setup(void) {
   Serial.begin(9600);
+  screenInfo(info);
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   Serial.println("");
@@ -55,6 +85,7 @@ void setup(void) {
   server.on(UriBraces("/users/{}"), []() {
     String user = server.pathArg(0);
     info = user;
+    screenInfo(info);
     server.send(200, "text/plain", "User: '" + user + "'");
   });
   
@@ -63,6 +94,10 @@ void setup(void) {
     String device = server.pathArg(1);
     server.send(200, "text/plain", "User: '" + user + "' and Device: '" + device + "'");
   });
+
+  server.on("/info",HTTP_GET,putInfo);
+  server.on("/info",HTTP_POST,getInfo);
+  
 
   server.begin();
   Serial.println("HTTP server started");
@@ -75,26 +110,13 @@ void setup(void) {
 
 void loop(void) {
   server.handleClient();
-  delay(2);//allow the cpu to switch to other tasks
+  delay(400);//allow the cpu to switch to other tasks
 
 
 
 //
 
-///////////////////
 
-  // 设置起始坐标(20, 10)，4 号字体
-  tft.fillScreen(TFT_WHITE);
-  tft.setCursor(0, 0);
-  // 设置文本颜色为白色，黑色文本背景
-  tft.setTextFont(2);
-  tft.setTextColor( TFT_BLACK,TFT_WHITE);
-  // 设置显示的文字，注意这里有个换行符 \n 产生的效果
-  tft.println(info);
-
- 
-
-/////////////////
 
 //
 
