@@ -97,6 +97,6 @@ def processImage(in_file, saveImg=True):
 
 
 if __name__ == '__main__':
-    processImage("a9.gif", True)
+    processImage("a2.gif", True)
     # im=Image.open("foo0.bmp")
     # print ("img info:",im.format,im.size)
