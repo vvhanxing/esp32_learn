@@ -29,18 +29,15 @@ TFT_eSPI tft = TFT_eSPI();
 #include "jpeg2.h"
 #include "jpeg3.h"
 #include "jpeg4.h"
-int array [] ={0,0,0,0};
+
 // Count how many times the image is drawn for test purposes
-uint32_t icount = 0;
-int i=0;
-//----------------------------------------------------------------------------------------------------
-const int touchPin = 4; // 使用 T0 获取数据
-const int threshold = 40;
-// variable for storing the touch pin value 
-int touchValue;
-bool click();
+// uint32_t icount = 0;
+//int i=0;
 //----------------------------------------------------------------------------------------------------
 
+bool click();
+//----------------------------------------------------------------------------------------------------
+int array [] ={0,0,0,0};
 int click_push_count = 0;
 int click_once_count = 0;
 void drawArrayJpeg(const uint8_t arrayname[], uint32_t array_size, int xpos, int ypos) ;
@@ -91,10 +88,10 @@ void loop() {
           array[2]=0;
           array[3]=0;
           int pic_length = sizeof(a5)/sizeof(a5[0]);
-          for (i=0;i<pic_length;i++ ){
+          for (int i=0;i<pic_length;i++ ){
              drawArrayJpeg(a5[i], a5_size[i], 120, 0);
              if (click()){break;}
-             else delay(100);
+             else delay(50);
              }
 
 
@@ -124,7 +121,7 @@ void loop() {
              array[2]=1;
              array[3]=0;  
       int pic_length = sizeof(a6)/sizeof(a6[0]);
-      for (i=0;i<pic_length;i++ ){
+      for (int i=0;i<pic_length;i++ ){
              drawArrayJpeg(a6[i], a6_size[i], 0, 0);
              if (click()){break;}
              else delay(50);
@@ -142,7 +139,7 @@ void loop() {
              array[2]=0;
              array[3]=1;
       int pic_length = sizeof(a9)/sizeof(a9[0]);
-      for (i=0;i<pic_length;i++ ){
+      for (int i=0;i<pic_length;i++ ){
              drawArrayJpeg(a9[i], a9_size[i], 0, 0);
              if (click()){break;}
              else delay(50);
@@ -311,7 +308,10 @@ void showTime(uint32_t msTime) {
 
 bool click(){
 
-
+   const int touchPin = 4; // 使用 T0 获取数据
+   const int threshold = 40;
+   // variable for storing the touch pin value 
+   int touchValue;
   // read the state of the pushbutton value:
   touchValue = touchRead(touchPin);
   //Serial.print(touchValue);
