@@ -71,6 +71,10 @@ void loop() {
       if (click_push_count==2){
         click_once_count +=1;
         }
+      if (click_push_count==1000){
+        click_once_count -=2;
+        }
+       Serial.println(click_push_count); 
     }
 
     
@@ -91,7 +95,7 @@ void loop() {
           for (int i=0;i<pic_length;i++ ){
              drawArrayJpeg(a5[i], a5_size[i], 120, 0);
              if (click()){break;}
-             else delay(50);
+             else delay(100);
              }
 
 
@@ -148,7 +152,7 @@ void loop() {
         } 
                
         
-      if (click_once_count>3){
+      if (click_once_count>3 || click_once_count<0){
 
           click_once_count = 0;
           
