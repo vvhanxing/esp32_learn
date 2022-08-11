@@ -33,8 +33,8 @@
 // ===========================
 // Enter your WiFi credentials
 // ===========================
-const char* ssid = "Xiaomi_2304";
-const char* password = "15300786298";
+const char* ssid = "HUAWEI P50 Pro";
+const char* password = "12345678";
 
 void startCameraServer();
 

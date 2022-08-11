@@ -29,6 +29,7 @@ TFT_eSPI tft = TFT_eSPI();  // Invoke library, pins defined in User_Setup.h
 #include "jpeg1.h"
 #include "jpeg2.h"
 #include "a2.h"
+#include "b1.h"
 #include "jpeg4.h"
 
 // Count how many times the image is drawn for test purposes
@@ -38,11 +39,11 @@ TFT_eSPI tft = TFT_eSPI();  // Invoke library, pins defined in User_Setup.h
 
 bool click();
 //----------------------------------------------------------------------------------------------------
-int array [] ={0,0,0,0};
+int array [] ={0,0,0,0,0};
 int click_push_count = 0;
 int click_once_count = 0;
 void drawArrayJpeg(const uint8_t arrayname[], uint32_t array_size, int xpos, int ypos) ;
-
+void renderJPEG(int xpos, int ypos);
 
 
 
@@ -74,20 +75,6 @@ void screenInfo(String info){
 WebServer server(80);
 
 
-void getInfo(){
-  info = server.arg("info") ;
-  //screenInfo(info);
-
-  server.sendHeader("Location","/info");
-  server.send(302,"text/plain","ok");
-  }
-
-
-void putInfo(){
-  server.send(200,"text/html",(String)"<!DOCTYPE html><body><h1>"+info+"</h1></body></html>");
- 
-  }
-
   
 void initServer(){
   
@@ -112,14 +99,30 @@ void initServer(){
 
   }
 
+
+void getInfo(){
+  info = server.arg("info") ;
+  //screenInfo(info);
+  Serial.println("------1");
+  Serial.println(info);
+  server.sendHeader("Location","/putinfo");
+  server.send(302,"text/plain","ok");
+  }
+
+void putInfo(){
+  server.send(200,"text/html",(String)"<!DOCTYPE html><body><h1>"+"info: </h1><h1>"+info+"</h1></body></html>");
+  Serial.println("------2");
+  Serial.println(info);
+  }
+
 void runServer(){
   initServer();
   //server.on(F("/"), []() {
     //server.send(200, "text/plain", "hello from esp32!");
   //});
 
-  server.on("/info",HTTP_GET,putInfo);
-  server.on("/info",HTTP_POST,getInfo);
+  server.on("/putinfo",HTTP_GET,putInfo);
+  server.on("/getinfo",HTTP_POST,getInfo);
   
   server.begin();
   Serial.println("HTTP server started");
@@ -131,13 +134,14 @@ void runServer(){
 
 void setup(void) {
   Serial.begin(9600);
-  runServer();
+
   
 
   tft.init();
   tft.setRotation(1);
-  screenInfo(info);
-
+  //info = WiFi.localIP()
+  screenInfo( info);
+  runServer();
 }
 
 void loop(void) {
@@ -178,6 +182,7 @@ void loop(void) {
           array[1]=0;
           array[2]=0;
           array[3]=0;
+          array[4]=0; 
           int pic_length = sizeof(a5)/sizeof(a5[0]);
           for (int i=0;i<pic_length;i++ ){
              drawArrayJpeg(a5[i], a5_size[i], 120, 120);
@@ -200,7 +205,7 @@ void loop(void) {
              array[1]=1;
              array[2]=0;
              array[3]=0;
-            
+             array[4]=0; 
             drawArrayJpeg(Tiger, sizeof(Tiger), 4, 0); // Draw a jpeg image stored in memory
             delay(100);
 
@@ -215,6 +220,7 @@ void loop(void) {
              array[1]=0;
              array[2]=1;
              array[3]=0;  
+             array[4]=0; 
       int pic_length = sizeof(a2)/sizeof(a2[0]);
       for (int i=0;i<pic_length;i++ ){
              drawArrayJpeg(a2[i], a2_size[i], 0, 0);
@@ -233,6 +239,7 @@ void loop(void) {
              array[1]=0;
              array[2]=0;
              array[3]=1;
+             array[4]=0; 
       int pic_length = sizeof(a9)/sizeof(a9[0]);
       for (int i=0;i<pic_length;i++ ){
              drawArrayJpeg(a9[i], a9_size[i], 0, 0);
@@ -241,9 +248,29 @@ void loop(void) {
              }
           
         } 
+
+      if (click_once_count==4){
+           if (array[4]==0){
+             tft.fillScreen(TFT_WHITE);}
+             array[0]=0;
+             array[1]=0;
+             array[2]=0;
+             array[3]=0;  
+             array[4]=1;  
+      int pic_length = sizeof(b1)/sizeof(b1[0]);
+      for (int i=0;i<pic_length;i++ ){
+             drawArrayJpeg(b1[i], b1_size[i], 0, 0);
+             if (click()){break;}
+             else delay(50);
+             }
+
+             
+
+        }
+
                
         
-      if (click_once_count>3 || click_once_count<0){
+      if (click_once_count>4 || click_once_count<0){
 
           click_once_count = 0;
           

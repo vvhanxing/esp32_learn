@@ -15,7 +15,11 @@ os.chdir(curdir)
 
 def processImage(in_file, saveImg=True):
     try:
-        im = Image.open(in_file)
+        if "gif"  in in_file:
+            im = Image.open(in_file)
+        else:
+            im = Image.open(in_file)
+
     except IOError:
         print("Cant load", in_file)
         sys.exit(1)
@@ -24,7 +28,8 @@ def processImage(in_file, saveImg=True):
     filename = in_file.split('.')[0]
 
     i = 0
-    mypalette = im.getpalette()
+    if "gif"  in in_file:
+        mypalette = im.getpalette()
 
     arr_name_all = ''  # 存取数组
     arr_size_all = ''  # 存储数组容量
@@ -34,7 +39,8 @@ def processImage(in_file, saveImg=True):
             f.write('#include <pgmspace.h> \n\n')
             while 1:
                 print('.', end="")
-                im.putpalette(mypalette)
+                if "gif"  in in_file:
+                    im.putpalette(mypalette)
                 new_im = Image.new("RGB", im.size)
                 new_im.paste(im)
 
@@ -97,6 +103,6 @@ def processImage(in_file, saveImg=True):
 
 
 if __name__ == '__main__':
-    processImage("a2.gif", True)
+    processImage("b1.webp", True)
     # im=Image.open("foo0.bmp")
     # print ("img info:",im.format,im.size)
