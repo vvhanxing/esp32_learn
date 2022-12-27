@@ -247,6 +247,10 @@ void loop()
 #else // Test maximum rendering speed
 void loop()
 {
+    showGif();
+}
+#endif
+void showGif(){
     long lTime = micros();
     int iFrames = 0;
 
@@ -264,6 +268,6 @@ void loop()
         lTime = micros() - lTime;
         Serial.print(iFrames / (lTime / 1000000.0));
         Serial.println(" fps");
-    }
-}
-#endif
+    }  
+  
+  }

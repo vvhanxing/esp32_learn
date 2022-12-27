@@ -28,8 +28,8 @@ def processImage(in_file, saveImg=True):
     filename = in_file.split('.')[0]
 
     i = 0
-    if "gif"  in in_file:
-        mypalette = im.getpalette()
+    #if "gif"  in in_file:
+        #mypalette = im.getpalette()
 
     arr_name_all = ''  # 存取数组
     arr_size_all = ''  # 存储数组容量
@@ -39,8 +39,8 @@ def processImage(in_file, saveImg=True):
             f.write('#include <pgmspace.h> \n\n')
             while 1:
                 print('.', end="")
-                if "gif"  in in_file:
-                    im.putpalette(mypalette)
+                #if "gif"  in in_file:
+                    #im.putpalette(mypalette)
                 new_im = Image.new("RGB", im.size)
                 new_im.paste(im)
 
@@ -51,7 +51,7 @@ def processImage(in_file, saveImg=True):
                 # print(width, " ", height)
                 if width > new_width:
                     ratio = round(new_width / width, 3)  # 缩放系数
-                    new_im = new_im.resize((int(width * ratio), int(height * ratio)), Image.ANTIALIAS)
+                    new_im = new_im.resize((int(width * ratio)+1, int(height * ratio)+1), Image.ANTIALIAS)
                     print("new size w,h",int(width * ratio), int(height * ratio))
                 # 获取图像字节流，转16进制格式
                 img_byte = BytesIO()  # 获取字节流
@@ -103,6 +103,6 @@ def processImage(in_file, saveImg=True):
 
 
 if __name__ == '__main__':
-    processImage("b1.webp", True)
+    processImage("b4.webp", True)
     # im=Image.open("foo0.bmp")
     # print ("img info:",im.format,im.size)

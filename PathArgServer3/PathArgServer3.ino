@@ -30,7 +30,8 @@ TFT_eSPI tft = TFT_eSPI();  // Invoke library, pins defined in User_Setup.h
 #include "jpeg2.h"
 #include "a2.h"
 #include "b1.h"
-#include "jpeg4.h"
+#include "b4.h"
+//#include "jpeg4.h"
 
 // Count how many times the image is drawn for test purposes
 // uint32_t icount = 0;
@@ -42,7 +43,7 @@ bool click();
 int array [] ={0,0,0,0,0};
 int click_push_count = 0;
 int click_once_count = 0;
-void drawArrayJpeg(const uint8_t arrayname[], uint32_t array_size, int xpos, int ypos) ;
+int* drawArrayJpeg(const uint8_t arrayname[], uint32_t array_size, int xpos, int ypos) ;
 void renderJPEG(int xpos, int ypos);
 
 
@@ -138,7 +139,26 @@ void setup(void) {
   
 
   tft.init();
-  tft.setRotation(1);
+  tft.setRotation(0);
+
+
+
+        
+  tft.fillScreen(TFT_WHITE);
+
+  int pic_length = sizeof(a5)/sizeof(a5[0]);
+  for (int i=0;i<pic_length;i++ ){
+      drawArrayJpeg(a5[i], a5_size[i], 120, 120);
+      screenInfo(info);}
+
+
+
+
+
+
+
+
+  
   //info = WiFi.localIP()
   screenInfo( info);
   runServer();
@@ -227,9 +247,6 @@ void loop(void) {
              if (click()){break;}
              else delay(50);
              }
-
-             
-
         }
 
       if (click_once_count==3){
@@ -240,9 +257,9 @@ void loop(void) {
              array[2]=0;
              array[3]=1;
              array[4]=0; 
-      int pic_length = sizeof(a9)/sizeof(a9[0]);
+      int pic_length = sizeof(b1)/sizeof(b1[0]);
       for (int i=0;i<pic_length;i++ ){
-             drawArrayJpeg(a9[i], a9_size[i], 0, 0);
+             drawArrayJpeg(b1[i], b1_size[i], 0, 0);
              if (click()){break;}
              else delay(50);
              }
@@ -250,22 +267,22 @@ void loop(void) {
         } 
 
       if (click_once_count==4){
+           int * size;
            if (array[4]==0){
-             tft.fillScreen(TFT_WHITE);}
+             tft.fillScreen(TFT_BLACK);
+             //size = drawArrayJpeg(b4[0], b4_size[0], 0, 120);
+             }
              array[0]=0;
              array[1]=0;
              array[2]=0;
              array[3]=0;  
              array[4]=1;  
-      int pic_length = sizeof(b1)/sizeof(b1[0]);
-      for (int i=0;i<pic_length;i++ ){
-             drawArrayJpeg(b1[i], b1_size[i], 0, 0);
+             int pic_length = sizeof(b4)/sizeof(b4[0]);
+           for (int i=0;i<pic_length;i++ ){
+             drawArrayJpeg(b4[i], b4_size[i], 0, 50);
              if (click()){break;}
              else delay(50);
              }
-
-             
-
         }
 
                
@@ -297,7 +314,7 @@ void loop(void) {
 //####################################################################################################
 // Draw a JPEG on the TFT pulled from a program memory array
 //####################################################################################################
-void drawArrayJpeg(const uint8_t arrayname[], uint32_t array_size, int xpos, int ypos) {
+int* drawArrayJpeg(const uint8_t arrayname[], uint32_t array_size, int xpos, int ypos) {
 
   int x = xpos;
   int y = ypos;
@@ -307,7 +324,10 @@ void drawArrayJpeg(const uint8_t arrayname[], uint32_t array_size, int xpos, int
   //jpegInfo(); // Print information from the JPEG file (could comment this line out)
   
   renderJPEG(x, y);
-  
+  int size [] ={0,0};
+  size[0] = JpegDec.width;
+  size[1] = JpegDec.height;
+  return size;
   //Serial.println("#########################");
 }
 
@@ -336,7 +356,7 @@ void renderJPEG(int xpos, int ypos) {
   uint32_t win_h = mcu_h;
 
   // record the current time so we can measure how long it takes to draw an image
-  uint32_t drawTime = millis();
+  //uint32_t drawTime = millis();
 
   // save the coordinate of the right and bottom edges to assist image cropping
   // to the screen size
@@ -387,7 +407,7 @@ void renderJPEG(int xpos, int ypos) {
   }
 
   // calculate how long it took to draw the image
-  drawTime = millis() - drawTime;
+  //drawTime = millis() - drawTime;
 
   // print the results to the serial port
   //Serial.print(F(  "Total render time was    : ")); Serial.print(drawTime); Serial.println(F(" ms"));
