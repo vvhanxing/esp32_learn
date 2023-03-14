@@ -9,7 +9,7 @@
 const char* ssid = "HUAWEI P50 Pro";  // Enter your SSID here
 const char* password = "12345678";  //Enter your Password here
 
-//
+//http://192.168.43.216
 
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
 #include <SPI.h>
@@ -31,6 +31,7 @@ TFT_eSPI tft = TFT_eSPI();  // Invoke library, pins defined in User_Setup.h
 #include "a2.h"
 #include "b1.h"
 #include "b4.h"
+#include "mark.h"
 //#include "jpeg4.h"
 
 // Count how many times the image is drawn for test purposes
@@ -243,7 +244,7 @@ void loop(void) {
              array[4]=0; 
       int pic_length = sizeof(a2)/sizeof(a2[0]);
       for (int i=0;i<pic_length;i++ ){
-             drawArrayJpeg(a2[i], a2_size[i], 0, 0);
+             drawArrayJpeg(mark[i], mark_size[i], 0, 0);
              if (click()){break;}
              else delay(50);
              }
