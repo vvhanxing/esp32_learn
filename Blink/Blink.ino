@@ -19,7 +19,8 @@ void loop(){
     delay(500);
     Serial.println("Hello world!");
     
-    
+    const uint8_t a2_0[] PROGMEM = { 0xff, 0xd8, 0xff, 0xe0, 0x00 };
+
     
     }
   
