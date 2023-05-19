@@ -161,7 +161,7 @@ void initServer(){
   }
 
 void MainPage(){
-  server.send(200,"text/html",mainPageHtmlString);
+  server.send(200,"text/html",mainPageHtmlString(urlInfo));
   Serial.println("MainPage");
  
   }
@@ -180,7 +180,7 @@ void putPageIndex(){
 
   Serial.println(server.arg(0));
   String json = server.arg(0);
-  StaticJsonDocument<200> doc;
+  StaticJsonDocument<32> doc;
   // Json格式写法，创建一个json消息
   char json_char_[32];
   strcpy(json_char_,json.c_str());
@@ -206,32 +206,38 @@ void getInfo(){
 
 
 
-  
-// 处理HTTP请求，读取上传的图片数据
-void handleImageUpload() {
-  if (server.method() == HTTP_POST) {
-    String image_data = server.arg("image");
-    if (image_data != "") {
-      //unsigned int decoded_size = base64_dec_len((char*)image_data.c_str(), image_data.length());
-      //byte* decoded_data = (byte*) malloc(decoded_size);
-      
-      int decoded_size = image_data.length();
-      byte* decoded_data = (byte*) malloc(decoded_size);
-      base64_decode((char*) decoded_data, (char*) image_data.c_str(), image_data.length()); 
-      String decoded_string = (char*)decoded_data;
-      free(decoded_data);
-
-      int image_size = decoded_string.length();
-      byte* image_bytes = (byte*) malloc(image_size);
-      decoded_string.getBytes(image_bytes, image_size);
-      
-      tft.pushImage(0, 0, 200, 200, image_bytes);
-      free(image_bytes);
-
-      server.send(200, "text/plain", "Image received");
-    }
-  }
-}
+//  
+//// 处理HTTP请求，读取上传的图片数据
+//void handleImageUpload() {
+//  if (server.method() == HTTP_POST) {
+//    String image_data = server.arg("image");
+//    Serial.println(image_data);
+//    if (image_data != "") {
+////      unsigned int decoded_size = base64_dec_len((char*)image_data.c_str(), image_data.length());
+////      byte* decoded_data = (byte*) malloc(decoded_size);
+////      Serial.println(decoded_size);
+//      int decoded_size = image_data.length();
+//      byte* decoded_data = (byte*) malloc(decoded_size);
+//      Serial.println(decoded_size);
+//
+//      
+//      base64_decode((char*) decoded_data, (char*) image_data.c_str(), image_data.length()); 
+//      String decoded_string = (char*)decoded_data;
+//      Serial.println(decoded_string);
+//      free(decoded_data);
+//      //Serial.println(decoded_string);
+//      int image_size = decoded_string.length();
+//      byte* image_bytes = (byte*) malloc(image_size);
+//      //Serial.println(image_bytes);
+//      decoded_string.getBytes(image_bytes, image_size);
+//      
+//      tft.pushImage(0, 0, 200, 200, image_bytes);
+//      free(image_bytes);
+//
+//      server.send(200, "text/plain", "Image received");
+//    }
+//  }
+//}
 //void handleImageUpload() {
 //  if (server.method() == HTTP_POST) {
 //    String image_data = server.arg("image");
@@ -270,6 +276,25 @@ void handleImageUpload() {
 //    }
 //  }
 //}
+
+
+
+void handleImageUpload() {
+  if (server.method() == HTTP_POST) {
+    String imageData = server.arg("image");
+    imageData.trim();
+    uint8_t* image_data = (uint8_t*) malloc(imageData.length() + 1);
+    int decoded_size = base64_decode((char*)image_data, (char*)imageData.c_str(), imageData.length());
+    Serial.println(decoded_size);
+    //tft.pushImage(0, 0, TFT_WIDTH, TFT_HEIGHT, image_data);
+    drawArrayJpeg(image_data, sizeof(image_data), 200, 200);
+    free(image_data);
+    Serial.println("图片显示成功");
+
+    server.send(200, "text/plain", "Image received");
+    }
+  }
+
 
 
 

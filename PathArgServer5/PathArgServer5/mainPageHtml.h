@@ -1,4 +1,6 @@
-String mainPageHtmlString = R""(
+String mainPageHtmlString(String URL) {
+
+String HtmlString = R""(
 <!DOCTYPE html>
 <html lang="en" >
 <head>
@@ -231,7 +233,7 @@ String mainPageHtmlString = R""(
 
 
  
-      var url = "http://192.168.43.247/putPageIndex"
+      var url = "http://xxxxxxxxxx/putPageIndex"
       
       var request = new XMLHttpRequest();
       
@@ -314,3 +316,8 @@ String mainPageHtmlString = R""(
 
 
   )"";
+
+String replace_String = "xxxxxxxxxx";
+HtmlString. replace(replace_String,URL);
+return HtmlString;
+}

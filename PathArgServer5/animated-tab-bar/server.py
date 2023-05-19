@@ -1,9 +1,19 @@
 from flask import Flask, send_file, Response, send_from_directory
-from flask import jsonify,request,render_template
+from flask import jsonify,request,render_template,url_for
 import io
 import re
 import json
+import wave
+def save_audio_file(audio_data, output_file):
+    with wave.open(output_file, 'wb') as wf:
+        wf.setnchannels(1)  # 设置为单声道
+        wf.setsampwidth(2)  # 16位采样宽度（每个样本2个字节）
+        wf.setframerate(16000)  # 设置采样率为16000 Hz
+        wf.writeframes(audio_data)
 
+
+conut = 0
+audio_data = b""
 J ={}
 app = Flask(__name__)
 
@@ -23,6 +33,55 @@ def showinfo():
     
     return json.dumps(J)
 
+@app.route('/audio', methods=['POST'])
+def receive_audio():
+    global conut
+    global audio_data
+    conut+=1
+    audio_data += request.get_data()
+
+    #print(audio_data)
+    if conut%50==0:
+        audio_data = audio_data  # 替换为你的音频字节流字符串
+        output_file = str(conut)+'output.wav'  # 输出文件名
+        print(conut)
+
+        save_audio_file(audio_data, output_file)
+        audio_data = b""
+
+@app.route('/audio/mp3')
+def stream_mp3():
+    
+
+    # def generate():
+    #     path = 'C:/Users/vv/Desktop/myGithub/esp32_learn/PathArgServer5/animated-tab-bar/static/Aria.mp3'
+    #     with open(path, 'rb') as fmp3:
+    #         data = fmp3.read(1024)
+    #         while data:
+    #             yield data
+    #             data = fmp3.read(1024)
+    # return Response(generate(), mimetype="audio/mpeg3")
+    audio_file = 'C:/Users/vv/Desktop/myGithub/esp32_learn/PathArgServer5/animated-tab-bar/static/music.mp3'
+    return send_file(audio_file, mimetype='audio/mpeg')
+
+    
+
+# @app.route('/audio.mp3')
+# def audio():
+#     # 从服务器本地文件系统读取音频文件
+#     audio_file = 'C:/Users/vv/Desktop/myGithub/esp32_learn/PathArgServer5/animated-tab-bar/static/Aria.mp3'
+#     return send_file(audio_file, mimetype='audio/mpeg')
+
+
+
+
+
+
+    # 在这里处理音频数据，例如保存到文件或进行进一步处理
+
+    return 'Audio received'
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="192.168.43.185",port=5000 ,debug=True)
 
