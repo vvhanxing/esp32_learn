@@ -63,6 +63,18 @@ void StatusCallback(void *cbData, int code, const char *string)
   Serial.flush();
 }
 
+void initmp3(){
+  audioLogger = &Serial;
+  file = new AudioFileSourceICYStream(URL);
+  file->RegisterMetadataCB(MDCallback, (void*)"ICY");
+  buff = new AudioFileSourceBuffer(file, 2048);
+  buff->RegisterStatusCB(StatusCallback, (void*)"buffer");
+  out = new AudioOutputI2SNoDAC();
+  mp3 = new AudioGeneratorMP3();
+  mp3->RegisterStatusCB(StatusCallback, (void*)"mp3");
+  mp3->begin(buff, out);  
+  
+  }
 
 void setup()
 {
@@ -82,21 +94,14 @@ void setup()
     delay(1000);
   }
   Serial.println("Connected");
+  
+  initmp3();
 
-  audioLogger = &Serial;
-  file = new AudioFileSourceICYStream(URL);
-  file->RegisterMetadataCB(MDCallback, (void*)"ICY");
-  buff = new AudioFileSourceBuffer(file, 2048);
-  buff->RegisterStatusCB(StatusCallback, (void*)"buffer");
-  out = new AudioOutputI2SNoDAC();
-  mp3 = new AudioGeneratorMP3();
-  mp3->RegisterStatusCB(StatusCallback, (void*)"mp3");
-  mp3->begin(buff, out);
+
 }
 
+void loopmp3(){
 
-void loop()
-{
   static int lastms = 0;
 
   if (mp3->isRunning()) {
@@ -111,5 +116,12 @@ void loop()
     
     delay(1000);
   }
+  
+  }
+
+void loop()
+{
+  loopmp3();
+
 }
 #endif

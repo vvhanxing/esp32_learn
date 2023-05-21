@@ -61,7 +61,7 @@ def stream_mp3():
     #             yield data
     #             data = fmp3.read(1024)
     # return Response(generate(), mimetype="audio/mpeg3")
-    audio_file = 'C:/Users/vv/Desktop/myGithub/esp32_learn/PathArgServer5/animated-tab-bar/static/music.mp3'
+    audio_file = 'C:/Users/vv/Desktop/myGithub/esp32_learn/PathArgServer5/animated-tab-bar/static/music2.mp3'
     return send_file(audio_file, mimetype='audio/mpeg')
 
     

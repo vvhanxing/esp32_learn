@@ -9,14 +9,14 @@ data = {
 "4"
 }
 
-# for i in range(1):
-#     url = 'http://192.168.43.247/info'
-#     headers = {"Content-Type": "application/json"}
-#     #dic["info"]=  " "*i+"""ChatGPT4 is great,I love openAI !"""
-#     response = requests.post(url, json=data,headers= headers)
-#     print(response)
-#     #print(response.headers)
-#     print(response.request.headers)
+for i in range(1):
+    url = 'http://192.168.43.247/info'
+    headers = {"Content-Type": "application/json"}
+    #dic["info"]=  " "*i+"""ChatGPT4 is great,I love openAI !"""
+    response = requests.post(url, json=data,headers= headers)
+    print(response)
+    #print(response.headers)
+    print(response.request.headers)
 
 # url  ='http://192.168.43.247/showinfo'
 # response = requests.get(url)
@@ -34,9 +34,9 @@ data = {
 
 import requests
 import base64
-for i in range(5):
+for i in range(1):
     # 打开图片文件，读取为字节流
-    with open('a2.jpg', 'rb') as f:
+    with open('small.jpg', 'rb') as f:
         img_data = f.read()
 
     # 将字节流转换为Base64编码的字符串
@@ -53,7 +53,7 @@ for i in range(5):
 
     #picture encoding base64 string post to esp32 webserver,
     #arduino esp32 use webserver to get base64 string ,decoded base64 string and use TFT_eSPI to show picture in tft lcd 
-
+print("-------------------")
 
 
 # encoding:utf-8
@@ -63,7 +63,7 @@ from io import BytesIO
 import base64
 
 # 二进制读取图片,再将图片转为 base64 类型的字符串
-with open('a2.jpg', 'rb') as fin:   #第一个参数为图片全路径或相对路径
+with open('small.jpg', 'rb') as fin:   #第一个参数为图片全路径或相对路径
     print('二进制类型')
     image_data = fin.read()
     # 图片:二进制类型
