@@ -210,14 +210,14 @@ void getInfo(){
 
 
 //
-uint8_t decodedImage[8000]={0};
+uint8_t decodedImage[12000]={0};
 void handleImageUpload() {
   if (server.method() == HTTP_POST) {
   String encodedImage = server.arg("image");
   //size_t decodedSize = base64_decoded_length(encodedImage.length());
   
 
-  int decoded_size = base64_decode((char*)decodedImage, (char*)encodedImage.c_str(), 8000);
+  int decoded_size = base64_decode((char*)decodedImage, (char*)encodedImage.c_str(), 12000);
   
   
   //free(decodedImage);
@@ -346,7 +346,7 @@ void loop(void) {
              array[3]=0;
              array[4]=0; 
              
-            screenInfo(urlInfo,0,200,4);
+            //screenInfo(urlInfo,0,200,4);
 //           
             if (decodedImage[0]!=0)
             drawArrayJpeg(decodedImage, sizeof(decodedImage), 0, 0);
