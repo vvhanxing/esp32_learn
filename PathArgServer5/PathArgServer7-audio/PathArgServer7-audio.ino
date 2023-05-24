@@ -8,61 +8,18 @@
 #include <uri/UriRegex.h>
 #include "Base64.h"
 
-
-////MP3
-#include "AudioFileSourceICYStream.h"
-#include "AudioFileSourceBuffer.h"
-#include "AudioGeneratorMP3.h"
+////////////////////audio
+#include <Arduino.h>
+#include "AudioFileSourcePROGMEM.h"
+#include "AudioGeneratorWAV.h"
 #include "AudioOutputI2SNoDAC.h"
 
-/////// Randomly picked URL
-const char *URL="http://192.168.43.185:5000/audio/mp3";
-AudioGeneratorMP3 *mp3;
-AudioFileSourceICYStream *file;
-AudioFileSourceBuffer *buff;
+// VIOLA sample taken from https://ccrma.stanford.edu/~jos/pasp/Sound_Examples.html
+#include "viola.h"
+
+AudioGeneratorWAV *wav;
+AudioFileSourcePROGMEM *file;
 AudioOutputI2SNoDAC *out;
-
-// Called when a metadata event occurs (i.e. an ID3 tag, an ICY block, etc.
-void MDCallback(void *cbData, const char *type, bool isUnicode, const char *string)
-{
-  const char *ptr = reinterpret_cast<const char *>(cbData);
-  (void) isUnicode; // Punt this ball for now
-  // Note that the type and string may be in PROGMEM, so copy them to RAM for printf
-  char s1[32], s2[64];
-  strncpy_P(s1, type, sizeof(s1));
-  s1[sizeof(s1)-1]=0;
-  strncpy_P(s2, string, sizeof(s2));
-  s2[sizeof(s2)-1]=0;
-  Serial.printf("METADATA(%s) '%s' = '%s'\n", ptr, s1, s2);
-  Serial.flush();
-}
-
-// Called when there's a warning or error (like a buffer underflow or decode hiccup)
-void StatusCallback(void *cbData, int code, const char *string)
-{
-  const char *ptr = reinterpret_cast<const char *>(cbData);
-  // Note that the string may be in PROGMEM, so copy it to RAM for printf
-  char s1[64];
-  strncpy_P(s1, string, sizeof(s1));
-  s1[sizeof(s1)-1]=0;
-  Serial.printf("STATUS(%s) '%d' = '%s'\n", ptr, code, s1);
-  Serial.flush();
-}
-
-void initmp3(){
-  audioLogger = &Serial;
-  file = new AudioFileSourceICYStream(URL);
-  file->RegisterMetadataCB(MDCallback, (void*)"ICY");
-  buff = new AudioFileSourceBuffer(file, 2048);
-  buff->RegisterStatusCB(StatusCallback, (void*)"buffer");
-  out = new AudioOutputI2SNoDAC();
-  mp3 = new AudioGeneratorMP3();
-  mp3->RegisterStatusCB(StatusCallback, (void*)"mp3");
-  mp3->begin(buff, out);  
-  
-  }
-
-///////////////////////////
 
 
 const char* ssid = "HUAWEI P50 Pro";  // Enter your SSID here
@@ -80,24 +37,20 @@ TFT_eSPI tft = TFT_eSPI();  // Invoke library, pins defined in User_Setup.h
 // JPEG decoder library
 #include <JPEGDecoder.h>
 
-// Return the minimum of two values a and b
-#define minimum(a,b)     (((a) < (b)) ? (a) : (b))
 
 // Include the sketch header file that contains the image stored as an array of bytes
 // More than one image array could be stored in each header file.
 #include "jpeg1.h"
-#include "jpeg2.h"
+//#include "jpeg2.h"
 #include "a2.h"
 #include "b1.h"
 //#include "b4.h"
 #include "b2.h"
 #include "mark.h"
 //#include "jpeg4.h"
+#include "small.h"
 #include "mainPageHtml.h"
 
-// Count how many times the image is drawn for test purposes
-// uint32_t icount = 0;
-//int i=0;
 //----------------------------------------------------------------------------------------------------
 
 bool click();
@@ -114,8 +67,6 @@ void renderJPEG(int xpos, int ypos);
 String urlInfo = "";
 String info="hello vivi";
 String info_list [] = {info,info};
-//
-String PictInfo="255,216,255,224,0,16,74,70,73,70,0,1,1,0,0,1,0,1,0,0,255,219,0,67,0,8,6,6,7,6,5,8,7,7,7,9,9,8,10,12,20,13,12,11,11,12,25,18,19,15,20,29,26,31,30,29,26,28,28,32,36,46,39,32,34,44,35,28,28,40,55,41,44,48,49,52,52,52,31,39,57,61,56,50,60,46,51,52,50,255,219,0,67,1,8,9,9,12,11,12,24,13,13,24,50,33,28,33,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,50,255,192,0,17,8,0,10,0,10,3,1,34,0,2,17,1,3,17,1,255,196,0,31,0,0,1,5,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,2,3,4,5,6,7,8,9,10,11,255,196,0,181,16,0,2,1,3,3,2,4,3,5,5,4,4,0,0,1,125,1,2,3,0,4,17,5,18,33,49,65,6,19,81,97,7,34,113,20,50,129,145,161,8,35,66,177,193,21,82,209,240,36,51,98,114,130,9,10,22,23,24,25,26,37,38,39,40,41,42,52,53,54,55,56,57,58,67,68,69,70,71,72,73,74,83,84,85,86,87,88,89,90,99,100,101,102,103,104,105,106,115,116,117,118,119,120,121,122,131,132,133,134,135,136,137,138,146,147,148,149,150,151,152,153,154,162,163,164,165,166,167,168,169,170,178,179,180,181,182,183,184,185,186,194,195,196,197,198,199,200,201,202,210,211,212,213,214,215,216,217,218,225,226,227,228,229,230,231,232,233,234,241,242,243,244,245,246,247,248,249,250,255,196,0,31,1,0,3,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,2,3,4,5,6,7,8,9,10,11,255,196,0,181,17,0,2,1,2,4,4,3,4,7,5,4,4,0,1,2,119,0,1,2,3,17,4,5,33,49,6,18,65,81,7,97,113,19,34,50,129,8,20,66,145,161,177,193,9,35,51,82,240,21,98,114,209,10,22,36,52,225,37,241,23,24,25,26,38,39,40,41,42,53,54,55,56,57,58,67,68,69,70,71,72,73,74,83,84,85,86,87,88,89,90,99,100,101,102,103,104,105,106,115,116,117,118,119,120,121,122,130,131,132,133,134,135,136,137,138,146,147,148,149,150,151,152,153,154,162,163,164,165,166,167,168,169,170,178,179,180,181,182,183,184,185,186,194,195,196,197,198,199,200,201,202,210,211,212,213,214,215,216,217,218,226,227,228,229,230,231,232,233,234,242,243,244,245,246,247,248,249,250,255,218,0,12,3,1,0,2,17,3,17,0,63,0,245,139,217,142,154,110,126,211,125,168,72,33,113,112,74,71,159,148,156,108,30,213,210,69,32,154,20,149,65,10,234,24,2,48,112,125,169,244,82,214,237,176,90,71,151,212,255,217,";
 
 ///////////////////
 void screenInfo(String info,int posx, int posy ,int font){
@@ -123,89 +74,26 @@ void screenInfo(String info,int posx, int posy ,int font){
   if (info_list [0]!= info_list [1]){
      tft.fillScreen(TFT_WHITE);
     }
- 
   tft.setCursor(posx, posy);
   // 设置文本颜色为白色，黑色文本背景
   tft.setTextFont(font);
   tft.setTextColor( TFT_BLACK,TFT_WHITE);
   // 设置显示的文字，注意这里有个换行符 \n 产生的效果
   tft.println(info);
-
-/////////////////  
-  
   }
 
-//
-//   uint8_t pic_uint8_t_0[] PROGMEM = { };
-//   uint8_t *pic_uint8_t[1] PROGMEM { pic_uint8_t_0,};
-//   uint32_t pic_uint8_t_size[1] PROGMEM { 671,};
-
-
-//
-//  void str2pic(String PictInfo)
-//  {
-//    Serial.println("start0");
-//  
-//  String numString="" ;
-//  Serial.println("start1");
-//
-//  Serial.println("start2");
-//  int numIndex = 0;
-//  for (int i=0;i<PictInfo.length();i++){
-//    //Serial.println(numIndex);
-//    if(PictInfo[i]!=',')
-//      numString += PictInfo[i];
-//    else{
-//
-//      pic_uint8_t_0[numIndex] =(uint8_t)numString.toInt();
-//      numIndex++;
-//
-//    Serial.println(numIndex);
-//    Serial.println("---------");
-//    Serial.println(numString);
-//    Serial.println("--2");
-//    Serial.println(atoi( numString.c_str()));
-//    Serial.println( numString.toInt());
-//    Serial.println( (uint8_t)numString.toInt());
-//    Serial.println( pic_uint8_t_0[numIndex]);
-//    Serial.println("----");
-//      
-//      numString="";
-//
-// 
-//
-////http post对jpg图片编码并传输图片,ardunio esp32连接 wifi 通过webserver接收图片， tft lcd屏幕显示图片，给出pytohn request代码，以及ardunio代码
-//
-//      
-//      }
-//    }
-/////
-  
- 
-   
-    
-
-    
-    
- 
-
-
+/////////////////  
 WebServer server(80);
-
-
-  
-void initServer(){
+void initWIFI(){
   
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   Serial.println("");
-
   // Wait for connection
   while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
+    delay(500);
     Serial.print(".");
   }
-  initmp3();
   Serial.println("");
   Serial.print("Connected to ");
   Serial.println(ssid);
@@ -215,19 +103,14 @@ void initServer(){
   if (MDNS.begin("esp32")) {
     Serial.println("MDNS responder started");
       }
-
   }
 
 void MainPage(){
   server.send(200,"text/html",mainPageHtmlString(urlInfo));
   Serial.println("MainPage");
- 
   }
   
-
 void putInfo(){
-
-  
   info = server.arg("info") ;
   Serial.println(info);
   server.sendHeader("Location","/getinfo");
@@ -235,7 +118,6 @@ void putInfo(){
   }
 
 void putPageIndex(){
-
   Serial.println(server.arg(0));
   String json = server.arg(0);
   StaticJsonDocument<32> doc;
@@ -243,9 +125,7 @@ void putPageIndex(){
   char json_char_[32];
   strcpy(json_char_,json.c_str());
   DeserializationError error = deserializeJson(doc, json_char_);
-
   Serial.println(doc["click_once_count"].as<String>());  
-
 
   click_once_count = doc["click_once_count"].as<String>().toInt() ;
   Serial.println("------1");
@@ -254,8 +134,6 @@ void putPageIndex(){
   server.send(302,"text/plain","ok");
   }
 
-  
-  
 void getInfo(){
   server.send(200,"text/html",(String)"<!DOCTYPE html><body><h1>"+"info: </h1><h1>"+info+"</h1></body></html>");
   Serial.println("------2");
@@ -264,186 +142,61 @@ void getInfo(){
 
 
 
-//  
-//// 处理HTTP请求，读取上传的图片数据
-//void handleImageUpload() {
-//  if (server.method() == HTTP_POST) {
-//    String image_data = server.arg("image");
-//    Serial.println(image_data);
-//    if (image_data != "") {
-////      unsigned int decoded_size = base64_dec_len((char*)image_data.c_str(), image_data.length());
-////      byte* decoded_data = (byte*) malloc(decoded_size);
-////      Serial.println(decoded_size);
-//      int decoded_size = image_data.length();
-//      byte* decoded_data = (byte*) malloc(decoded_size);
-//      Serial.println(decoded_size);
-//
-//      
-//      base64_decode((char*) decoded_data, (char*) image_data.c_str(), image_data.length()); 
-//      String decoded_string = (char*)decoded_data;
-//      Serial.println(decoded_string);
-//      free(decoded_data);
-//      //Serial.println(decoded_string);
-//      int image_size = decoded_string.length();
-//      byte* image_bytes = (byte*) malloc(image_size);
-//      //Serial.println(image_bytes);
-//      decoded_string.getBytes(image_bytes, image_size);
-//      
-//      tft.pushImage(0, 0, 200, 200, image_bytes);
-//      free(image_bytes);
-//
-//      server.send(200, "text/plain", "Image received");
-//    }
-//  }
-//}
-//void handleImageUpload() {
-//  if (server.method() == HTTP_POST) {
-//    String image_data = server.arg("image");
-//    if (image_data != "") {
-//      unsigned int decoded_size = base64_dec_len((char*)image_data.c_str(), image_data.length());
-//      int decoded_size_int = (int) decoded_size;
-//      
-//      byte* decoded_data = (byte*) malloc(decoded_size_int);
-//      base64_decode((char*) decoded_data, (char*) image_data.c_str(), image_data.length());
-//      tft.pushImage(0, 0, 240, 240, decoded_data);
-//      free(decoded_data);
-//      server.send(200, "text/plain", "Image received");
-//      return;
-//    }
-//  }
-//  server.send(400, "text/plain", "Bad Request");
-//}
-//void handleImageUpload() {
-//  if (server.method() == HTTP_POST) {
-//    String image_data = server.arg("image");
-//    if (image_data != "") {
-//      unsigned int decoded_size = base64_dec_len((char*)image_data.c_str(), image_data.length());
-//      byte* decoded_data = (byte*) malloc(decoded_size);
-//      base64_decode((char*) decoded_data, (char*)image_data.c_str(), image_data.length()); 
-//      String decoded_string = (char*)decoded_data;
-//      free(decoded_data);
-//
-//      int image_size = decoded_string.length();
-//      byte* image_bytes = (byte*) malloc(image_size);
-//      decoded_string.getBytes(image_bytes, image_size);
-//
-//      tft.pushImage(0, 0, TFT_WIDTH, TFT_HEIGHT, image_bytes);
-//      free(image_bytes);
-//
-//      server.send(200, "text/plain", "Image received");
-//    }
-//  }
-//}
 
-
-
+uint8_t decodedImage[12000]={0};
 void handleImageUpload() {
   if (server.method() == HTTP_POST) {
-    String imageData = server.arg("image");
-    imageData.trim();
-    uint8_t* image_data = (uint8_t*) malloc(imageData.length() + 1);
-    int decoded_size = base64_decode((char*)image_data, (char*)imageData.c_str(), imageData.length());
-    Serial.println(decoded_size);
-    //tft.pushImage(0, 0, TFT_WIDTH, TFT_HEIGHT, image_data);
-    drawArrayJpeg(image_data, sizeof(image_data), 200, 200);
-    free(image_data);
-    Serial.println("图片显示成功");
-
+    String encodedImage = server.arg("image");
+    int decoded_size = base64_decode((char*)decodedImage, (char*)encodedImage.c_str(), 12000);
+    //free(decodedImage);
     server.send(200, "text/plain", "Image received");
     }
   }
 
 
-
-
-
-void runServer(){
-  initServer();
-  //
-  //server.on(F("/"), []() {
-    //server.send(200, "text/plain", "hello from esp32!");
-  //});
+void initServer(){
+ 
   server.on("/",HTTP_GET,MainPage);
   server.on("/putinfo",HTTP_POST,putInfo);
   server.on("/putPageIndex",HTTP_POST,putPageIndex);
   server.on("/getinfo",HTTP_GET,getInfo);
   server.on("/upload_image", handleImageUpload);
-
-  //
   server.begin();
   Serial.println("HTTP server started");
 
-  
   }
 
 
-
-void setup(void) {
-  Serial.begin(9600);
-
+void initWave(){
+  audioLogger = &Serial;
+  file = new AudioFileSourcePROGMEM( viola, sizeof(viola) ); 
+  out = new AudioOutputI2SNoDAC(); 
+  wav = new AudioGeneratorWAV();
+  wav->begin(file, out);
+  }
   
+/////////////////////////////////////////////////////////////
 
-  tft.init();
-  tft.setRotation(0);
-
-
-
-        
-  tft.fillScreen(TFT_WHITE);
-
-  int pic_length = sizeof(a5)/sizeof(a5[0]);
-  for (int i=0;i<pic_length;i++ ){
-      drawArrayJpeg(a5[i], a5_size[i], 120, 120);
-      screenInfo(info,0,0,4);}
-
-
-
-
-
-
-  runServer();
-  
+void loopwav(){
+  if (wav->isRunning()) {
+    if (!wav->loop()) wav->stop();
+  } else {
+    Serial.printf("WAV done\n");
+    delay(100);
+  }
 }
 
-void loopmp3(){
 
-  static int lastms = 0;
-
-  if (mp3->isRunning()) {
-    if (millis()-lastms > 1000) {
-      lastms = millis();
-      Serial.printf("Running for %d ms...\n", lastms);
-      Serial.flush();
-     }
-    if (!mp3->loop()) mp3->stop();
-  } else {
-    Serial.printf("MP3 done\n");
-    
-    delay(1000);
-  }
-  
-  }
-
-  
-void loop(void) {
-  server.handleClient();
-  delay(100);//allow the cpu to switch to other tasks
-
-
-
-
-
-
+void loopScreen(){
 
 //如果点击click()便会返回true
 
   if(click()){
-    
       click_push_count = click_push_count+1;
-      if (click_push_count==2){
+      if (click_push_count==2){ //短按
         click_once_count +=1;
         }
-      if (click_push_count==5){
+      if (click_push_count==5){//长按
         click_once_count -=2;
         }
        Serial.println(click_push_count); 
@@ -451,11 +204,7 @@ void loop(void) {
 
     
   else{
-
-    click_push_count = 1;
-     
-      
-
+      click_push_count = 1;
       if (click_once_count==0){
           if (array[0]==0){
              tft.fillScreen(TFT_WHITE);}
@@ -465,54 +214,42 @@ void loop(void) {
           array[3]=0;
           array[4]=0; 
           int pic_length = sizeof(a5)/sizeof(a5[0]);
+          screenInfo(urlInfo,30,180,4);
           for (int i=0;i<pic_length;i++ ){
-             drawArrayJpeg(a5[i], a5_size[i], 120, 120);
-
-             info_list[0] = info_list[1];//屏幕刷新
+             drawArrayJpeg(a5[i], a5_size[i], 75, 60);
+             info_list[0] = info_list[1];//屏幕字体刷新
              info_list[1] = info;
-             screenInfo(info,0,0,4);
              if (click()){break;}
              else delay(100);
              }
-
-
-          
+           
         }
 
       if (click_once_count==1){
-           
            if (array[1]==0){
              tft.fillScreen(TFT_WHITE);}
              array[0]=0;
              array[1]=1;
              array[2]=0;
              array[3]=0;
-             array[4]=0; 
-             
-            screenInfo(urlInfo,0,200,4);
-            drawArrayJpeg(Tiger, sizeof(Tiger), 4, 0); // Draw a jpeg image stored in memory
+             array[4]=0;           
+            if (decodedImage[0]!=0)
+            drawArrayJpeg(decodedImage, sizeof(decodedImage), 0, 0);//http图片
+            else  drawArrayJpeg(small_0, sizeof(small_0), 4, 0); // Draw a jpeg image stored in memory
             delay(100);
-
-  
         }
 
         
       if (click_once_count==2){
            if (array[2]==0){
-             tft.fillScreen(TFT_WHITE);}
+             tft.fillScreen(TFT_WHITE);
+             drawArrayJpeg(mark[0], mark_size[0], 0, 0);}
              array[0]=0;
              array[1]=0;
              array[2]=1;
              array[3]=0;  
              array[4]=0; 
              
-//      str2pic( PictInfo);
-      int pic_length = sizeof(mark)/sizeof(mark[0]);
-      for (int i=0;i<pic_length;i++ ){
-             drawArrayJpeg(mark[i], mark_size[i], 0, 0);
-             if (click()){break;}
-             else delay(50);
-             }
         }
 
       if (click_once_count==3){
@@ -549,23 +286,33 @@ void loop(void) {
              if (click()){break;}
              else delay(50);
              }
-        loopmp3();
         }
-
-               
-        
       if (click_once_count>4 || click_once_count<0){
-
           click_once_count = 0;
-          
         }
-
-
     }
+}
 
+void setup(void) {
+  Serial.begin(9600);
+  tft.init();
+  tft.setRotation(0);
+  tft.fillScreen(TFT_WHITE);
+  int pic_length = sizeof(a5)/sizeof(a5[0]);
+  for (int i=0;i<pic_length;i++ ){
+      drawArrayJpeg(a5[i], a5_size[i], 120, 120);
+      screenInfo(info,0,0,4);}
 
-
+  initWIFI();
+  initServer();
+  initWave();
+}
   
+void loop(void) {
+  server.handleClient();
+  //loopScreen();
+  loopwav();
+  //delay(100);//allow the cpu to switch to other tasks
 }
 
 
@@ -577,7 +324,8 @@ void loop(void) {
 
 
 
-
+// Return the minimum of two values a and b
+#define minimum(a,b)     (((a) < (b)) ? (a) : (b))
 //####################################################################################################
 // Draw a JPEG on the TFT pulled from a program memory array
 //####################################################################################################

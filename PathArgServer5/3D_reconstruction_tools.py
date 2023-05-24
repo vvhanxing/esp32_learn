@@ -3,7 +3,7 @@ from PIL import Image
 clip1 = VideoFileClip('g2.mp4')
 i = 1
 for frame in clip1.iter_frames():
-    if i%5==0:
+    if i%1==0:
         im = Image.fromarray(frame)
         im.save("./frame_image/your_file_%07d.jpg" % i)
     i = i+1
