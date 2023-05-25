@@ -10,28 +10,16 @@
 
 ////////////////////audio
 #include <Arduino.h>
-#include "AudioFileSourcePROGMEM.h"
-#include "AudioGeneratorWAV.h"
+#include "AudioFileSourceICYStream.h"
+#include "AudioFileSourceBuffer.h"
+#include "AudioGeneratorMP3.h"
 #include "AudioOutputI2SNoDAC.h"
-//
-#include <AudioFileSourceHTTPStream.h>
-#include <AudioGeneratorMP3.h>
-// 音频文件的URL
-//const char* audioUrl = "http://192.168.43.185:5000/audio/mp3";
-//// 定义音频生成器和文件源
-//AudioGeneratorMP3 audioGenerator;
-//AudioFileSourceHTTPStream *fileSource;
-//
-//// 播放速度
-//float playSpeed = 1.0;
-
-//多线程
 
 
 
 // 任务1
 #define TASK1_TASK_PRIO  1          // 任务优先级
-#define TASK1_STK_SIZE   2048        // 任务堆栈大小
+#define TASK1_STK_SIZE   4096        // 任务堆栈大小
 TaskHandle_t Tasks1_TaskHandle; // 任务句柄
 void task1(void *pvParameters); //任务函数
 
@@ -53,11 +41,47 @@ void task3(void *pvParameters); //任务函数
 
 ///
 // VIOLA sample taken from https://ccrma.stanford.edu/~jos/pasp/Sound_Examples.html
-#include "viola.h"
 
-AudioGeneratorWAV *wav;
-AudioFileSourcePROGMEM *file;
+
+
+// Randomly picked URL
+const char *URL="http://192.168.43.185:5000/audio/mp3";
+
+AudioGeneratorMP3 *mp3;
+AudioFileSourceICYStream *file;
+AudioFileSourceBuffer *buff;
 AudioOutputI2SNoDAC *out;
+
+// Called when a metadata event occurs (i.e. an ID3 tag, an ICY block, etc.
+void MDCallback(void *cbData, const char *type, bool isUnicode, const char *string)
+{
+  const char *ptr = reinterpret_cast<const char *>(cbData);
+  (void) isUnicode; // Punt this ball for now
+  // Note that the type and string may be in PROGMEM, so copy them to RAM for printf
+  char s1[32], s2[64];
+  strncpy_P(s1, type, sizeof(s1));
+  s1[sizeof(s1)-1]=0;
+  strncpy_P(s2, string, sizeof(s2));
+  s2[sizeof(s2)-1]=0;
+  Serial.printf("METADATA(%s) '%s' = '%s'\n", ptr, s1, s2);
+  Serial.flush();
+}
+
+// Called when there's a warning or error (like a buffer underflow or decode hiccup)
+void StatusCallback(void *cbData, int code, const char *string)
+{
+  const char *ptr = reinterpret_cast<const char *>(cbData);
+  // Note that the string may be in PROGMEM, so copy it to RAM for printf
+  char s1[64];
+  strncpy_P(s1, string, sizeof(s1));
+  s1[sizeof(s1)-1]=0;
+  Serial.printf("STATUS(%s) '%d' = '%s'\n", ptr, code, s1);
+  Serial.flush();
+}
+
+
+
+/////////////////////////////
 
 
 const char* ssid = "HUAWEI P50 Pro";  // Enter your SSID here
@@ -205,59 +229,37 @@ void initServer(){
   }
 
 
-void initWave(){
+void initURLaudio(){
+
   audioLogger = &Serial;
-  file = new AudioFileSourcePROGMEM( viola, sizeof(viola) ); 
-  out = new AudioOutputI2SNoDAC(); 
-  wav = new AudioGeneratorWAV();
-  wav->begin(file, out);
+  file = new AudioFileSourceICYStream(URL);
+  file->RegisterMetadataCB(MDCallback, (void*)"ICY");
+  buff = new AudioFileSourceBuffer(file, 2048);
+  buff->RegisterStatusCB(StatusCallback, (void*)"buffer");
+  out = new AudioOutputI2SNoDAC();
+  mp3 = new AudioGeneratorMP3();
+  mp3->RegisterStatusCB(StatusCallback, (void*)"mp3");
+  mp3->begin(buff, out);
   }
   
 /////////////////////////////////////////////////////////////
 
-void loopwav(){
-  if (wav->isRunning()) {
-    if (!wav->loop()) wav->stop();
-  } 
-  else {
-    //Serial.printf("WAV done\n");
-    delay(100);
+
+void loopURLaudio() {
+  static int lastms = 0;
+
+  if (mp3->isRunning()) {
+    if (millis()-lastms > 1000) {
+      lastms = millis();
+      //Serial.printf("Running for %d ms...\n", lastms);
+      Serial.flush();
+     }
+    if (!mp3->loop()) mp3->stop();
+  } else {
+    Serial.printf("MP3 done\n");
+    delay(1000);
   }
 }
-//
-//void initURLaudio(){
-//
-//  // 初始化音频生成器
-//  audioGenerator.begin();
-//  // 创建HTTP音频文件源
-//  fileSource = new AudioFileSourceHTTPStream(audioUrl);  
-//  
-//  }
-//
-//
-//
-//void loopURLaudio() {
-//  if (audioGenerator.isRunning()) {
-//    // 音频正在播放，继续处理
-//    if (!audioGenerator.loop()) {
-//      // 播放结束
-//      audioGenerator.stop();
-//      fileSource->close();
-//      Serial.println("Playback finished");
-//    }
-//  } else {
-//    // 音频未播放，开始新的播放
-//    if (fileSource->open(audioUrl)) {
-//      // 成功打开音频文件
-//      Serial.println("Starting playback");
-//      audioGenerator.start(fileSource);
-//      audioGenerator.setSpeed(playSpeed); // 设置播放速度
-//    } else {
-//      // 无法打开音频文件
-//      Serial.println("Failed to open audio file");
-//    }
-//  }
-//}
 
 
 void loopScreen(){
@@ -353,7 +355,7 @@ void loopScreen(){
              array[2]=0;
              array[3]=0;  
              array[4]=1;  
-             int pic_length = sizeof(b2)/sizeof(b2[0]);
+//             int pic_length = sizeof(b2)/sizeof(b2[0]);
 //           for (int i=0;i<pic_length;i++ ){
 //             drawArrayJpeg(b2[i], b2_size[i], 0, 50);
 //             if (click()){break;}
@@ -378,7 +380,7 @@ void setup(void) {
 
   initWIFI();
   initServer();
-  initWave();
+  initURLaudio();
   //initURLaudio();
 
   xTaskCreate(task1, "task1_task",TASK1_STK_SIZE,NULL,TASK1_TASK_PRIO,NULL); 
@@ -420,9 +422,9 @@ void task3(void *pvParameters)
     {
         //Serial.println("task3 runing........");
         if (click_once_count==2)
-        loopwav();
-//        if (click_once_count==3)
-//        loopURLaudio();
+        loopURLaudio();
+        else initURLaudio();
+
         
         vTaskDelay(10/portTICK_PERIOD_MS); //等待1s
     }
