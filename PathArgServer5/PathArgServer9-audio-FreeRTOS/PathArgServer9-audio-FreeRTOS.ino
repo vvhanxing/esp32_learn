@@ -19,7 +19,7 @@
 
 // 任务1
 #define TASK1_TASK_PRIO  1          // 任务优先级
-#define TASK1_STK_SIZE   4096        // 任务堆栈大小
+#define TASK1_STK_SIZE   2048        // 任务堆栈大小
 TaskHandle_t Tasks1_TaskHandle; // 任务句柄
 void task1(void *pvParameters); //任务函数
 
@@ -318,7 +318,7 @@ void loopScreen(){
       if (click_once_count==2){
            if (array[2]==0){
              tft.fillScreen(TFT_WHITE);
-             drawArrayJpeg(mark[0], mark_size[0], 0, 0);}
+             drawArrayJpeg(b1[0], b1_size[0], 0, 0);}
              array[0]=0;
              array[1]=0;
              array[2]=1;
@@ -380,8 +380,7 @@ void setup(void) {
 
   initWIFI();
   initServer();
-  initURLaudio();
-  //initURLaudio();
+ 
 
   xTaskCreate(task1, "task1_task",TASK1_STK_SIZE,NULL,TASK1_TASK_PRIO,NULL); 
   xTaskCreate(task2, "task2_task",TASK2_STK_SIZE,NULL,TASK2_TASK_PRIO,NULL);
@@ -416,14 +415,25 @@ void task2(void *pvParameters)
     
 }
 
+int isPlayAudio = 0;
 void task3(void *pvParameters)
 {
      while(true)
     {
         //Serial.println("task3 runing........");
-        if (click_once_count==2)
-        loopURLaudio();
-        else initURLaudio();
+        
+        if (click_once_count==2 && isPlayAudio==0) {
+          initURLaudio();
+          isPlayAudio = 1;}
+                 
+        if (click_once_count==2 && isPlayAudio == 1){
+          loopURLaudio();}
+        
+
+          
+        if (click_once_count!=2){
+          isPlayAudio=0;
+          }
 
         
         vTaskDelay(10/portTICK_PERIOD_MS); //等待1s

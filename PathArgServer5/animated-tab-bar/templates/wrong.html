@@ -1,0 +1,236 @@
+ <html lang=en>
+   <head>
+     <title>werkzeug.exceptions.BadRequestKeyError: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+ KeyError: 'file'
+  // Werkzeug Debugger</title>
+     <link rel="stylesheet" href="?__debugger__=yes&amp;cmd=resource&amp;f=style.css">
+     <link rel="shortcut icon"
+         href="?__debugger__=yes&amp;cmd=resource&amp;f=console.png">
+     <script src="?__debugger__=yes&amp;cmd=resource&amp;f=debugger.js"></script>
+     <script>
+       var CONSOLE_MODE = false,
+           EVALEX = true,
+           EVALEX_TRUSTED = false,
+           SECRET = "IzfOvh9Mt9aUzqSDjgyR";
+     </script>
+   </head>
+   <body style="background-color: #fff">
+     <div class="debugger">
+ <h1>BadRequestKeyError</h1>
+ <div class="detail">
+   <p class="errormsg">werkzeug.exceptions.BadRequestKeyError: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+ KeyError: &#39;file&#39;
+ </p>
+ </div>
+ <h2 class="traceback">Traceback <em>(most recent call last)</em></h2>
+ <div class="traceback">
+   <h3></h3>
+   <ul><li><div class="frame" id="frame-1684310391856">
+   <h4>File <cite class="filename">"C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py"</cite>,
+       line <em class="line">2551</em>,
+       in <code class="function">__call__</code></h4>
+   <div class="source library"><pre class="line before"><span class="ws">    </span>def __call__(self, environ: dict, start_response: t.Callable) -&gt; t.Any:</pre>
+ <pre class="line before"><span class="ws">        </span>&#34;&#34;&#34;The WSGI server calls the Flask application object as the</pre>
+ <pre class="line before"><span class="ws">        </span>WSGI application. This calls :meth:`wsgi_app`, which can be</pre>
+ <pre class="line before"><span class="ws">        </span>wrapped to apply middleware.</pre>
+ <pre class="line before"><span class="ws">        </span>&#34;&#34;&#34;</pre>
+ <pre class="line current"><span class="ws">        </span>return self.wsgi_app(environ, start_response)</pre></div>
+ </div>
+ 
+ <li><div class="frame" id="frame-1684310392080">
+   <h4>File <cite class="filename">"C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py"</cite>,
+       line <em class="line">2531</em>,
+       in <code class="function">wsgi_app</code></h4>
+   <div class="source library"><pre class="line before"><span class="ws">            </span>try:</pre>
+ <pre class="line before"><span class="ws">                </span>ctx.push()</pre>
+ <pre class="line before"><span class="ws">                </span>response = self.full_dispatch_request()</pre>
+ <pre class="line before"><span class="ws">            </span>except Exception as e:</pre>
+ <pre class="line before"><span class="ws">                </span>error = e</pre>
+ <pre class="line current"><span class="ws">                </span>response = self.handle_exception(e)</pre>
+ <pre class="line after"><span class="ws">            </span>except:  # noqa: B001</pre>
+ <pre class="line after"><span class="ws">                </span>error = sys.exc_info()[1]</pre>
+ <pre class="line after"><span class="ws">                </span>raise</pre>
+ <pre class="line after"><span class="ws">            </span>return response(environ, start_response)</pre>
+ <pre class="line after"><span class="ws">        </span>finally:</pre></div>
+ </div>
+ 
+ <li><div class="frame" id="frame-1684310389840">
+   <h4>File <cite class="filename">"C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py"</cite>,
+       line <em class="line">2528</em>,
+       in <code class="function">wsgi_app</code></h4>
+   <div class="source library"><pre class="line before"><span class="ws">        </span>ctx = self.request_context(environ)</pre>
+ <pre class="line before"><span class="ws">        </span>error: t.Optional[BaseException] = None</pre>
+ <pre class="line before"><span class="ws">        </span>try:</pre>
+ <pre class="line before"><span class="ws">            </span>try:</pre>
+ <pre class="line before"><span class="ws">                </span>ctx.push()</pre>
+ <pre class="line current"><span class="ws">                </span>response = self.full_dispatch_request()</pre>
+ <pre class="line after"><span class="ws">            </span>except Exception as e:</pre>
+ <pre class="line after"><span class="ws">                </span>error = e</pre>
+ <pre class="line after"><span class="ws">                </span>response = self.handle_exception(e)</pre>
+ <pre class="line after"><span class="ws">            </span>except:  # noqa: B001</pre>
+ <pre class="line after"><span class="ws">                </span>error = sys.exc_info()[1]</pre></div>
+ </div>
+ 
+ <li><div class="frame" id="frame-1684310391744">
+   <h4>File <cite class="filename">"C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py"</cite>,
+       line <em class="line">1825</em>,
+       in <code class="function">full_dispatch_request</code></h4>
+   <div class="source library"><pre class="line before"><span class="ws">            </span>request_started.send(self)</pre>
+ <pre class="line before"><span class="ws">            </span>rv = self.preprocess_request()</pre>
+ <pre class="line before"><span class="ws">            </span>if rv is None:</pre>
+ <pre class="line before"><span class="ws">                </span>rv = self.dispatch_request()</pre>
+ <pre class="line before"><span class="ws">        </span>except Exception as e:</pre>
+ <pre class="line current"><span class="ws">            </span>rv = self.handle_user_exception(e)</pre>
+ <pre class="line after"><span class="ws">        </span>return self.finalize_request(rv)</pre>
+ <pre class="line after"><span class="ws"></span> </pre>
+ <pre class="line after"><span class="ws">    </span>def finalize_request(</pre>
+ <pre class="line after"><span class="ws">        </span>self,</pre>
+ <pre class="line after"><span class="ws">        </span>rv: t.Union[ft.ResponseReturnValue, HTTPException],</pre></div>
+ </div>
+ 
+ <li><div class="frame" id="frame-1684310391968">
+   <h4>File <cite class="filename">"C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py"</cite>,
+       line <em class="line">1823</em>,
+       in <code class="function">full_dispatch_request</code></h4>
+   <div class="source library"><pre class="line before"><span class="ws"></span> </pre>
+ <pre class="line before"><span class="ws">        </span>try:</pre>
+ <pre class="line before"><span class="ws">            </span>request_started.send(self)</pre>
+ <pre class="line before"><span class="ws">            </span>rv = self.preprocess_request()</pre>
+ <pre class="line before"><span class="ws">            </span>if rv is None:</pre>
+ <pre class="line current"><span class="ws">                </span>rv = self.dispatch_request()</pre>
+ <pre class="line after"><span class="ws">        </span>except Exception as e:</pre>
+ <pre class="line after"><span class="ws">            </span>rv = self.handle_user_exception(e)</pre>
+ <pre class="line after"><span class="ws">        </span>return self.finalize_request(rv)</pre>
+ <pre class="line after"><span class="ws"></span> </pre>
+ <pre class="line after"><span class="ws">    </span>def finalize_request(</pre></div>
+ </div>
+ 
+ <li><div class="frame" id="frame-1684310392304">
+   <h4>File <cite class="filename">"C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py"</cite>,
+       line <em class="line">1799</em>,
+       in <code class="function">dispatch_request</code></h4>
+   <div class="source library"><pre class="line before"><span class="ws">            </span>and req.method == &#34;OPTIONS&#34;</pre>
+ <pre class="line before"><span class="ws">        </span>):</pre>
+ <pre class="line before"><span class="ws">            </span>return self.make_default_options_response()</pre>
+ <pre class="line before"><span class="ws">        </span># otherwise dispatch to the handler for that endpoint</pre>
+ <pre class="line before"><span class="ws">        </span>view_args: t.Dict[str, t.Any] = req.view_args  # type: ignore[assignment]</pre>
+ <pre class="line current"><span class="ws">        </span>return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)</pre>
+ <pre class="line after"><span class="ws"></span> </pre>
+ <pre class="line after"><span class="ws">    </span>def full_dispatch_request(self) -&gt; Response:</pre>
+ <pre class="line after"><span class="ws">        </span>&#34;&#34;&#34;Dispatches the request and on top of that performs request</pre>
+ <pre class="line after"><span class="ws">        </span>pre and postprocessing as well as HTTP exception catching and</pre>
+ <pre class="line after"><span class="ws">        </span>error handling.</pre></div>
+ </div>
+ 
+ <li><div class="frame" id="frame-1684310390064">
+   <h4>File <cite class="filename">"c:\Users\vv\Desktop\myGithub\GPT_Python_Scripts\ChatGPTAPP\chatGPTAPP.py"</cite>,
+       line <em class="line">53</em>,
+       in <code class="function">upload</code></h4>
+   <div class="source "><pre class="line before"><span class="ws"></span> </pre>
+ <pre class="line before"><span class="ws">    </span># with open(&#39;recorded_audio.wav&#39;, &#39;wb&#39;) as file:</pre>
+ <pre class="line before"><span class="ws">    </span>#     file.write(audio_data)</pre>
+ <pre class="line before"><span class="ws">    </span># return &#39;Audio recorded and saved successfully&#39;</pre>
+ <pre class="line before"><span class="ws"></span> </pre>
+ <pre class="line current"><span class="ws">    </span>file = request.files[&#39;file&#39;]</pre>
+ <pre class="line after"><span class="ws">    </span>if file:</pre>
+ <pre class="line after"><span class="ws">        </span>file.save(&#39;received.wav&#39;)</pre>
+ <pre class="line after"><span class="ws">        </span>return &#39;File uploaded successfully&#39;</pre>
+ <pre class="line after"><span class="ws">    </span>else:</pre>
+ <pre class="line after"><span class="ws">        </span>return &#39;No file uploaded&#39;</pre></div>
+ </div>
+ 
+ <li><div class="frame" id="frame-1684310392416">
+   <h4>File <cite class="filename">"C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\debughelpers.py"</cite>,
+       line <em class="line">83</em>,
+       in <code class="function">__getitem__</code></h4>
+   <div class="source library"><pre class="line before"><span class="ws">    </span>oldcls = request.files.__class__</pre>
+ <pre class="line before"><span class="ws"></span> </pre>
+ <pre class="line before"><span class="ws">    </span>class newcls(oldcls):</pre>
+ <pre class="line before"><span class="ws">        </span>def __getitem__(self, key):</pre>
+ <pre class="line before"><span class="ws">            </span>try:</pre>
+ <pre class="line current"><span class="ws">                </span>return super().__getitem__(key)</pre>
+ <pre class="line after"><span class="ws">            </span>except KeyError as e:</pre>
+ <pre class="line after"><span class="ws">                </span>if key not in request.form:</pre>
+ <pre class="line after"><span class="ws">                    </span>raise</pre>
+ <pre class="line after"><span class="ws"></span> </pre>
+ <pre class="line after"><span class="ws">                </span>raise DebugFilesKeyError(request, key).with_traceback(</pre></div>
+ </div>
+ 
+ <li><div class="frame" id="frame-1684310377968">
+   <h4>File <cite class="filename">"C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\werkzeug\datastructures.py"</cite>,
+       line <em class="line">375</em>,
+       in <code class="function">__getitem__</code></h4>
+   <div class="source library"><pre class="line before"><span class="ws"></span> </pre>
+ <pre class="line before"><span class="ws">        </span>if key in self:</pre>
+ <pre class="line before"><span class="ws">            </span>lst = dict.__getitem__(self, key)</pre>
+ <pre class="line before"><span class="ws">            </span>if len(lst) &gt; 0:</pre>
+ <pre class="line before"><span class="ws">                </span>return lst[0]</pre>
+ <pre class="line current"><span class="ws">        </span>raise exceptions.BadRequestKeyError(key)</pre>
+ <pre class="line after"><span class="ws"></span> </pre>
+ <pre class="line after"><span class="ws">    </span>def __setitem__(self, key, value):</pre>
+ <pre class="line after"><span class="ws">        </span>&#34;&#34;&#34;Like :meth:`add` but removes an existing key first.</pre>
+ <pre class="line after"><span class="ws"></span> </pre>
+ <pre class="line after"><span class="ws">        </span>:param key: the key for the value.</pre></div>
+ </div>
+ </ul>
+   <blockquote>werkzeug.exceptions.BadRequestKeyError: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+ KeyError: &#39;file&#39;
+ </blockquote>
+ </div>
+ 
+ <div class="plain">
+     <p>
+       This is the Copy/Paste friendly version of the traceback.
+     </p>
+     <textarea cols="50" rows="10" name="code" readonly>Traceback (most recent call last):
+   File &#34;C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py&#34;, line 2551, in __call__
+     return self.wsgi_app(environ, start_response)
+   File &#34;C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py&#34;, line 2531, in wsgi_app
+     response = self.handle_exception(e)
+   File &#34;C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py&#34;, line 2528, in wsgi_app
+     response = self.full_dispatch_request()
+   File &#34;C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py&#34;, line 1825, in full_dispatch_request
+     rv = self.handle_user_exception(e)
+   File &#34;C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py&#34;, line 1823, in full_dispatch_request
+     rv = self.dispatch_request()
+   File &#34;C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py&#34;, line 1799, in dispatch_request
+     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+   File &#34;c:\Users\vv\Desktop\myGithub\GPT_Python_Scripts\ChatGPTAPP\chatGPTAPP.py&#34;, line 53, in upload
+     file = request.files[&#39;file&#39;]
+   File &#34;C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\debughelpers.py&#34;, line 83, in __getitem__
+     return super().__getitem__(key)
+   File &#34;C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\werkzeug\datastructures.py&#34;, line 375, in __getitem__
+     raise exceptions.BadRequestKeyError(key)
+ werkzeug.exceptions.BadRequestKeyError: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+ KeyError: &#39;file&#39;
+ </textarea>
+ </div>
+ <div class="explanation">
+   The debugger caught an exception in your WSGI application.  You can now
+   look at the traceback which led to the error.  <span class="nojavascript">
+   If you enable JavaScript you can also use additional features such as code
+   execution (if the evalex feature is enabled), automatic pasting of the
+   exceptions and much more.</span>
+ </div>
+       <div class="footer">
+         Brought to you by <strong class="arthur">DON'T PANIC</strong>, your
+         friendly Werkzeug powered traceback interpreter.
+       </div>
+     </div>
+ 
+     <div class="pin-prompt">
+       <div class="inner">
+         <h3>Console Locked</h3>
+         <p>
+           The console is locked and needs to be unlocked by entering the PIN.
+           You can find the PIN printed out on the standard output of your
+           shell that runs the server.
+         <form>
+           <p>PIN:
+             <input type=text name=pin size=14>
+             <input type=submit name=btn value="Confirm Pin">
+         </form>
+       </div>
+     </div>
+   </body>
+ </html>

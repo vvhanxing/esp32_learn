@@ -103,6 +103,6 @@ def processImage(in_file, saveImg=True):
 
 
 if __name__ == '__main__':
-    processImage("small.png", True)
+    processImage("./SCREEN/ssd1306_128x64_i2c_2/boy.gif", True)
     # im=Image.open("foo0.bmp")
     # print ("img info:",im.format,im.size)
