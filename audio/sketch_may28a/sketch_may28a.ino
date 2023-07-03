@@ -56,6 +56,9 @@ void SPIFFSInit() {
     while (1) yield();
   }
 
+SPIFFS.remove("/audio_1257.wav"); // 移除掉已存在的file
+SPIFFS.remove("/audio_1255.wav"); // 移除掉已存在的file
+
   SPIFFS.remove(filename); // 移除掉已存在的file
   file = SPIFFS.open(filename, FILE_WRITE);
   if (!file) {
@@ -85,10 +88,10 @@ void i2sInit() {
   i2s_driver_install(I2S_PORT, &i2s_config, 0, NULL);
 
   const i2s_pin_config_t pin_config = {
-    .bck_io_num = I2S_SCK,
-    .ws_io_num = I2S_WS,
-    .data_out_num = -1,
-    .data_in_num = I2S_SD
+      .bck_io_num = 26,   // Serial Clock (SCK)
+      .ws_io_num = 25,    // Word Select (WS)
+      .data_out_num = I2S_PIN_NO_CHANGE, // not used (only for speakers)
+      .data_in_num = 33   // Serial Data (SD)
   };
 
   i2s_set_pin(I2S_PORT, &pin_config);

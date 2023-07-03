@@ -325,7 +325,7 @@ void loopScreen(){
       for (int i=0;i<pic_length;i++ ){
              drawArrayJpeg(boy2[i], boy2_size[i], 0, 0);
              if (click()){break;}
-             else delay(50);
+             else delay(5);
              
              }
              

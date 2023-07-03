@@ -19,19 +19,19 @@
 
 // 任务1
 #define TASK1_TASK_PRIO  1          // 任务优先级
-#define TASK1_STK_SIZE   1024        // 任务堆栈大小
+#define TASK1_STK_SIZE   1024*4        // 任务堆栈大小
 TaskHandle_t Tasks1_TaskHandle; // 任务句柄
 void task1(void *pvParameters); //任务函数
 
 // 任务2
 #define TASK2_TASK_PRIO  1        // 任务优先级
-#define TASK2_STK_SIZE   2048        // 任务堆栈大小
+#define TASK2_STK_SIZE   1024*4        // 任务堆栈大小
 TaskHandle_t Tasks2_TaskHandle; // 任务句柄
 void task2(void *pvParameters); //任务函数
 //
 //// 任务3
-#define TASK3_TASK_PRIO  1          // 任务优先级
-#define TASK3_STK_SIZE   1024        // 任务堆栈大小
+#define TASK3_TASK_PRIO  1         // 任务优先级
+#define TASK3_STK_SIZE   1024*4        // 任务堆栈大小
 TaskHandle_t Tasks3_TaskHandle; // 任务句柄
 void task3(void *pvParameters); //任务函数
 //
@@ -104,13 +104,9 @@ TFT_eSPI tft = TFT_eSPI();  // Invoke library, pins defined in User_Setup.h
 // More than one image array could be stored in each header file.
 #include "jpeg1.h"
 
-#include "a2.h"
-#include "b1.h"
+#include "boy2.h"
 
-#include "boy.h"
-#include "mark.h"
 
-#include "small.h"
 #include "mainPageHtml.h"
 
 //----------------------------------------------------------------------------------------------------
@@ -202,19 +198,40 @@ void getInfo(){
   Serial.println(info);
   }
 
-
-
-
-uint8_t decodedImage[12000]={0};
+uint8_t decodedImage[12500]={0};
 void handleImageUpload() {
   if (server.method() == HTTP_POST) {
+    Serial.println("post1");
     String encodedImage = server.arg("image");
-    int decoded_size = base64_decode((char*)decodedImage, (char*)encodedImage.c_str(), 12000);
+    Serial.println("post2");
+    Serial.println(encodedImage);
+    Serial.println("post3");
+    int decoded_size = base64_decode((char*)decodedImage, (char*)encodedImage.c_str(), 12500);
+    Serial.println("post4");
     //free(decodedImage);
     server.send(200, "text/plain", "Image received");
     }
   }
 
+void handleImageUpload2() {
+  if (server.method() == HTTP_POST) {
+  
+  String encodedImage = server.arg(0);
+  Serial.println(encodedImage);
+//  
+// StaticJsonDocument<64> doc;
+//  // Json格式写法，创建一个json消息
+//  char json_char_[12500];
+//  strcpy(json_char_,json.c_str());
+//  DeserializationError error = deserializeJson(doc, json_char_);
+//  Serial.println(doc["image"].as<String>()); 
+//  String encodedImage = doc["image"].as<String>();
+  int decoded_size = base64_decode((char*)decodedImage, (char*)encodedImage.c_str(), 12500);
+  
+
+    server.send(200, "text/plain", "Image received");
+    }
+  }
 
 void initServer(){
  
@@ -223,6 +240,7 @@ void initServer(){
   server.on("/putPageIndex",HTTP_POST,putPageIndex);
   server.on("/getinfo",HTTP_GET,getInfo);
   server.on("/upload_image", handleImageUpload);
+  server.on("/upload_image2", handleImageUpload2);
   server.begin();
   Serial.println("HTTP server started");
 
@@ -282,12 +300,12 @@ void loopScreen(){
       click_push_count = 1;
       if (click_once_count==0){
           if (array[0]==0){
-             tft.fillScreen(TFT_WHITE);}
+             tft.fillScreen(TFT_WHITE);
           array[0]=1;
           array[1]=0;
           array[2]=0;
           array[3]=0;
-          array[4]=0; 
+          array[4]=0; }
           int pic_length = sizeof(a5)/sizeof(a5[0]);
           screenInfo(urlInfo,30,180,4);
           for (int i=0;i<pic_length;i++ ){
@@ -302,15 +320,15 @@ void loopScreen(){
 
       if (click_once_count==1){
            if (array[1]==0){
-             tft.fillScreen(TFT_WHITE);}
+             tft.fillScreen(TFT_WHITE);
              array[0]=0;
              array[1]=1;
              array[2]=0;
              array[3]=0;
-             array[4]=0;           
+             array[4]=0;   }        
             if (decodedImage[0]!=0)
             drawArrayJpeg(decodedImage, sizeof(decodedImage), 0, 0);//http图片
-            else  drawArrayJpeg(boy[0], sizeof(boy[0]), 4, 0); // Draw a jpeg image stored in memory
+            else  drawArrayJpeg(boy2[0], boy2_size[0], 0, 0); // Draw a jpeg image stored in memory
             delay(100);
         }
 
@@ -318,39 +336,33 @@ void loopScreen(){
       if (click_once_count==2){
            if (array[2]==0){
              tft.fillScreen(TFT_WHITE);
-             //drawArrayJpeg(b1[0], b1_size[0], 0, 0);
-             }
+             
              array[0]=0;
              array[1]=0;
              array[2]=1;
              array[3]=0;  
-             array[4]=0; 
+             array[4]=0; }
 
-      int pic_length = sizeof(boy)/sizeof(boy[0]);
+      int pic_length = sizeof(boy2)/sizeof(boy2[0]);
       for (int i=0;i<pic_length;i++ ){
-             drawArrayJpeg(boy[i], sizeof(boy[i]), 0, 0);
+             drawArrayJpeg(boy2[i], boy2_size[i], 0, 0);
              if (click()){break;}
-             else delay(50);
+             else delay(5);
+             
              }
-
              
-             
+              
         }
 
       if (click_once_count==3){
           if (array[3]==0){
-             tft.fillScreen(TFT_WHITE);}
+             tft.fillScreen(TFT_WHITE);
              array[0]=0;
              array[1]=0;
              array[2]=0;
              array[3]=1;
-             array[4]=0; 
-      int pic_length = sizeof(b1)/sizeof(b1[0]);
-      for (int i=0;i<pic_length;i++ ){
-             drawArrayJpeg(b1[i], b1_size[i], 0, 0);
-             if (click()){break;}
-             else delay(50);
-             }
+             array[4]=0; }
+
           
         } 
 
@@ -358,19 +370,14 @@ void loopScreen(){
            int * size;
            if (array[4]==0){
              tft.fillScreen(TFT_BLACK);
-             //size = drawArrayJpeg(b2[0], b2_size[0], 0, 120);
-             }
+
+             
              array[0]=0;
              array[1]=0;
              array[2]=0;
              array[3]=0;  
-             array[4]=1;  
-//             int pic_length = sizeof(b2)/sizeof(b2[0]);
-//           for (int i=0;i<pic_length;i++ ){
-//             drawArrayJpeg(b2[i], b2_size[i], 0, 50);
-//             if (click()){break;}
-//             else delay(50);
-//             }
+             array[4]=1; } 
+
         }
       if (click_once_count>4 || click_once_count<0){
           click_once_count = 0;
@@ -446,7 +453,7 @@ void task3(void *pvParameters)
           }
 
         
-        vTaskDelay(10/portTICK_PERIOD_MS); //等待1s
+        vTaskDelay(10/portTICK_PERIOD_MS); //等待0.1s
     }
 }
 

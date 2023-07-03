@@ -12,9 +12,11 @@ def getGPT():
     url = "http://192.168.43.185:5000/openai/"
 
     headers = {"Content-Type":"application/json"}
-    response = requests.post(url = url,headers=headers,json = {"content":["请简单介绍一下python"]})
+    response = requests.post(url = url,headers=headers,json = {"content":["please tell me something about ChatGPT"]})
     print(response.text)
     print(response.status_code)
+
+
 
 if __name__ == '__main__':
     getGPT()
