@@ -1,5 +1,6 @@
 from flask import Flask, send_file, Response, send_from_directory
 from flask import jsonify,request,render_template,url_for
+import postPIC
 import io
 import re
 import json
@@ -17,10 +18,25 @@ audio_data = b""
 J ={}
 app = Flask(__name__)
 
+
 @app.route("/",methods = ["GET","POST"])
 def chat():
 
     return render_template("index.html")
+
+@app.route("/uplodapic",methods = ["GET","POST"])
+def uplodapic():
+    
+    return render_template("upload2.html")
+
+@app.route("/getapic",methods = ["GET","POST"])
+def getapic():
+    image = request.files['image']
+    image.save('uploaded_image.jpg')  # 保存上传的图片，可以根据需要修改保存路径和文件名
+   
+    postPIC.postpic_fun('uploaded_image.jpg')
+    return "图片上传成功！"
+
 
 @app.route("/info",methods = ["GET","POST"])
 def info():

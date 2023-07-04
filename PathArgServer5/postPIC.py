@@ -10,7 +10,7 @@ data = {
 }
 
 for i in range(1):
-    url = 'http://192.168.43.247/info'
+    url = 'http://192.168.43.252/info'
     headers = {"Content-Type": "application/json"}
     #dic["info"]=  " "*i+"""ChatGPT4 is great,I love openAI !"""
     response = requests.post(url, json=data,headers= headers)
@@ -122,22 +122,17 @@ for pic_name in os.listdir(resize_pic_dir):
     #img = cv2.imread(resize_pic_dir+pic_name)
  
     name = resize_pic_dir+pic_name
-    # 打开图片文件，读取为字节流
-    # with open('small.jpg', 'rb') as f:
-    #     img_data = f.read()
-    #     print(img_data)
+
     img_data = processImage(name)
     
     # 将字节流转换为Base64编码的字符串
     print(img_data)
-    print("--------------------")
+
+
     img_str = base64.b64encode(img_data)
     data = {'image': img_str}
-    print(data)
-    print(len(img_str))
     # 构造POST请求，发送图片字符串到ESP32的IP地址
-    url = 'http://192.168.43.247/upload_image'
-
+    url = 'http://192.168.43.252/upload_image'
     response = requests.post(url, data=data)
 
     # 输出ESP32的响应信息

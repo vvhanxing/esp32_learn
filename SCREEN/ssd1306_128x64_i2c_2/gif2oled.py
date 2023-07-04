@@ -47,7 +47,7 @@ def processImage(in_file, saveImg=True):
                 # 缩放图像，
                 width = new_im.size[0]  # 获取原始图像宽度
                 height = new_im.size[1]  # 获取原始图像高度
-                new_width = 10  # 等比例缩放后的图像高度，根据实际需要调整
+                new_width = 120  # 等比例缩放后的图像高度，根据实际需要调整
                 # print(width, " ", height)
                 if width > new_width:
                     ratio = round(new_width / width, 3)  # 缩放系数
@@ -103,6 +103,8 @@ def processImage(in_file, saveImg=True):
 
 
 if __name__ == '__main__':
-    processImage("./SCREEN/ssd1306_128x64_i2c_2/boy.gif", True)
+    for i in range(1,6):
+        print("============","icon"+str(i)+".jpg")
+        processImage("icon"+str(i)+".jpg", True)
     # im=Image.open("foo0.bmp")
     # print ("img info:",im.format,im.size)

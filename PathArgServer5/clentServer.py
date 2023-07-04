@@ -124,4 +124,4 @@ if __name__ == '__main__':
     # data  =request.data
     # print(data)
     # play(pathname)
-    app.run(host="192.168.43.185",port=5001 ,debug=True)
+    app.run(host="192.168.0.100",port=5001 ,debug=True)

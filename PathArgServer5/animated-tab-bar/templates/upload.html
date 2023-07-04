@@ -3,7 +3,7 @@
     <label for="inputfile" style="color: #ffffff;">请上传公会头像</label>
     <input type="file" id="inputfile" onchange="uploadImage()">
 </div>
-<button type="submit" class="btn btn-default" id="btn" onclick="submitImg()">提交</button>
+<button type="submit" class="btn btn-default" id="btn" onclick="">提交</button>
 </form>
 <script>
 
@@ -16,7 +16,7 @@ function uploadImage() {
       var reader = new FileReader();
       reader.onload = function(e) {
         var imageBase64 = e.target.result;
-        imageBase64 = imageBase64.split("base64,")[1]
+        imageBase64 = imageBase64.split(",")[1]
         //imageBase64 ="/9j/4AAQ111/9j/4AAQ111/9j/4AAQ111/9j/4AAQ11100000000000000000001314"
         putJson(imageBase64);
       };
@@ -31,7 +31,7 @@ function putJson(imgdata){
   
   
    
-  var url = "http://192.168.43.247/upload_image2"
+  var url = "http://192.168.43.252/upload_image"
   
   var request = new XMLHttpRequest();
   
