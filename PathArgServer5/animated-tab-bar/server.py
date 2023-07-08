@@ -24,7 +24,7 @@ def chat():
 
     return render_template("index.html")
 
-@app.route("/uplodapic",methods = ["GET","POST"])
+@app.route("/uploadpic",methods = ["GET","POST"])
 def uplodapic():
     
     return render_template("upload2.html")
@@ -37,6 +37,12 @@ def getapic():
     postPIC.postpic_fun('uploaded_image.jpg')
     return "图片上传成功！"
 
+@app.route("/getapic2",methods = ["GET","POST"])
+def getapic2():
+    print( request.get_json())
+  
+    data = postPIC.postpic_fun('uploaded_image.jpg')
+    return data
 
 @app.route("/info",methods = ["GET","POST"])
 def info():

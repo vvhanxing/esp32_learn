@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Uploader</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script>
+    function saveBase64ImageToFile(base64String, filename) {
+      var byteCharacters = atob(base64String);
+      console.log("----------------------byteCharacters");
+      console.log(byteCharacters);
+      var byteNumbers = new Array(byteCharacters.length);
+      for (var i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+
+      }
+      var byteArray = new Uint8Array(byteNumbers);
+      
+      var blob = new Blob([byteArray], { type: 'image/jpeg' });
+      console.log("----------------------byteArray");
+      console.log(byteArray);
+      saveAs(blob, filename);
+    }
+
+    function handleFileUpload() {
+      var fileInput = document.getElementById('image-input');
+      var file = fileInput.files[0];
+      
+      var reader = new FileReader();
+      reader.onload = function(event) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          var context = canvas.getContext('2d');
+          context.drawImage(img, 0, 0, img.width, img.height);
+          console.log("====================================imgData")
+          var imgData = canvas.toDataURL('image/jpeg').split(',')[1];
+          console.log(imgData);
+          console.log("====================================imgStr")
+          var imgStr = btoa(imgData);
+          console.log(imgStr);
+          saveBase64ImageToFile(imgStr, file.name);
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  </script>
+</head>
+<body>
+  <h1>Image Uploader</h1>
+  <input type="file" id="image-input">
+  <button onclick="handleFileUpload()">Upload</button>
+</body>
+</html>

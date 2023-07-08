@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Uploader</title>
+  <script>
+    function byteArrayToBase64(byteArray) {
+      var binary = '';
+      for (var i = 0; i < byteArray.length; i++) {
+        binary += String.fromCharCode(byteArray[i]);
+      }
+      console.log(binary);
+      return btoa(binary);
+    }
+
+    function handleFileUpload() {
+      var fileInput = document.getElementById('image-input');
+      var file = fileInput.files[0];
+      
+      var reader = new FileReader();
+      reader.onload = function(event) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          var context = canvas.getContext('2d');
+          context.drawImage(img, 0, 0, img.width, img.height);
+          var imageData = context.getImageData(0, 0, img.width, img.height);
+          var byteArray = imageData.data;
+          var base64String = byteArrayToBase64(byteArray);
+          console.log(base64String);
+          // 这里可以使用Base64编码的字符串进行进一步的处理或发送到服务器
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  </script>
+</head>
+<body>
+  <h1>Image Uploader</h1>
+  <input type="file" id="image-input">
+  <button onclick="handleFileUpload()">Upload</button>
+</body>
+</html>

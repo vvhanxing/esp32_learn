@@ -103,8 +103,8 @@ def processImage(in_file, saveImg=True):
 
 
 if __name__ == '__main__':
-    for i in range(1,6):
-        print("============","icon"+str(i)+".jpg")
-        processImage("icon"+str(i)+".jpg", True)
+    for i in range(1,5):
+        print("============","icon_1_"+str(i)+".jpg")
+        processImage("icon_1_"+str(i)+".jpg", True)
     # im=Image.open("foo0.bmp")
     # print ("img info:",im.format,im.size)

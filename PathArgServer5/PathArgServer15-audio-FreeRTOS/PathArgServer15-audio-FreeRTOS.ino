@@ -112,6 +112,7 @@ TFT_eSPI tft = TFT_eSPI();  // Invoke library, pins defined in User_Setup.h
 #include "icon_1_1.h"
 #include "icon_1_2.h"
 #include "icon_1_3.h"
+#include "icon_1_4.h"
 
 #include "mainPageHtml.h"
 
@@ -119,7 +120,7 @@ TFT_eSPI tft = TFT_eSPI();  // Invoke library, pins defined in User_Setup.h
 
 bool click();
 //----------------------------------------------------------------------------------------------------
-int array [] ={0,0,0,0,0};
+int array [] ={0,0,0,0,0,0};
 int click_push_count = 0;
 int click_once_count = 0;
 int* drawArrayJpeg(const uint8_t arrayname[], uint32_t array_size, int xpos, int ypos) ;
@@ -204,16 +205,17 @@ void getInfo(){
   Serial.println(info);
   }
 
-uint8_t decodedImage[20000]={0};
+uint8_t decodedImage[16384]={0};
 void handleImageUpload() {
   if (server.method() == HTTP_POST) {
     Serial.println("post1");
     String encodedImage = server.arg("image");
     Serial.println("post2");
-    //Serial.println(encodedImage);
+    
     Serial.println("post3");
-    int decoded_size = base64_decode((char*)decodedImage, (char*)encodedImage.c_str(), 20000);
+    int decoded_size = base64_decode((char*)decodedImage, (char*)encodedImage.c_str(), 16384);
     Serial.println("post4");
+    //Serial.println(encodedImage);
     //free(decodedImage);
     server.send(200, "text/plain", "Image received");
     }
@@ -253,13 +255,39 @@ void initServer(){
 
   }
 
+void getEncodedImage(){
+  HTTPClient http;
+  http.begin("http://114.55.178.110/getapic2"); // 替换为服务器的URL
+  http.addHeader("Content-Type", "application/json");
+
+  // JSON 数据
+  String jsonPayload = "{\"key1\":\"value1\",\"key2\":\"value2\"}";
+
+  // 发送POST请求
+  int httpResponseCode = http.POST(jsonPayload);
+  String response = "";
+  if (httpResponseCode > 0) {
+    response = http.getString();
+    Serial.println(httpResponseCode);
+    Serial.println(response);
+  } else {
+    Serial.print("Error code: ");
+    Serial.println(httpResponseCode);
+    response = "error";
+  }
+
+  http.end();
+  int decoded_size = base64_decode((char*)decodedImage, (char*)response.c_str(), 16384);
+  
+
+}
 
 void initURLaudio(){
 
   audioLogger = &Serial;
   file = new AudioFileSourceICYStream(URL);
   file->RegisterMetadataCB(MDCallback, (void*)"ICY");
-  buff = new AudioFileSourceBuffer(file, 2048);
+  buff = new AudioFileSourceBuffer(file, 1024*2);
   buff->RegisterStatusCB(StatusCallback, (void*)"buffer");
   out = new AudioOutputI2SNoDAC();
   mp3 = new AudioGeneratorMP3();
@@ -312,7 +340,8 @@ void loopScreen(){
           array[1]=0;
           array[2]=0;
           array[3]=0;
-          array[4]=0; }
+          array[4]=0;
+          array[5]=0;}
           int pic_length = sizeof(a5)/sizeof(a5[0]);
           screenInfo(urlInfo,30,180,4);
           for (int i=0;i<pic_length;i++ ){
@@ -332,10 +361,13 @@ void loopScreen(){
              array[1]=1;
              array[2]=0;
              array[3]=0;
-             array[4]=0;   }        
+             array[4]=0;
+             array[5]=0;
+             getEncodedImage();  } 
+                 
             if (decodedImage[0]!=0)
             drawArrayJpeg(decodedImage, sizeof(decodedImage), 0, 0);//http图片
-            else  drawArrayJpeg(icon_1_2[0], icon_1_2_size[0], 60, 60); // Draw a jpeg image stored in memory
+            else  drawArrayJpeg(icon_1_1[0], icon_1_1_size[0], 60, 60); // Draw a jpeg image stored in memory
             delay(100);
         }
 
@@ -348,7 +380,8 @@ void loopScreen(){
              array[1]=0;
              array[2]=1;
              array[3]=0;  
-             array[4]=0; }
+             array[4]=0;
+             array[5]=0;}
 
       int pic_length = sizeof(plane)/sizeof(plane[0]);
       for (int i=0;i<pic_length;i++ ){
@@ -368,8 +401,9 @@ void loopScreen(){
              array[1]=0;
              array[2]=0;
              array[3]=1;
-             array[4]=0; }
-             drawArrayJpeg(icon_1_1[0], icon_1_1_size[0], 60, 60); // Draw a jpeg image stored in memory
+             array[4]=0; 
+             array[5]=0;}
+             drawArrayJpeg(icon_1_2[0], icon_1_2_size[0], 60, 60); // Draw a jpeg image stored in memory
 
           
         } 
@@ -384,11 +418,31 @@ void loopScreen(){
              array[1]=0;
              array[2]=0;
              array[3]=0;  
-             array[4]=1; } 
+             array[4]=1;
+             array[5]=0;} 
              drawArrayJpeg(icon_1_3[0], icon_1_3_size[0], 60, 60); // Draw a jpeg image stored in memory
 
         }
-      if (click_once_count>4 || click_once_count<0){
+
+if (click_once_count==5){
+           int * size;
+           if (array[5]==0){
+             tft.fillScreen(TFT_WHITE);
+
+             
+             array[0]=0;
+             array[1]=0;
+             array[2]=0;
+             array[3]=0;  
+             array[4]=0;
+             array[5]=1;} 
+             drawArrayJpeg(icon_1_4[0], icon_1_4_size[0], 60, 60); // Draw a jpeg image stored in memory
+
+        }
+
+
+        
+      if (click_once_count>5 || click_once_count<0){
           click_once_count = 0;
         }
     }
