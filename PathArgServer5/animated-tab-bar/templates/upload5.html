@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Upload</title>
+</head>
+<body>
+  <input type="file" id="fileInput" accept="image/*">
+  <button onclick="uploadImage()">Upload</button>
+
+  <script>
+    function uploadImage() {
+      var fileInput = document.getElementById('fileInput');
+      var file = fileInput.files[0];
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var imageData = e.target.result.split(',')[1]; // 获取图像数据
+        console.log(imageData);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://192.168.43.153/upload_image', true); // 替换为ESP32的IP地址和端口
+                         //http://192.168.43.153/upload_image
+
+
+        //xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        var formData = new FormData();
+        formData.append('image', imageData); // 将图像数据添加到FormData对象
+        
+        xhr.send(formData);
+
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log('Image uploaded successfully.');
+          }
+        };
+
+
+      };
+
+      reader.readAsDataURL(file);
+    }
+  </script>
+</body>
+</html>
+
+
+

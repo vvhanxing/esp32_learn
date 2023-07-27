@@ -61,6 +61,7 @@ def processImage(in_file, saveImg=True,resaize = False):
             
         # 获取图像字节流，转16进制格式
         img_byte = BytesIO()  # 获取字节流
+        print(img_byte)
         new_im.save(img_byte, format='jpeg')
         print("============================")
         #print(img_byte.getvalue())
@@ -75,6 +76,7 @@ def postpic_fun(pic_name):
         name = pic_name
 
         img_data = processImage(name,resaize = True)
+        #print(img_data)
         
         # 将字节流转换为Base64编码的字符串
         #print(img_data)
@@ -85,7 +87,7 @@ def postpic_fun(pic_name):
         data = {'image': img_str}
         # 构造POST请求，发送图片字符串到ESP32的IP地址
         try :
-            url = 'http://192.168.43.252/upload_image'
+            url = 'http://192.168.43.153/upload_image'
             response = requests.post(url, data=data)
                     # 输出ESP32的响应信息
             print(response.text)

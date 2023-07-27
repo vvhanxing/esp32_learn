@@ -8,15 +8,41 @@
   <h1>上传图片</h1>
   <input type="file" id="fileInput">
   <button onclick="uploadImage()">上传</button>
+  <img id="uploadedImage" alt="Uploaded Image" />
 
   <script>
 
-
-    
+    function displayImage(base64) {
+        const imageElement = document.getElementById("uploadedImage");
+        imageElement.src = "data:image/jpeg;base64," + base64;
+      }
+        
     function uploadImage() {
+
+
       var fileInput = document.getElementById('fileInput');
       var file = fileInput.files[0];
-      
+
+      if (file) {
+        var reader = new FileReader();
+        
+
+        reader.onload = function() {
+          var arrayBuffer = reader.result; // 读取文件内容为数组缓冲区
+          var u8 = new Uint8Array(arrayBuffer);
+          console.log(u8);
+          var base64 = btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer))); // 将数组缓冲区编码为 base64 字符串
+          console.log(base64);
+          // 发送 base64 数据到服务器
+          
+          displayImage(base64);
+        };
+
+        reader.readAsArrayBuffer(file); // 读取文件内容
+      }
+
+
+
       var formData = new FormData();
       formData.append('image', file);
 
@@ -24,13 +50,19 @@
       xhr.open('POST', 'http://192.168.43.185:5000/getapic', true);
       xhr.onload = function() {
         if (xhr.status === 200) {
-          alert('图片上传成功！');
+          console.log('图片上传成功！');
         } else {
-          alert('图片上传失败！');
+          console.log('图片上传失败！');
         }
       };
       xhr.send(formData);
     }
+
+
+
+
+
+
   </script>
 </body>
 </html>

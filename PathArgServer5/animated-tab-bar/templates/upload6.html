@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Upload</title>
+</head>
+<body>
+
+  <form id="uploadForm">
+    <input type="file" id="imageInput" accept="image/*">
+    <input type="submit" value="Upload">
+  </form>
+  <img id="uploadedImage" alt="Uploaded Image" />
+
+  <script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.5/base64.min.js"></script>
+  <script>
+    
+
+
+  document.getElementById('uploadForm').addEventListener('submit', function(event) {
+  event.preventDefault(); // 阻止表单默认提交行为
+
+  var fileInput = document.getElementById('imageInput');
+  var file = fileInput.files[0]; // 获取用户选择的文件
+
+  if (file) {
+    var reader = new FileReader();
+    
+
+    reader.onload = function() {
+      var arrayBuffer = reader.result; // 读取文件内容为数组缓冲区
+      var u8 = new Uint8Array(arrayBuffer);
+      console.log(u8);
+      var base64 = btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer))); // 将数组缓冲区编码为 base64 字符串
+      console.log(base64);
+      // 发送 base64 数据到服务器
+      uploadImage(base64);
+      displayImage(base64);
+    };
+
+    reader.readAsArrayBuffer(file); // 读取文件内容
+    
+
+  }
+});
+
+
+function displayImage(base64) {
+    const imageElement = document.getElementById("uploadedImage");
+    imageElement.src = "data:image/jpeg;base64," + base64;
+  }
+
+function uploadImage(base64) {
+  // 创建 XMLHttpRequest 对象
+  var xhr = new XMLHttpRequest();
+  
+  // 设置请求方法、URL 和异步标志
+  xhr.open('POST', 'http://192.168.43.153/upload_image', true);
+  
+  // 设置请求头
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  
+  // 设置请求完成时的回调函数
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      // 上传成功
+      console.log('Image uploaded successfully!');
+    } else {
+      // 上传失败
+      console.error('Image upload failed. Error code:', xhr.status);
+    }
+  };
+  
+  // 构建请求体数据
+  var formData = 'image=' + encodeURIComponent(base64);
+  
+  // 发送请求
+  xhr.send(formData);
+}
+
+
+
+
+
+
+
+  </script>
+</body>
+</html>
+
+
+

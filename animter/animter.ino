@@ -25,11 +25,10 @@ TFT_eSPI tft = TFT_eSPI();
 
 // Include the sketch header file that contains the image stored as an array of bytes
 // More than one image array could be stored in each header file.
-#include "icon1.h"
-#include "icon2.h"
-#include "icon3.h"
-#include "icon4.h"
-#include "icon5.h"
+#include "icon_1_1.h"
+#include "icon_1_2.h"
+#include "icon_1_3.h"
+#include "icon_1_4.h"
 
 // Count how many times the image is drawn for test purposes
 uint32_t icount = 0;
@@ -44,7 +43,7 @@ void setup() {
   tft.begin();
   
   tft.setRotation(0);  // portrait
-  tft.fillScreen(TFT_BLACK);
+  tft.fillScreen(TFT_WHITE);
 }
 
 //####################################################################################################
@@ -54,36 +53,22 @@ void loop() {
 
 
   
+int speed = int(8);
 
-
-for (int i=0;i<=240;i++){
-  drawArrayJpeg(icon1_0, sizeof(icon1_0), 60+i, 60); // Draw a jpeg image stored in memory at x,y
-  delay(1);
-//  drawArrayJpeg(icon2_0, sizeof(icon2_0), 60-240+i, 60); // Draw a jpeg image stored in memory
-//  delay(1);
-//  drawArrayJpeg(icon3_0, sizeof(icon3_0), 60-240*2+i, 60); // Draw a jpeg image stored in memory
-//  delay(1);
-//  drawArrayJpeg(icon4_0, sizeof(icon4_0), 60-240*3+i, 60); // Draw a jpeg image stored in memory
-//  delay(1);
-//  drawArrayJpeg(icon5_0, sizeof(icon5_0), 60-240*4+i, 60); // Draw a jpeg image stored in memory
-//  delay(1);
-  //Serial.print(i);
+for (int i=0;i<=int(3*240/speed);i++){
+  drawArrayJpeg(icon_1_1_0, icon_1_1_size[0], 60+i*speed, 60); // Draw a jpeg image stored in memory at x,y
+  delay(2);
+  drawArrayJpeg(icon_1_2_0, icon_1_2_size[0], 60-240+i*speed, 60); // Draw a jpeg image stored in memory
+  delay(2);
+  drawArrayJpeg(icon_1_3_0, icon_1_3_size[0], 60-240*2+i*speed, 60); // Draw a jpeg image stored in memory
+  delay(2);
+  drawArrayJpeg(icon_1_4_0, icon_1_4_size[0], 60-240*3+i*speed, 60); // Draw a jpeg image stored in memory
+  //if (i*speed%240==0) tft.fillScreen(TFT_WHITE);
+  
   
   }
-for (int i=0;i<=240;i++){
-//  drawArrayJpeg(icon1_0, sizeof(icon1_0), 60+i, 60); // Draw a jpeg image stored in memory at x,y
-//  delay(1);
-  drawArrayJpeg(icon2_0, sizeof(icon2_0), 60+i, 60); // Draw a jpeg image stored in memory
-  delay(1);
-//  drawArrayJpeg(icon3_0, sizeof(icon3_0), 60-240*2+i, 60); // Draw a jpeg image stored in memory
-//  delay(1);
-//  drawArrayJpeg(icon4_0, sizeof(icon4_0), 60-240*3+i, 60); // Draw a jpeg image stored in memory
-//  delay(1);
-//  drawArrayJpeg(icon5_0, sizeof(icon5_0), 60-240*4+i, 60); // Draw a jpeg image stored in memory
-//  delay(1);
-  //Serial.print(i);
+
   
-  }
   
 }
 

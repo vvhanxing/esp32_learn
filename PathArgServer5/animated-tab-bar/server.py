@@ -29,6 +29,12 @@ def uplodapic():
     
     return render_template("upload2.html")
 
+@app.route("/uploadpic5",methods = ["GET","POST"])
+def uplodapic5():
+    
+    return render_template("upload5.html")
+
+
 @app.route("/getapic",methods = ["GET","POST"])
 def getapic():
     image = request.files['image']
