@@ -146,10 +146,6 @@ void runOS(){
           array[4]=0;
           array[5]=0;
           
-          for (int t=0;t<20;t++)
-          drawArrayJpeg(icon1a[0], icon1a_size[0], t-10, 120-50); 
-          
-          
           }
 
           if(clickB()){
@@ -182,15 +178,14 @@ void runOS(){
                   array_0[0]=0;
                   renderPage(0);
                   
-                  for (int t=0;t<20;t++){
-                      drawArrayJpeg(icon1a[0], icon1a_size[0], t-10, 120-50); }
+                  
                       break;}
                   
 
                   if(clickB()){
-                  clickB_push_count = clickB_push_count+1;
-                  if (clickB_push_count==2){
-                      clickB_once_count +=1;
+                    clickB_push_count = clickB_push_count+1;
+                    if (clickB_push_count==2){
+                        clickB_once_count +=1;
                       break;}}
 
                       
@@ -224,8 +219,7 @@ void runOS(){
                   if (clickC()){
                   clickB_once_count = 0;
                   renderPage(0);
-                  for (int t=0;t<20;t++){
-                      drawArrayJpeg(icon1a[0], icon1a_size[0], t-10, 120-50); }
+                  
                       break;}
 
                   if(clickB()){
@@ -265,8 +259,7 @@ void runOS(){
                   if (clickC()){
                   clickB_once_count = 0;
                   renderPage(0);
-                  for (int t=0;t<20;t++){
-                      drawArrayJpeg(icon1a[0], icon1a_size[0], t-10, 120-50); }
+                  
                       break;}
 
                   if(clickB()){
@@ -358,8 +351,7 @@ void runOS(){
              array[3]=0;
              array[4]=0;
              array[5]=0;
-          for (int t=0;t<20;t++)
-          drawArrayJpeg(icon2a[0], icon2a_size[0], t-10, 120-50); 
+         
                } 
                  
 //            if (decodedImage[0]!=0)
@@ -379,8 +371,8 @@ void runOS(){
              array[3]=0;  
              array[4]=0;
              array[5]=0;
-          for (int t=0;t<20;t++)
-          drawArrayJpeg(icon3a[0], icon3a_size[0], t-10, 120-50); 
+
+          
              
              }
 
@@ -404,8 +396,8 @@ void runOS(){
              array[3]=1;
              array[4]=0; 
              array[5]=0;
-          for (int t=0;t<20;t++)
-          drawArrayJpeg(icon4a[0], icon4a_size[0], t-10, 120-50); 
+
+          
              
              
              }
@@ -426,8 +418,9 @@ void runOS(){
              array[3]=0;  
              array[4]=1;
              array[5]=0;
-          for (int t=0;t<20;t++)
-          drawArrayJpeg(icon5a[0], icon5a_size[0], t-10, 120-50); 
+
+
+         
              
              } 
             // drawArrayJpeg(icon_1_3[0], icon_1_3_size[0], 60, 60); // Draw a jpeg image stored in memory
@@ -446,8 +439,8 @@ void runOS(){
              array[3]=0;  
              array[4]=0;
              array[5]=1;
-          for (int t=0;t<20;t++)
-          drawArrayJpeg(icon6a[0], icon6a_size[0], t-10, 120-50); 
+
+
              
              
              } 
@@ -480,15 +473,15 @@ void runOS(){
 
 void renderPage(int index){
  //tft.fillScreen(TFT_WHITE);
-  tft.fillRect(0, 0 , 120 , 240, TFT_WHITE);
- tft.fillRect(120, 0 , 240 , 240, YELLOW);
+ tft.fillRect(0, 0 , 120 , 240, TFT_WHITE);
+ tft.fillRect(120, 0 , 120 , 240, YELLOW);
 
-tft.fillRect(225, 40 , 2 , 190, TFT_WHITE);//bar
-tft.fillRect(225, 40 , 8 , 20, TFT_WHITE);//bar
+//tft.fillRect(225, 40 , 2 , 190, TFT_WHITE);//bar
+//tft.fillRect(225-8, 40 , 8 , 20, TFT_WHITE);//bar
               //x  y  dx  dy 
 
  
- String page[] = {"Video ","Music ","Game ","Image ","MSG ","Setting "};
+ String page[] = {"Video.","Music.","Game.","Image.","MSG.","Setting."};
 
 
         tft.setFreeFont(FF23);                 // Select the font
@@ -498,14 +491,22 @@ tft.fillRect(225, 40 , 8 , 20, TFT_WHITE);//bar
   
   bool txt_ani = true;
   for (int i = 0;i<6;i++){
-    if (i==index)
+    if (i!=index)
+      {
+          tft.setFreeFont(FF21);                 // Select the font
+           tft.setTextColor(TFT_WHITE, YELLOW);
+        tft.drawString(page[i],   2*w/3-5, 35*i +40, GFXFF);
+      
+      }
+    else
       {
         tft.setFreeFont(FF22);                 // Select the font
         tft.setTextColor(TFT_WHITE, YELLOW);
         
         if (txt_ani==true){
-        for (int j =0;j<30;j++)
-        tft.drawString(page[i],-j+ 2*w/3-5, 35*i +40, GFXFF);
+        for (int j =0;j<30;j++){
+
+        tft.drawString(page[i],-j+ 2*w/3-5, 35*i +40, GFXFF);}
         
       
         txt_ani = false;
@@ -513,19 +514,35 @@ tft.fillRect(225, 40 , 8 , 20, TFT_WHITE);//bar
         
       }
       
-    else
-      {
-          tft.setFreeFont(FF21);                 // Select the font
-           tft.setTextColor(TFT_WHITE, YELLOW);
-        tft.drawString(page[i],   2*w/3-5, 35*i +40, GFXFF);
-      
-      }
+
       
     //tft.fillRect(0, 40*index-20,    20,  40*index+20, TFT_BLACK); //20-60   60-100  100-140
     
       
     
     }
+
+
+
+
+          if(index==0){
+          for (int t=0;t<20;t++)
+          drawArrayJpeg(icon1a[0], icon1a_size[0], t-10, 120-50); }
+          if(index==1){
+          for (int t=0;t<20;t++)
+          drawArrayJpeg(icon2a[0], icon2a_size[0], t-10, 120-50); }
+          if(index==2){
+          for (int t=0;t<20;t++)
+          drawArrayJpeg(icon3a[0], icon3a_size[0], t-10, 120-50); }
+          if(index==3){   
+          for (int t=0;t<20;t++)
+          drawArrayJpeg(icon4a[0], icon4a_size[0], t-10, 120-50); }
+          if(index==4){   
+          for (int t=0;t<20;t++)
+          drawArrayJpeg(icon5a[0], icon5a_size[0], t-10, 120-50); }
+          if(index==5){   
+          for (int t=0;t<20;t++)
+          drawArrayJpeg(icon6a[0], icon6a_size[0], t-10, 120-50); }
 
 
 //
