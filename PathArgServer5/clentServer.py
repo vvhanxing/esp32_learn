@@ -99,7 +99,7 @@ def talk():
     print('record ready...')
     pathname=record()
     print(pathname)
-    url = 'http://192.168.43.185:5000/upload'
+    url = 'http://192.168.43.153:5000/upload'
     response = send_wav_file(url,pathname)
     print('record over!') 
 

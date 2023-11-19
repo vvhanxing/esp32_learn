@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+</head>
+<body>
+    <h1>Image Upload</h1>
+    
+    <form id="imageForm" enctype="multipart/form-data">
+        <input type="file" id="imageInput" accept="image/*">
+        <button type="button" onclick="uploadImage()">Upload Image</button>
+    </form>
+
+    <script>
+        function uploadImage() {
+            var input = document.getElementById('imageInput');
+            var file = input.files[0];
+
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var imgData = e.target.result.split(',')[1]; // Extract base64 data
+                    sendToServer(imgData);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function sendToServer(imgData) {
+            var xhr = new XMLHttpRequest();
+            var url = 'http://192.168.43.153/upload_image'; // Update with your ESP32 IP
+
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    console.log(xhr.responseText); // Output ESP32 response
+                }
+            };
+            console.log(imgData);
+            var data = {Image:imgData} // encodeURIComponent(imgData);
+            //console.log(data);
+            xhr.send(data);
+        }
+    </script>
+</body>
+</html>
