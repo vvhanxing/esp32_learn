@@ -95,7 +95,7 @@ def postpic_fun(pic_name):
         except requests.exceptions.ConnectionError:
 
         # 输出ESP32的响应信息
-            print(response.text)
+            #print(response.text)
             
             return img_str
   
