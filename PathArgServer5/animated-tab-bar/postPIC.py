@@ -89,7 +89,6 @@ def postpic_fun(pic_name):
         try :
             url = 'http://192.168.43.153/upload_image'
             response = requests.post(url, data=data)
-                    # 输出ESP32的响应信息
             print(response.text)
             return img_str
         except requests.exceptions.ConnectionError:

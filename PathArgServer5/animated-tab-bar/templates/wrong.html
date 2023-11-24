@@ -1,236 +1,87 @@
- <html lang=en>
-   <head>
-     <title>werkzeug.exceptions.BadRequestKeyError: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
- KeyError: 'file'
-  // Werkzeug Debugger</title>
-     <link rel="stylesheet" href="?__debugger__=yes&amp;cmd=resource&amp;f=style.css">
-     <link rel="shortcut icon"
-         href="?__debugger__=yes&amp;cmd=resource&amp;f=console.png">
-     <script src="?__debugger__=yes&amp;cmd=resource&amp;f=debugger.js"></script>
-     <script>
-       var CONSOLE_MODE = false,
-           EVALEX = true,
-           EVALEX_TRUSTED = false,
-           SECRET = "IzfOvh9Mt9aUzqSDjgyR";
-     </script>
-   </head>
-   <body style="background-color: #fff">
-     <div class="debugger">
- <h1>BadRequestKeyError</h1>
- <div class="detail">
-   <p class="errormsg">werkzeug.exceptions.BadRequestKeyError: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
- KeyError: &#39;file&#39;
- </p>
- </div>
- <h2 class="traceback">Traceback <em>(most recent call last)</em></h2>
- <div class="traceback">
-   <h3></h3>
-   <ul><li><div class="frame" id="frame-1684310391856">
-   <h4>File <cite class="filename">"C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py"</cite>,
-       line <em class="line">2551</em>,
-       in <code class="function">__call__</code></h4>
-   <div class="source library"><pre class="line before"><span class="ws">    </span>def __call__(self, environ: dict, start_response: t.Callable) -&gt; t.Any:</pre>
- <pre class="line before"><span class="ws">        </span>&#34;&#34;&#34;The WSGI server calls the Flask application object as the</pre>
- <pre class="line before"><span class="ws">        </span>WSGI application. This calls :meth:`wsgi_app`, which can be</pre>
- <pre class="line before"><span class="ws">        </span>wrapped to apply middleware.</pre>
- <pre class="line before"><span class="ws">        </span>&#34;&#34;&#34;</pre>
- <pre class="line current"><span class="ws">        </span>return self.wsgi_app(environ, start_response)</pre></div>
- </div>
- 
- <li><div class="frame" id="frame-1684310392080">
-   <h4>File <cite class="filename">"C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py"</cite>,
-       line <em class="line">2531</em>,
-       in <code class="function">wsgi_app</code></h4>
-   <div class="source library"><pre class="line before"><span class="ws">            </span>try:</pre>
- <pre class="line before"><span class="ws">                </span>ctx.push()</pre>
- <pre class="line before"><span class="ws">                </span>response = self.full_dispatch_request()</pre>
- <pre class="line before"><span class="ws">            </span>except Exception as e:</pre>
- <pre class="line before"><span class="ws">                </span>error = e</pre>
- <pre class="line current"><span class="ws">                </span>response = self.handle_exception(e)</pre>
- <pre class="line after"><span class="ws">            </span>except:  # noqa: B001</pre>
- <pre class="line after"><span class="ws">                </span>error = sys.exc_info()[1]</pre>
- <pre class="line after"><span class="ws">                </span>raise</pre>
- <pre class="line after"><span class="ws">            </span>return response(environ, start_response)</pre>
- <pre class="line after"><span class="ws">        </span>finally:</pre></div>
- </div>
- 
- <li><div class="frame" id="frame-1684310389840">
-   <h4>File <cite class="filename">"C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py"</cite>,
-       line <em class="line">2528</em>,
-       in <code class="function">wsgi_app</code></h4>
-   <div class="source library"><pre class="line before"><span class="ws">        </span>ctx = self.request_context(environ)</pre>
- <pre class="line before"><span class="ws">        </span>error: t.Optional[BaseException] = None</pre>
- <pre class="line before"><span class="ws">        </span>try:</pre>
- <pre class="line before"><span class="ws">            </span>try:</pre>
- <pre class="line before"><span class="ws">                </span>ctx.push()</pre>
- <pre class="line current"><span class="ws">                </span>response = self.full_dispatch_request()</pre>
- <pre class="line after"><span class="ws">            </span>except Exception as e:</pre>
- <pre class="line after"><span class="ws">                </span>error = e</pre>
- <pre class="line after"><span class="ws">                </span>response = self.handle_exception(e)</pre>
- <pre class="line after"><span class="ws">            </span>except:  # noqa: B001</pre>
- <pre class="line after"><span class="ws">                </span>error = sys.exc_info()[1]</pre></div>
- </div>
- 
- <li><div class="frame" id="frame-1684310391744">
-   <h4>File <cite class="filename">"C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py"</cite>,
-       line <em class="line">1825</em>,
-       in <code class="function">full_dispatch_request</code></h4>
-   <div class="source library"><pre class="line before"><span class="ws">            </span>request_started.send(self)</pre>
- <pre class="line before"><span class="ws">            </span>rv = self.preprocess_request()</pre>
- <pre class="line before"><span class="ws">            </span>if rv is None:</pre>
- <pre class="line before"><span class="ws">                </span>rv = self.dispatch_request()</pre>
- <pre class="line before"><span class="ws">        </span>except Exception as e:</pre>
- <pre class="line current"><span class="ws">            </span>rv = self.handle_user_exception(e)</pre>
- <pre class="line after"><span class="ws">        </span>return self.finalize_request(rv)</pre>
- <pre class="line after"><span class="ws"></span> </pre>
- <pre class="line after"><span class="ws">    </span>def finalize_request(</pre>
- <pre class="line after"><span class="ws">        </span>self,</pre>
- <pre class="line after"><span class="ws">        </span>rv: t.Union[ft.ResponseReturnValue, HTTPException],</pre></div>
- </div>
- 
- <li><div class="frame" id="frame-1684310391968">
-   <h4>File <cite class="filename">"C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py"</cite>,
-       line <em class="line">1823</em>,
-       in <code class="function">full_dispatch_request</code></h4>
-   <div class="source library"><pre class="line before"><span class="ws"></span> </pre>
- <pre class="line before"><span class="ws">        </span>try:</pre>
- <pre class="line before"><span class="ws">            </span>request_started.send(self)</pre>
- <pre class="line before"><span class="ws">            </span>rv = self.preprocess_request()</pre>
- <pre class="line before"><span class="ws">            </span>if rv is None:</pre>
- <pre class="line current"><span class="ws">                </span>rv = self.dispatch_request()</pre>
- <pre class="line after"><span class="ws">        </span>except Exception as e:</pre>
- <pre class="line after"><span class="ws">            </span>rv = self.handle_user_exception(e)</pre>
- <pre class="line after"><span class="ws">        </span>return self.finalize_request(rv)</pre>
- <pre class="line after"><span class="ws"></span> </pre>
- <pre class="line after"><span class="ws">    </span>def finalize_request(</pre></div>
- </div>
- 
- <li><div class="frame" id="frame-1684310392304">
-   <h4>File <cite class="filename">"C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py"</cite>,
-       line <em class="line">1799</em>,
-       in <code class="function">dispatch_request</code></h4>
-   <div class="source library"><pre class="line before"><span class="ws">            </span>and req.method == &#34;OPTIONS&#34;</pre>
- <pre class="line before"><span class="ws">        </span>):</pre>
- <pre class="line before"><span class="ws">            </span>return self.make_default_options_response()</pre>
- <pre class="line before"><span class="ws">        </span># otherwise dispatch to the handler for that endpoint</pre>
- <pre class="line before"><span class="ws">        </span>view_args: t.Dict[str, t.Any] = req.view_args  # type: ignore[assignment]</pre>
- <pre class="line current"><span class="ws">        </span>return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)</pre>
- <pre class="line after"><span class="ws"></span> </pre>
- <pre class="line after"><span class="ws">    </span>def full_dispatch_request(self) -&gt; Response:</pre>
- <pre class="line after"><span class="ws">        </span>&#34;&#34;&#34;Dispatches the request and on top of that performs request</pre>
- <pre class="line after"><span class="ws">        </span>pre and postprocessing as well as HTTP exception catching and</pre>
- <pre class="line after"><span class="ws">        </span>error handling.</pre></div>
- </div>
- 
- <li><div class="frame" id="frame-1684310390064">
-   <h4>File <cite class="filename">"c:\Users\vv\Desktop\myGithub\GPT_Python_Scripts\ChatGPTAPP\chatGPTAPP.py"</cite>,
-       line <em class="line">53</em>,
-       in <code class="function">upload</code></h4>
-   <div class="source "><pre class="line before"><span class="ws"></span> </pre>
- <pre class="line before"><span class="ws">    </span># with open(&#39;recorded_audio.wav&#39;, &#39;wb&#39;) as file:</pre>
- <pre class="line before"><span class="ws">    </span>#     file.write(audio_data)</pre>
- <pre class="line before"><span class="ws">    </span># return &#39;Audio recorded and saved successfully&#39;</pre>
- <pre class="line before"><span class="ws"></span> </pre>
- <pre class="line current"><span class="ws">    </span>file = request.files[&#39;file&#39;]</pre>
- <pre class="line after"><span class="ws">    </span>if file:</pre>
- <pre class="line after"><span class="ws">        </span>file.save(&#39;received.wav&#39;)</pre>
- <pre class="line after"><span class="ws">        </span>return &#39;File uploaded successfully&#39;</pre>
- <pre class="line after"><span class="ws">    </span>else:</pre>
- <pre class="line after"><span class="ws">        </span>return &#39;No file uploaded&#39;</pre></div>
- </div>
- 
- <li><div class="frame" id="frame-1684310392416">
-   <h4>File <cite class="filename">"C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\debughelpers.py"</cite>,
-       line <em class="line">83</em>,
-       in <code class="function">__getitem__</code></h4>
-   <div class="source library"><pre class="line before"><span class="ws">    </span>oldcls = request.files.__class__</pre>
- <pre class="line before"><span class="ws"></span> </pre>
- <pre class="line before"><span class="ws">    </span>class newcls(oldcls):</pre>
- <pre class="line before"><span class="ws">        </span>def __getitem__(self, key):</pre>
- <pre class="line before"><span class="ws">            </span>try:</pre>
- <pre class="line current"><span class="ws">                </span>return super().__getitem__(key)</pre>
- <pre class="line after"><span class="ws">            </span>except KeyError as e:</pre>
- <pre class="line after"><span class="ws">                </span>if key not in request.form:</pre>
- <pre class="line after"><span class="ws">                    </span>raise</pre>
- <pre class="line after"><span class="ws"></span> </pre>
- <pre class="line after"><span class="ws">                </span>raise DebugFilesKeyError(request, key).with_traceback(</pre></div>
- </div>
- 
- <li><div class="frame" id="frame-1684310377968">
-   <h4>File <cite class="filename">"C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\werkzeug\datastructures.py"</cite>,
-       line <em class="line">375</em>,
-       in <code class="function">__getitem__</code></h4>
-   <div class="source library"><pre class="line before"><span class="ws"></span> </pre>
- <pre class="line before"><span class="ws">        </span>if key in self:</pre>
- <pre class="line before"><span class="ws">            </span>lst = dict.__getitem__(self, key)</pre>
- <pre class="line before"><span class="ws">            </span>if len(lst) &gt; 0:</pre>
- <pre class="line before"><span class="ws">                </span>return lst[0]</pre>
- <pre class="line current"><span class="ws">        </span>raise exceptions.BadRequestKeyError(key)</pre>
- <pre class="line after"><span class="ws"></span> </pre>
- <pre class="line after"><span class="ws">    </span>def __setitem__(self, key, value):</pre>
- <pre class="line after"><span class="ws">        </span>&#34;&#34;&#34;Like :meth:`add` but removes an existing key first.</pre>
- <pre class="line after"><span class="ws"></span> </pre>
- <pre class="line after"><span class="ws">        </span>:param key: the key for the value.</pre></div>
- </div>
- </ul>
-   <blockquote>werkzeug.exceptions.BadRequestKeyError: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
- KeyError: &#39;file&#39;
- </blockquote>
- </div>
- 
- <div class="plain">
-     <p>
-       This is the Copy/Paste friendly version of the traceback.
-     </p>
-     <textarea cols="50" rows="10" name="code" readonly>Traceback (most recent call last):
-   File &#34;C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py&#34;, line 2551, in __call__
-     return self.wsgi_app(environ, start_response)
-   File &#34;C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py&#34;, line 2531, in wsgi_app
-     response = self.handle_exception(e)
-   File &#34;C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py&#34;, line 2528, in wsgi_app
-     response = self.full_dispatch_request()
-   File &#34;C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py&#34;, line 1825, in full_dispatch_request
-     rv = self.handle_user_exception(e)
-   File &#34;C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py&#34;, line 1823, in full_dispatch_request
-     rv = self.dispatch_request()
-   File &#34;C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\app.py&#34;, line 1799, in dispatch_request
-     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
-   File &#34;c:\Users\vv\Desktop\myGithub\GPT_Python_Scripts\ChatGPTAPP\chatGPTAPP.py&#34;, line 53, in upload
-     file = request.files[&#39;file&#39;]
-   File &#34;C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\flask\debughelpers.py&#34;, line 83, in __getitem__
-     return super().__getitem__(key)
-   File &#34;C:\Users\vv\Miniconda3\envs\openaiapp\lib\site-packages\werkzeug\datastructures.py&#34;, line 375, in __getitem__
-     raise exceptions.BadRequestKeyError(key)
- werkzeug.exceptions.BadRequestKeyError: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
- KeyError: &#39;file&#39;
- </textarea>
- </div>
- <div class="explanation">
-   The debugger caught an exception in your WSGI application.  You can now
-   look at the traceback which led to the error.  <span class="nojavascript">
-   If you enable JavaScript you can also use additional features such as code
-   execution (if the evalex feature is enabled), automatic pasting of the
-   exceptions and much more.</span>
- </div>
-       <div class="footer">
-         Brought to you by <strong class="arthur">DON'T PANIC</strong>, your
-         friendly Werkzeug powered traceback interpreter.
-       </div>
-     </div>
- 
-     <div class="pin-prompt">
-       <div class="inner">
-         <h3>Console Locked</h3>
-         <p>
-           The console is locked and needs to be unlocked by entering the PIN.
-           You can find the PIN printed out on the standard output of your
-           shell that runs the server.
-         <form>
-           <p>PIN:
-             <input type=text name=pin size=14>
-             <input type=submit name=btn value="Confirm Pin">
-         </form>
-       </div>
-     </div>
-   </body>
- </html>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Upload</title>
+</head>
+<body>
+  <input type="file" id="fileInput" accept="image/*">
+  <button onclick="uploadImage()">Upload</button>
+
+  <script>
+    function uploadImage() {
+      var fileInput = document.getElementById('fileInput');
+      var file = fileInput.files[0];
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var imageData = e.target.result.split(',')[1]; // 获取图像数据
+        console.log(imageData);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://192.168.43.153/upload_image', true); // 替换为ESP32的IP地址和端口
+                         //http://192.168.43.153/upload_image
+
+
+        //xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        function uploadFile(file) {
+          var url = 'http://104.168.134.131:5001/picbase64api';
+          var formData = new FormData();
+
+          formData.append('file', file);
+
+          fetch(url, {
+              method: 'POST',
+              body: formData
+          })
+          .then(response => response.text())
+          .then(data => {
+              //console.log(data);
+              //sendToServer(data);
+              imageData = data;
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
+        }
+
+
+
+
+
+
+
+        
+        var formData = new FormData();
+
+        imageData = "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"
+
+
+
+
+
+
+
+
+
+
+        formData.append('image', imageData); // 将图像数据添加到FormData对象
+        
+        xhr.send(formData);
+
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log('Image uploaded successfully.');
+          }
+        };
+
+
+      };
+
+      reader.readAsDataURL(file);
+    }
+  </script>
+</body>
+</html>
+
+
+

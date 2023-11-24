@@ -40,8 +40,8 @@ def getapic():
     image = request.files['image']
     image.save('uploaded_image.jpg')  # 保存上传的图片，可以根据需要修改保存路径和文件名
    
-    postPIC.postpic_fun('uploaded_image.jpg')
-    return "图片上传成功！"
+    picbase64  =  postPIC.postpic_fun('uploaded_image.jpg')
+    return {"picbase64":picbase64}
 
 @app.route("/getapic2",methods = ["GET","POST"])
 def getapic2():

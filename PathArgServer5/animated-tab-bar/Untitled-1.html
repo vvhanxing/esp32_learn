@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+</head>
+<body>
+    <h1>Image Upload</h1>
+    
+    <form id="imageForm" enctype="multipart/form-data">
+        <input type="file" id="imageInput" accept="image/*">
+        <button type="button" onclick="uploadImage()">Upload Image</button>
+    </form>
+
+    <script>
+        function uploadImage() {
+            var input = document.getElementById('imageInput');
+            var file = input.files[0];
+
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var imgData = e.target.result.split(',')[1]; // Extract base64 data
+                    sendToServer(imgData);
+                };
+                reader.readAsDataURL(file);
+
+            }
+        }
+
+        function sendToServer(imgData) {
+            var xhr = new XMLHttpRequest();
+            var url = 'http://104.168.134.131:5001/picbase64api'; // Update with your ESP32 IP
+
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    console.log(xhr.responseText); // Output ESP32 response
+                }
+            };
+
+            var data =  { file: imgData }; //imgData;
+            //console.log(data);
+            xhr.send(data);
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop File Upload</title>
+</head>
+<body>
+
+<div id="drop-area">
+    <h3 class="drop-text">拖拽图片到这里</h3>
+    <input type="file" id="fileInput" class="file-input" onchange="handleFile()">
+</div>
+
+<script>
+    var dropArea = document.getElementById('drop-area');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight(e) {
+        dropArea.classList.add('highlight');
+    }
+
+    function unhighlight(e) {
+        dropArea.classList.remove('highlight');
+    }
+
+    dropArea.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        var dt = e.dataTransfer;
+        var files = dt.files;
+
+        handleFiles(files);
+    }
+
+    function handleFile() {
+        var files = document.getElementById('fileInput').files;
+        handleFiles(files);
+    }
+
+    function handleFiles(files) {
+        ([...files]).forEach(uploadFile);
+    }
+
+    function uploadFile(file) {
+        var url = 'http://104.168.134.131:5001/picbase64api';
+        var formData = new FormData();
+
+        formData.append('file', file);
+
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+</body>
+</html>

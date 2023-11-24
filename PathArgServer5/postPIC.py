@@ -132,7 +132,7 @@ for pic_name in os.listdir(resize_pic_dir):
     img_str = base64.b64encode(img_data)
     data = {'image': img_str}
     # 构造POST请求，发送图片字符串到ESP32的IP地址
-    url = 'http://192.168.43.252/upload_image'
+    url = 'http://192.168.43.153/upload_image'
     response = requests.post(url, data=data)
 
     # 输出ESP32的响应信息

@@ -32,7 +32,7 @@
           var u8 = new Uint8Array(arrayBuffer);
           console.log(u8);
           var base64 = btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer))); // 将数组缓冲区编码为 base64 字符串
-          console.log(base64);
+          //console.log(base64);
           // 发送 base64 数据到服务器
           
           displayImage(base64);
