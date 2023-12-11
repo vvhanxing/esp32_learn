@@ -203,6 +203,9 @@ String HtmlString = R""(
 
   </menu>
 
+  <input type="file" id="fileInput" accept="image/*">
+  <button onclick="uploadImage()">Upload</button>
+  
   <div class="svg-container">
     <svg viewBox="0 0 202.9 45.5" >
       <clipPath id="menu" clipPathUnits="objectBoundingBox" transform="scale(0.0049285362247413 0.021978021978022)">
@@ -227,6 +230,43 @@ String HtmlString = R""(
     const menuItems = menu.querySelectorAll(".menu__item");
     const menuBorder = menu.querySelector(".menu__border");
     let activeItem = menu.querySelector(".active");
+
+
+
+
+
+
+function uploadImage() {
+      var fileInput = document.getElementById('fileInput');
+      var file = fileInput.files[0];
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var imageData = e.target.result.split(',')[1]; // 获取图像数据
+        //console.log(imageData);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://xxxxxxxxxx/upload_image', true); // 替换为ESP32的IP地址和端口
+       
+        var formData = new FormData();
+
+        formData.append('image', imageData); // 将图像数据添加到FormData对象
+        
+        xhr.send(formData);
+
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log('Image uploaded successfully.');
+          }
+        };
+
+
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+
+
 
 
     function putJson(index){

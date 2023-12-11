@@ -1,5 +1,7 @@
 from flask import Flask, send_file, Response, send_from_directory
 from flask import jsonify,request,render_template,url_for
+from flask_cors import CORS, cross_origin
+
 import postPIC
 import io
 import re
@@ -17,6 +19,7 @@ conut = 0
 audio_data = b""
 J ={}
 app = Flask(__name__)
+cors = CORS(app)
 
 
 @app.route("/",methods = ["GET","POST"])
@@ -28,6 +31,12 @@ def chat():
 def uplodapic():
     
     return render_template("upload2.html")
+
+
+@app.route("/uploadpic2",methods = ["GET","POST"])
+def uplodapic2():
+    
+    return render_template("uploadesp32pichtml.html")
 
 @app.route("/uploadpic5",methods = ["GET","POST"])
 def uplodapic5():
