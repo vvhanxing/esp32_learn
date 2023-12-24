@@ -201,7 +201,7 @@ void putPageIndex(){
   }
 
 
-uint8_t decodedImage[16384]={0};
+uint8_t decodedImage[10240*3]={0};
 /////////////
 
 void getEncodedImage(){
@@ -226,7 +226,7 @@ void getEncodedImage(){
   }
 
   http.end();
-  int decoded_size = base64_decode((char*)decodedImage, (char*)response.c_str(), 16384);
+  int decoded_size = base64_decode((char*)decodedImage, (char*)response.c_str(), 10240*3);
   
 
 }
@@ -246,7 +246,7 @@ void handleImageUpload() {
     Serial.println("post2");
     
     Serial.println("post3");
-    int decoded_size = base64_decode((char*)decodedImage, (char*)encodedImage.c_str(), 16384);
+    int decoded_size = base64_decode((char*)decodedImage, (char*)encodedImage.c_str(), 10240*3);
     Serial.println("post4");
     //Serial.println(encodedImage);
     //free(decodedImage);

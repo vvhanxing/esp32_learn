@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        #preview {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Image Upload</h2>
+    <input type="file" id="imageInput" accept="image/*">
+    <button onclick="uploadImage()">Upload Image</button>
+    <div id="preview"></div>
+
+    <script>
+        function uploadImage() {
+            const input = document.getElementById('imageInput');
+            const file = input.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const img = new Image();
+                    img.src = e.target.result;
+
+                    img.onload = function () {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        // Resize image to 240x240
+                        canvas.width = 240;
+                        canvas.height = 240;
+                        ctx.drawImage(img, 0, 0, 240, 240);
+
+                        // Convert to base64
+                        const resizedBase64 = canvas.toDataURL('image/jpeg');
+
+
+
+                        var imageData = resizedBase64.split(',')[1]; // 获取图像数据
+                        console.log(e.target.result);
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('POST', 'http://192.168.43.153/upload_image', true); // 替换为ESP32的IP地址和端口
+                    
+                        var formData = new FormData();
+                        
+                        formData.append('image', imageData); // 将图像数据添加到FormData对象
+                        //console.log(imageData);
+                        xhr.send(formData);
+
+                        xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            console.log('Image uploaded successfully.');
+                        }
+                        };
+
+
+
+
+
+
+
+
+                        // Send resizedBase64 to Flask server (you can use fetch or other methods)
+                        // For simplicity, let's assume a POST request to /upload endpoint
+                        fetch('/upload', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ image: resizedBase64 }),
+                        })
+                        .then(response => response.json())
+                        .then(data => console.log(data))
+                        .catch(error => console.error('Error:', error));
+                    };
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                alert('Please select an image');
+            }
+        }
+    </script>
+</body>
+</html>

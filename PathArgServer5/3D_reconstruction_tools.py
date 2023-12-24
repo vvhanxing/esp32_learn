@@ -1,7 +1,6 @@
 from moviepy.editor import VideoFileClip
 from PIL import Image
 
-from PIL import ImageSequence
 clip1 = VideoFileClip('g2.mp4')
 i = 1
 for frame in clip1.iter_frames():
@@ -10,7 +9,7 @@ for frame in clip1.iter_frames():
         im.save("./frame_image/your_file_%07d.jpg" % i)
     i = i+1
 
-
+#from PIL import ImageSequence
 # -*- coding: utf-8 -*-
 """
 @File    : 200113_等比例调整图像分辨率大小.py

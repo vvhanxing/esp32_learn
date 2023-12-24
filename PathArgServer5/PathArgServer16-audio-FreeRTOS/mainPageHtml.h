@@ -237,32 +237,75 @@ String HtmlString = R""(
 
 
 function uploadImage() {
-      var fileInput = document.getElementById('fileInput');
-      var file = fileInput.files[0];
+//      var fileInput = document.getElementById('fileInput');
+//      var file = fileInput.files[0];
+            const input = document.getElementById('fileInput');
+            const file = input.files[0];
 
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var imageData = e.target.result.split(',')[1]; // 获取图像数据
-        //console.log(imageData);
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://xxxxxxxxxx/upload_image', true); // 替换为ESP32的IP地址和端口
-       
-        var formData = new FormData();
+            if (file) {
+                const reader = new FileReader();
 
-        formData.append('image', imageData); // 将图像数据添加到FormData对象
-        
-        xhr.send(formData);
+                reader.onload = function (e) {
+                    const img = new Image();
+                    img.src = e.target.result;
 
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState === 4 && xhr.status === 200) {
-            console.log('Image uploaded successfully.');
-          }
-        };
+                    img.onload = function () {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        // Resize image to 240x240
+                        canvas.width = 240;
+                        canvas.height = 240;
+                        ctx.drawImage(img, 0, 0, 240, 240);
+
+                        // Convert to base64
+                        const resizedBase64 = canvas.toDataURL('image/jpeg');
 
 
-      };
 
-      reader.readAsDataURL(file);
+                        var imageData = resizedBase64.split(',')[1]; // 获取图像数据
+                        console.log(e.target.result);
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('POST', 'http://xxxxxxxxxx/upload_image', true); // 替换为ESP32的IP地址和端口
+                    
+                        var formData = new FormData();
+                        
+                        formData.append('image', imageData); // 将图像数据添加到FormData对象
+                        //console.log(imageData);
+                        xhr.send(formData);
+
+                        xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            console.log('Image uploaded successfully.');
+                        }
+                        };
+
+
+
+
+
+
+
+
+                        // Send resizedBase64 to Flask server (you can use fetch or other methods)
+                        // For simplicity, let's assume a POST request to /upload endpoint
+                        // fetch('/upload', {
+                        //     method: 'POST',
+                        //     headers: {
+                        //         'Content-Type': 'application/json',
+                        //     },
+                        //     body: JSON.stringify({ image: resizedBase64 }),
+                        // })
+                        // .then(response => response.json())
+                        // .then(data => console.log(data))
+                        // .catch(error => console.error('Error:', error));
+                    };
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                alert('Please select an image');
+            }
     }
 
 

@@ -27,7 +27,7 @@ else:
 
         # 在这里可以对图像进行处理，例如显示、保存等
         index+=1
-        if index%5==0:
+        if index%2==0:
             filename = "pic.jpg"
         
             cv2.imwrite(filename, frame)
