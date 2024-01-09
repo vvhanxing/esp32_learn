@@ -206,6 +206,7 @@ String HtmlString = R""(
   <input type="file" id="fileInput" accept="image/*">
   <button onclick="uploadImage()">Upload</button>
   
+  <img id="uploadedImage" alt="Uploaded Image" />
   <div class="svg-container">
     <svg viewBox="0 0 202.9 45.5" >
       <clipPath id="menu" clipPathUnits="objectBoundingBox" transform="scale(0.0049285362247413 0.021978021978022)">
@@ -233,12 +234,16 @@ String HtmlString = R""(
 
 
 
+    function displayImage(base64) {
+      const imageElement = document.getElementById("uploadedImage");
+      imageElement.src = "data:image/jpeg;base64," + base64;
+    }
 
 
 
-function uploadImage() {
-//      var fileInput = document.getElementById('fileInput');
-//      var file = fileInput.files[0];
+
+    function uploadImage() {
+
             const input = document.getElementById('fileInput');
             const file = input.files[0];
 
@@ -264,6 +269,7 @@ function uploadImage() {
 
 
                         var imageData = resizedBase64.split(',')[1]; // 获取图像数据
+                        displayImage(imageData);
                         console.log(e.target.result);
                         var xhr = new XMLHttpRequest();
                         xhr.open('POST', 'http://xxxxxxxxxx/upload_image', true); // 替换为ESP32的IP地址和端口

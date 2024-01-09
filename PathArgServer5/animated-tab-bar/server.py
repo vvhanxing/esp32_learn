@@ -22,10 +22,21 @@ app = Flask(__name__)
 cors = CORS(app)
 
 
+
+@app.route("/index3",methods = ["GET","POST"])
+def ui():
+
+    return render_template("index3.html")
+
 @app.route("/",methods = ["GET","POST"])
 def chat():
 
-    return render_template("index.html")
+    return render_template("index2.html")
+
+# @app.route("ui/",methods = ["GET","POST"])
+# def ui():
+
+#     return render_template("index3.html")
 
 @app.route("/uploadpic",methods = ["GET","POST"])
 def uplodapic():

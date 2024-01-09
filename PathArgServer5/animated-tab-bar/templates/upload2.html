@@ -47,7 +47,7 @@
       formData.append('image', file);
 
       var xhr = new XMLHttpRequest();
-      xhr.open('POST', 'http://192.168.43.185:5000/getapic', true);
+      xhr.open('POST', 'http://192.168.43.153:5000/getapic', true);
       xhr.onload = function() {
         if (xhr.status === 200) {
           console.log('图片上传成功！');

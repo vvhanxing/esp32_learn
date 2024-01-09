@@ -45,7 +45,7 @@ void task3(void *pvParameters); //任务函数
 
 
 // Randomly picked URL
-const char *URL="http://114.55.178.110/audio/mp3";
+const char *URL="http://192.168.43.185:5000/audio/mp3";
 
 AudioGeneratorMP3 *mp3;
 AudioFileSourceICYStream *file;
@@ -70,6 +70,8 @@ void MDCallback(void *cbData, const char *type, bool isUnicode, const char *stri
 // Called when there's a warning or error (like a buffer underflow or decode hiccup)
 void StatusCallback(void *cbData, int code, const char *string)
 {
+  if (code != 257 && code != 565 && code != 260) {
+
   const char *ptr = reinterpret_cast<const char *>(cbData);
   // Note that the string may be in PROGMEM, so copy it to RAM for printf
   char s1[64];
@@ -77,6 +79,7 @@ void StatusCallback(void *cbData, int code, const char *string)
   s1[sizeof(s1)-1]=0;
   Serial.printf("STATUS(%s) '%d' = '%s'\n", ptr, code, s1);
   Serial.flush();
+  }
 }
 
 
