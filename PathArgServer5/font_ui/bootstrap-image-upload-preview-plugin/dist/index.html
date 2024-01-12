@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Bootstrap image upload preview plugin</title>
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
+<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'><link rel="stylesheet" href="./style.css">
+
+<style>
+/* body
+{
+  background-color:#f5f5f5;
+} */
+.imagePreview {
+    width: 100%;
+    height: 180px;
+    background-position: center center;
+  background:url(http://cliquecities.com/assets/no-image-e3699ae23f866f6cbdf8ba2443ee5c4e.jpg);
+  background-color:#fff;
+    background-size: cover;
+  background-repeat:no-repeat;
+    display: inline-block;
+  box-shadow:0px -3px 6px 2px rgba(0,0,0,0.2);
+}
+.btn-primary
+{
+  display:block;
+  border-radius:0px;
+  box-shadow:0px 4px 6px 2px rgba(0,0,0,0.2);
+  margin-top:-5px;
+}
+.imgUp
+{
+  margin-bottom:15px;
+}
+.del
+{
+  position:absolute;
+  top:0px;
+  right:15px;
+  width:30px;
+  height:30px;
+  text-align:center;
+  line-height:30px;
+  background-color:rgba(255,255,255,0.6);
+  cursor:pointer;
+}
+.imgAdd
+{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background-color:#4bd7ef;
+  color:#fff;
+  box-shadow:0px 0px 2px 1px rgba(0,0,0,0.2);
+  text-align:center;
+  line-height:30px;
+  margin-top:0px;
+  cursor:pointer;
+  font-size:15px;
+}
+</style>
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<br><div class="container">
+  <div class="row">
+  <div class="col-sm-2 imgUp">
+    <div class="imagePreview"></div>
+<label class="btn btn-primary">
+										    			Select<input type="file" class="uploadFile img" value="Upload Photo" style="width: 0px;height: 0px;overflow: hidden;">
+				</label>
+<!-- <label class="btn btn-primary">
+                              Send<input type="file" class="uploadFile img" value="Upload Photo" style="width: 0px;height: 0px;overflow: hidden;">
+</label> -->
+
+
+  </div><!-- col-2 -->
+  <i class="fa fa-plus imgAdd"></i>
+ </div><!-- row -->
+</div><!-- container -->
+<!-- partial -->
+  <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
+<script >
+  $(".imgAdd").click(function(){
+  $(this).closest(".row").find('.imgAdd').before('<div class="col-sm-2 imgUp"><div class="imagePreview"></div><label class="btn btn-primary">Upload<input type="file" class="uploadFile img" value="Upload Photo" style="width:0px;height:0px;overflow:hidden;"></label><i class="fa fa-times del"></i></div>');
+});
+$(document).on("click", "i.del" , function() {
+// 	to remove card
+  $(this).parent().remove();
+// to clear image
+  // $(this).parent().find('.imagePreview').css("background-image","url('')");
+});
+$(function() {
+    $(document).on("change",".uploadFile", function()
+    {
+    		var uploadFile = $(this);
+        var files = !!this.files ? this.files : [];
+        if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
+ 
+        if (/^image/.test( files[0].type)){ // only image file
+            var reader = new FileReader(); // instance of the FileReader
+
+
+
+//
+const file = files[0];
+
+if (file) {
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        const img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function () {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            // Resize image to 240x240
+            canvas.width = 240;
+            canvas.height = 240;
+            ctx.drawImage(img, 0, 0, 240, 240);
+
+            // Convert to base64
+            const resizedBase64 = canvas.toDataURL('image/jpeg');
+
+            var imageData = resizedBase64.split(',')[1]; // 获取图像数据
+            // displayImage(imageData);
+            console.log(e.target.result);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://192.168.43.216/upload_image', true); // 替换为ESP32的IP地址和端口
+        
+            var formData = new FormData();
+            
+            formData.append('image', imageData); // 将图像数据添加到FormData对象
+            //console.log(imageData);
+            xhr.send(formData);
+
+            xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                console.log('Image uploaded successfully.');
+            }
+            };
+
+        };
+    };
+
+    reader.readAsDataURL(file);
+} else {
+    alert('Please select an image');
+}
+
+//
+
+
+            reader.readAsDataURL(files[0]); // read the local file
+            reader.onloadend = function(){ // set image data as background of div
+                //alert(uploadFile.closest(".upimage").find('.imagePreview').length);
+            uploadFile.closest(".imgUp").find('.imagePreview').css("background-image", "url("+this.result+")");
+            }
+        }
+      
+    });
+});
+</script>
+
+</body>
+</html>
