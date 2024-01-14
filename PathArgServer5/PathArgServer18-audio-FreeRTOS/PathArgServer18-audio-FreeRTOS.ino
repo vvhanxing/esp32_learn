@@ -180,10 +180,22 @@ void MainPage(){
   }
   
 void putInfo(){
-  info = server.arg("info") ;
-  Serial.println(info);
+//  info = server.arg("info") ;
+//  Serial.println(info);
+//
+//
+//  Serial.println(server.arg(0));
+  String json = server.arg(0);
+  StaticJsonDocument<32> doc;
+  // Json格式写法，创建一个json消息
+  char json_char_[32];
+  strcpy(json_char_,json.c_str());
+  DeserializationError error = deserializeJson(doc, json_char_);
+  Serial.println(doc["info"].as<String>()); 
+  info =  doc["info"].as<String>();
+
   server.sendHeader("Location","/getinfo");
-  server.send(302,"text/plain","ok");
+  server.send(200,"text/plain","ok");
   //
 //         
 //case 4: // Mirror and rotate counterclockwise
@@ -205,14 +217,22 @@ void putInfo(){
 //  _width  = _init_height;
 //  _height = _init_width;
 //  break;
-  if (info=="portrait1") {tft.setRotation(0);tft.fillScreen(TFT_WHITE);}
-  if (info=="portrait2") {tft.setRotation(1);tft.fillScreen(TFT_WHITE);}
-  if (info=="portrait3") {tft.setRotation(2);tft.fillScreen(TFT_WHITE);}
-  if (info=="portrait4") {tft.setRotation(3);tft.fillScreen(TFT_WHITE);}
-  if (info=="portrait5") {tft.setRotation(4);tft.fillScreen(TFT_WHITE);}
+  if (info=="rotate0") {tft.setRotation(0);tft.fillScreen(TFT_WHITE);}
+  if (info=="rotate90") {tft.setRotation(1);tft.fillScreen(TFT_WHITE);}
+  if (info=="rotate180") {tft.setRotation(2);tft.fillScreen(TFT_WHITE);}
+  if (info=="rotate270") {tft.setRotation(3);tft.fillScreen(TFT_WHITE);}
+  if (info=="mirror") {tft.setRotation(4);tft.fillScreen(TFT_WHITE);}
   }
   
+void getInfo(){
+  server.send(200,"text/html",(String)"<!DOCTYPE html><body><h1>"+"info: </h1><h1>"+info+"</h1></body></html>");
+  Serial.println("------2");
+  //getEncodedImage();
+  Serial.println(info);
+  
+  }
 
+  
 void putPageIndex(){
   Serial.println(server.arg(0));
   String json = server.arg(0);
@@ -221,11 +241,11 @@ void putPageIndex(){
   char json_char_[32];
   strcpy(json_char_,json.c_str());
   DeserializationError error = deserializeJson(doc, json_char_);
-  Serial.println(doc["click_once_count"].as<String>());  
+  Serial.println(doc["info"].as<String>());  
 
-  click_once_count = doc["click_once_count"].as<String>().toInt() ;
+  click_once_count = doc["info"].as<String>().toInt() ;
   Serial.println("------1");
-  Serial.println(click_once_count);
+  Serial.println(info);
   server.sendHeader("Location","/getinfo");
   server.send(302,"text/plain","ok");
   }
@@ -261,13 +281,7 @@ void putPageIndex(){
 //
 //}
 ////////////
-void getInfo(){
-  server.send(200,"text/html",(String)"<!DOCTYPE html><body><h1>"+"info: </h1><h1>"+info+"</h1></body></html>");
-  Serial.println("------2");
-  //getEncodedImage();
-  Serial.println(info);
-  
-  }
+
 //
 
 //

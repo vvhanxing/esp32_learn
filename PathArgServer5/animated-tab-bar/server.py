@@ -19,7 +19,7 @@ conut = 0
 audio_data = b""
 J ={}
 app = Flask(__name__)
-cors = CORS(app, supports_credentials=True)
+cors = CORS(app, resources={r"/*": {"origins": "http://192.168.43.216:5000"}})
 
 
 

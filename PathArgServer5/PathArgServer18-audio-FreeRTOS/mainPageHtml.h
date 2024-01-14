@@ -2,6 +2,9 @@ String mainPageHtmlString(String URL) {
 
 String HtmlString = R""(
 
+
+
+
 <!DOCTYPE html>
 <html lang="en" >
 <head>
@@ -75,7 +78,7 @@ button {
 
 nav.amazing-tabs {
   width: 80%;
-  height: 20%;
+  height: 30%;
   background-color: var(--white);
   border-radius: 2.5rem;
   user-select: none;
@@ -302,7 +305,7 @@ ul.main-tabs li {
   font-size:15px;
 }
 
-/**/
+/*image upload*/
 .imagePreview {
     width: 100%;
     height: 180px;
@@ -350,6 +353,86 @@ ul.main-tabs li {
   margin-top:0px;
   cursor:pointer;
   font-size:15px;
+}
+
+/* input */
+ 
+.inp {
+  position: relative;
+  margin: auto;
+  left:15px;
+  width: 100%;
+  max-width: 280px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.inp .label {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 500;
+  transform-origin: 0 0;
+  transform: translate3d(0, 0, 0);
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+.inp .focus-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.05);
+  z-index: -1;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.inp input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+       appearance: none;
+  width: 100%;
+  border: 0;
+  font-family: inherit;
+  padding: 16px 12px 0 12px;
+  height: 56px;
+  font-size: 16px;
+  font-weight: 400;
+  background: rgba(0, 0, 0, 0.02);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  color: #000;
+  transition: all 0.15s ease;
+}
+.inp input:hover {
+  background: rgba(0, 0, 0, 0.04);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.5);
+}
+.inp input:not(:-moz-placeholder-shown) + .label {
+  color: rgba(0, 0, 0, 0.5);
+  transform: translate3d(0, -12px, 0) scale(0.75);
+}
+.inp input:not(:-ms-input-placeholder) + .label {
+  color: rgba(0, 0, 0, 0.5);
+  transform: translate3d(0, -12px, 0) scale(0.75);
+}
+.inp input:not(:placeholder-shown) + .label {
+  color: rgba(0, 0, 0, 0.5);
+  transform: translate3d(0, -12px, 0) scale(0.75);
+}
+.inp input:focus {
+  background: rgba(0, 0, 0, 0.05);
+  outline: none;
+  box-shadow: inset 0 -6px 0 #0077FF;
+}
+.inp input:focus + .label {
+  color: #0077FF;
+  transform: translate3d(0, -12px, 0) scale(0.75);
+}
+.inp input:focus + .label + .focus-bg {
+  transform: scaleX(1);
+  transition: all 0.1s ease;
 }
 </style>
 </head>
@@ -447,9 +530,30 @@ ul.main-tabs li {
       <div class="main-slider" aria-hidden="true">
         <div class="main-slider-circle">&nbsp;</div>
       </div>
+     
     </div>
+    <!-- input text -->
+    <label for="inp" class="inp">
+      <input type="text" id="inp" placeholder="&nbsp;"  onkeydown="handleKeyDown(event)">
+      <span class="label">Type here ...</span>
+      <span class="focus-bg"></span>
+    </label>
   </div>
 </nav>
+
+<script>
+  function handleKeyDown(event) {
+      if (event.key === 'Enter') {
+          // 获取输入框的值
+          const inputValue = document.getElementById('inp').value;
+          putJson(inputValue,"putinfo");
+              
+      }
+  }
+</script>
+
+
+
 <!-- partial -->
 <!-- <h1>Hello</h1> -->
 <script >
@@ -552,12 +656,12 @@ mainTabs.addEventListener("click", (event) => {
       root.style.setProperty("--filters-wrapper-opacity", "0");
     }
 
-    if (event.target.classList.contains("page1")) {putJson(0)}
-    if (event.target.classList.contains("page2")) {putJson(1)}
-    if (event.target.classList.contains("page3")) {putJson(2)}
-    if (event.target.classList.contains("page4")) {putJson(3)}
-    if (event.target.classList.contains("page5")) {putJson(4)}
-    if (event.target.classList.contains("page6")) {putJson(5)}
+    if (event.target.classList.contains("page1")) {putJson("0","putPageIndex" )}
+    if (event.target.classList.contains("page2")) {putJson("1","putPageIndex" )}
+    if (event.target.classList.contains("page3")) {putJson("2","putPageIndex" )}
+    if (event.target.classList.contains("page4")) {putJson("3","putPageIndex" )}
+    if (event.target.classList.contains("page5")) {putJson("4","putPageIndex" )}
+    if (event.target.classList.contains("page6")) {putJson("5","putPageIndex" )}
 
 
   }
@@ -578,9 +682,9 @@ filterTabs.addEventListener("click", (event) => {
 });
 
 
-function putJson(index){
+function putJson(value,route){
 
-  var url = "http://xxxxxxxxxx/putPageIndex"
+  var url = "http://xxxxxxxxxx/"+route  //putPageIndex
 
   var request = new XMLHttpRequest();
 
@@ -589,7 +693,7 @@ function putJson(index){
 
   //request.setRequestHeader("Content-Type", "application/json");
 
-  var send_data  = {"click_once_count":index.toString()}
+  var send_data  = {info:value} //"click_once_count"
   console.log(JSON.stringify(send_data));
   request.send(JSON.stringify(send_data)); 
 
@@ -597,6 +701,7 @@ function putJson(index){
     console.log(" success");
     console.log(request.status, " status");
     console.log(request.readyState, "readyState");
+    console.log(request.json);
     if (request.status === 200) {
       console.log(" success");
 
@@ -718,6 +823,7 @@ function postPIC(file){
 
 </body>
 </html>
+
 
 
   )"";
