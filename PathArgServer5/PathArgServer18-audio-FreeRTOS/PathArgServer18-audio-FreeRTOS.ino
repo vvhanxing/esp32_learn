@@ -184,7 +184,27 @@ void putInfo(){
   Serial.println(info);
   server.sendHeader("Location","/getinfo");
   server.send(302,"text/plain","ok");
-  
+  //
+//         
+//case 4: // Mirror and rotate counterclockwise
+//#ifdef CGRAM_OFFSET
+//  if (_init_width == 240 && _init_height == 240)  // Assuming square screen
+//  {
+//    colstart = 0;  // Adjust this value based on your mirroring requirements
+//    rowstart = 0;    // Adjust this value based on your mirroring requirements
+//  }
+//  else
+//  {
+//    // Adjust these values based on your mirroring requirements for non-square screens
+//    colstart = 0;
+//    rowstart = 0;
+//  }
+//#endif
+//  writedata(TFT_MAD_MX  | TFT_MAD_COLOR_ORDER);  // Adjust rotation direction if needed
+//
+//  _width  = _init_height;
+//  _height = _init_width;
+//  break;
   if (info=="portrait1") {tft.setRotation(0);tft.fillScreen(TFT_WHITE);}
   if (info=="portrait2") {tft.setRotation(1);tft.fillScreen(TFT_WHITE);}
   if (info=="portrait3") {tft.setRotation(2);tft.fillScreen(TFT_WHITE);}

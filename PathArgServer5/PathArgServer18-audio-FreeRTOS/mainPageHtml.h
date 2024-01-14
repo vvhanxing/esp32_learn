@@ -359,7 +359,7 @@ ul.main-tabs li {
 <br><div class="container">
   <div class="row">
   <div class="col-sm-2 imgUp">
-    <div class="imagePreview"></div>
+    <div class="imagePreview select"></div>
 <label class="btn btn-primary">
                               Select<input type="file" class="uploadFile img" value="Upload Photo" style="width: 0px;height: 0px;overflow: hidden;">
         </label>
