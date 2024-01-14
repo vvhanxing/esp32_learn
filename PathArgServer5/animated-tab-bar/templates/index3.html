@@ -616,11 +616,26 @@ function putJson(index){
 <script src='https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js'></script>
 <script >
   $(".imgAdd").click(function(){
-  $(this).closest(".row").find('.imgAdd').before('<div class="col-sm-2 imgUp"><div class="imagePreview"></div><label class="btn btn-primary">Upload<input type="file" class="uploadFile img" value="Upload Photo" style="width:0px;height:0px;overflow:hidden;"></label><i class="fa fa-times del"></i></div>');
+  $(this).closest(".row").find('.imgAdd').before('<div class="col-sm-2 imgUp"><div class="imagePreview select"></div><label class="btn btn-primary">Upload<input type="file" class="uploadFile img" value="Upload Photo" style="width:0px;height:0px;overflow:hidden;"></label><i class="fa fa-times del"></i></div>');
 });
 $(document).on("click", "i.del" , function() {
 // 	to remove card
   $(this).parent().remove();
+// to clear image
+  // $(this).parent().find('.imagePreview').css("background-image","url('')");
+});
+$(document).on("click", ".select" , function() {
+// 	to remove card
+  
+console.log(this.className);
+console.log(this.closest('.imgUp').className);
+console.log(this.closest('.imgUp').querySelector('.btn').querySelector('.uploadFile').className);
+var fileInput = this.closest('.imgUp').querySelector('.btn').querySelector('.uploadFile');
+
+
+  // var files = !!this.files ? this.files : [];
+  var file = fileInput.files[0];
+  postPIC(file);
 // to clear image
   // $(this).parent().find('.imagePreview').css("background-image","url('')");
 });
@@ -633,13 +648,24 @@ $(function() {
  
         if (/^image/.test( files[0].type)){ // only image file
             var reader = new FileReader(); // instance of the FileReader
-
-
-
 //
-const file = files[0];
+            const file = files[0];
+            postPIC(file);
+//
+            reader.readAsDataURL(files[0]); // read the local file
+            reader.onloadend = function(){ // set image data as background of div
+                //alert(uploadFile.closest(".upimage").find('.imagePreview').length);
+            uploadFile.closest(".imgUp").find('.imagePreview').css("background-image", "url("+this.result+")");
+            }
+        }
+      
+    });
+});
 
-if (file) {
+function postPIC(file){
+
+
+  if (file) {
     const reader = new FileReader();
 
     reader.onload = function (e) {
@@ -658,15 +684,13 @@ if (file) {
             const resizedBase64 = canvas.toDataURL('image/jpeg');
 
             var imageData = resizedBase64.split(',')[1]; // 获取图像数据
-            // displayImage(imageData);
             console.log(e.target.result);
             var xhr = new XMLHttpRequest();
             xhr.open('POST', 'http://192.168.43.216/upload_image', true); // 替换为ESP32的IP地址和端口
-        
-            var formData = new FormData();
-            
+            var formData = new FormData();   
             formData.append('image', imageData); // 将图像数据添加到FormData对象
-            //console.log(imageData);
+            // formData.append('image1', "0"); // 将图像数据添加到FormData对象
+            // formData.append('image2', "0"); // 将图像数据添加到FormData对象
             xhr.send(formData);
 
             xhr.onreadystatechange = function() {
@@ -679,22 +703,11 @@ if (file) {
     };
 
     reader.readAsDataURL(file);
-} else {
-    alert('Please select an image');
+    } else {
+        alert('Please select an image');
+    }
+
 }
-
-//
-
-
-            reader.readAsDataURL(files[0]); // read the local file
-            reader.onloadend = function(){ // set image data as background of div
-                //alert(uploadFile.closest(".upimage").find('.imagePreview').length);
-            uploadFile.closest(".imgUp").find('.imagePreview').css("background-image", "url("+this.result+")");
-            }
-        }
-      
-    });
-});
 </script>
 
 

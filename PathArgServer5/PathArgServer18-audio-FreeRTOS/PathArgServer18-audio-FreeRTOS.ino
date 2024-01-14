@@ -184,9 +184,14 @@ void putInfo(){
   Serial.println(info);
   server.sendHeader("Location","/getinfo");
   server.send(302,"text/plain","ok");
-  if (info=="mirror") {tft.setRotation(4);}
-  if (info=="not mirror") {tft.setRotation(0);}
+  
+  if (info=="portrait1") {tft.setRotation(0);tft.fillScreen(TFT_WHITE);}
+  if (info=="portrait2") {tft.setRotation(1);tft.fillScreen(TFT_WHITE);}
+  if (info=="portrait3") {tft.setRotation(2);tft.fillScreen(TFT_WHITE);}
+  if (info=="portrait4") {tft.setRotation(3);tft.fillScreen(TFT_WHITE);}
+  if (info=="portrait5") {tft.setRotation(4);tft.fillScreen(TFT_WHITE);}
   }
+  
 
 void putPageIndex(){
   Serial.println(server.arg(0));
@@ -206,35 +211,35 @@ void putPageIndex(){
   }
 
 
-uint8_t decodedImage[10240*3]={0};
+
 /////////////
 
-void getEncodedImage(){
-  HTTPClient http;
-  http.begin("http://114.55.178.110/getapic2"); // 替换为服务器的URL
-  http.addHeader("Content-Type", "application/json");
-
-  // JSON 数据
-  String jsonPayload = "{\"key1\":\"value1\",\"key2\":\"value2\"}";
-
-  // 发送POST请求
-  int httpResponseCode = http.POST(jsonPayload);
-  String response = "";
-  if (httpResponseCode > 0) {
-    response = http.getString();
-    Serial.println(httpResponseCode);
-    Serial.println(response);
-  } else {
-    Serial.print("Error code: ");
-    Serial.println(httpResponseCode);
-    response = "error";
-  }
-
-  http.end();
-  int decoded_size = base64_decode((char*)decodedImage, (char*)response.c_str(), 10240*3);
-  
-
-}
+//void getEncodedImage(){
+//  HTTPClient http;
+//  http.begin("http://114.55.178.110/getapic2"); // 替换为服务器的URL
+//  http.addHeader("Content-Type", "application/json");
+//
+//  // JSON 数据
+//  String jsonPayload = "{\"key1\":\"value1\",\"key2\":\"value2\"}";
+//
+//  // 发送POST请求
+//  int httpResponseCode = http.POST(jsonPayload);
+//  String response = "";
+//  if (httpResponseCode > 0) {
+//    response = http.getString();
+//    Serial.println(httpResponseCode);
+//    Serial.println(response);
+//  } else {
+//    Serial.print("Error code: ");
+//    Serial.println(httpResponseCode);
+//    response = "error";
+//  }
+//
+//  http.end();
+//  int decoded_size = base64_decode((char*)decodedImage, (char*)response.c_str(), 10240*3);
+//  
+//
+//}
 ////////////
 void getInfo(){
   server.send(200,"text/html",(String)"<!DOCTYPE html><body><h1>"+"info: </h1><h1>"+info+"</h1></body></html>");
@@ -243,19 +248,27 @@ void getInfo(){
   Serial.println(info);
   
   }
+//
 
+//
+
+int maxDecodedSize = 1024*30;
+uint8_t decodedImage[1024*30 ] PROGMEM ={0};
+
+
+//
+//// 动态分配内存
+//uint8_t* decodedImage = new uint8_t[maxDecodedSize];
 
 void handleImageUpload() {
   if (server.method() == HTTP_POST) {
     Serial.println("post1");
     String encodedImage = server.arg("image");
+    int decoded_size = base64_decode((char*)decodedImage, (char*)encodedImage.c_str(), maxDecodedSize);
+     
     Serial.println("post2");
-    
-    Serial.println("post3");
-    int decoded_size = base64_decode((char*)decodedImage, (char*)encodedImage.c_str(), 10240*3);
-    Serial.println("post4");
-    //Serial.println(encodedImage);
-    //free(decodedImage);
+    Serial.println(decoded_size);
+   
     server.send(200, "text/plain", "Image received");
     }
   }
@@ -378,11 +391,13 @@ void loopScreen(){
              array[5]=0;
              drawArrayJpeg(icon_1_1[0], icon_1_1_size[0], 60, 60); 
                } 
-                 
+            //Serial.printf("sizeof(decodedImage)0");
             if (decodedImage[0]!=0)
-            drawArrayJpeg(decodedImage, sizeof(decodedImage), 0, 0);//http图片
-            else  drawArrayJpeg(icon_1_1[0], icon_1_1_size[0], 60, 60); // Draw a jpeg image stored in memory
-            delay(100);
+            { 
+              drawArrayJpeg(decodedImage, sizeof(decodedImage), 0, 0);
+            }
+            else delay(100);
+          
         }
 
         

@@ -19,7 +19,7 @@ conut = 0
 audio_data = b""
 J ={}
 app = Flask(__name__)
-cors = CORS(app)
+cors = CORS(app, supports_credentials=True)
 
 
 
