@@ -26,7 +26,7 @@ cors = CORS(app, resources={r"/*": {"origins": "http://192.168.43.216:5000"}})
 @app.route("/index3",methods = ["GET","POST"])
 def ui():
 
-    return render_template("index3.html")
+    return render_template("index4.html")
 
 @app.route("/",methods = ["GET","POST"])
 def chat():
