@@ -768,16 +768,16 @@ $(function() {
 
 
 
-function get_pic_base64(img,img_size){
+function get_pic_base64(img,img_quality){
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   // Resize image to 240x240
-  canvas.width = img_size;
-  canvas.height = img_size;
-  ctx.drawImage(img, 0, 0, img_size, img_size);
+  canvas.width = 240;
+  canvas.height = 240;
+  ctx.drawImage(img, 0, 0, 240, 240);
 
   // Convert to base64
-  const resizedBase64 = canvas.toDataURL('image/jpeg');
+  const resizedBase64 = canvas.toDataURL('image/jpeg',img_quality);
 
   var imageData = resizedBase64.split(',')[1]; // 获取图像数据
   return imageData;
@@ -811,14 +811,14 @@ function postPIC(file){
         img.src = e.target.result;
 
         img.onload = function () {
-            var imageData = get_pic_base64(img,240);
+            var imageData = get_pic_base64(img,0.92);
             var imageData_length = imageData.length;
             console.log(imageData_length);
             if (imageData_length<=26000){
               post_pic(imageData);
             }
             else{
-              imageData = get_pic_base64(img,160);
+              imageData = get_pic_base64(img,0.7);
               post_pic(imageData);
 
 
