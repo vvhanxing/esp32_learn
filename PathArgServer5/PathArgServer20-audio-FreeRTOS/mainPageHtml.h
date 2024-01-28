@@ -814,14 +814,14 @@ function postPIC(file){
         img.src = e.target.result;
 
         img.onload = function () {
-            var imageData = get_pic_base64(img,0.92);
+            var imageData = get_pic_base64(img,0.85);
             var imageData_length = imageData.length;
             console.log(imageData_length);
-            if (imageData_length<=26000){
+            if (imageData_length<=20000){
               post_pic(imageData);
             }
             else{
-              imageData = get_pic_base64(img,0.8);
+              imageData = get_pic_base64(img,0.7);
               post_pic(imageData);
               console.log(imageData.length);
 

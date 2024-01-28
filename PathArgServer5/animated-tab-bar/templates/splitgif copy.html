@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>分解GIF图片、合成GIF图片</title>
+<style type="text/css">
+  body{ background-color: #ddd;}
+</style>
+</head>
+<body>
+  
+  <div>
+    <p><strong>分解GIF图片</strong></p>
+    <p>libgif-js：JavaScript GIF 解析器和播放器</p>
+    <p><a href="https://github.com/aoiu/libgif-js">https://github.com/aoiu/libgif-js</a></p>
+    <p>&lt;script src="https://raw.githubusercontent.com/aoiu/libgif-js/master/libgif.js"&gt;&lt;/script&gt;</p>
+    <p style="color: red;">or</p>
+    <p><a href="https://github.com/buzzfeed/libgif-js">https://github.com/buzzfeed/libgif-js</a></p>
+    <p>&lt;script src="https://raw.githubusercontent.com/buzzfeed/libgif-js/master/libgif.js"&gt;&lt;/script&gt;</p>
+  </div>
+  
+  <hr >
+  
+  <div>
+    <p><strong>合成GIF图片</strong></p>
+    <p>gif.js：JavaScript GIF 编码库</p>
+    <p><a href="https://github.com/jnordberg/gif.js">https://github.com/jnordberg/gif.js</a></p>
+    <p>示例</p>
+    <p><a href="https://jnordberg.github.io/gif.js/">https://jnordberg.github.io/gif.js/</a></p>
+    <p>&lt;script src="https://imgss.github.io/demo/gif/gif.js"&gt;&lt;/script&gt;</p>
+    <p style="color: red;">gif.worker.js 与 HTML代码文件在同级目录可以不设置，如不在同级目录，workerScript则必须设置到对应路径</p>
+    <p><a href="https://imgss.github.io/demo/gif/gif.worker.js">https://imgss.github.io/demo/gif/gif.worker.js</a></p>
+  </div>
+  
+  <hr >
+  
+  <style type="text/css">
+    .gif_source{ color: blue; font-weight: bold;}
+    .gif_source img , .gif_source canvas{ width: 150px;}
+    .jsgif::before{ content: "GIF素材 - 分解后添加 - 生成的CANVAS"; display: block; margin-top: 20px; margin-bottom: 10px;}
+    .jsgif::after{ content: "GIF素材 - 原图"; display: block; margin-top: 20px; margin-bottom: 10px;}
+  </style>
+  <div class="gif_source">
+    <img id="gifImg" src="./static/1.gif" rel:animated_src="1.gif" rel:auto_play="1" />
+  </div>
+  
+  <style type="text/css">
+    .gif_result{ color: blue; font-weight: bold;}
+  </style>
+  <div class="gif_result">
+    <p>GIF素材 - 分解后 - 处理每一帧合成图片</p>
+  </div>
+  
+  
+  <!-- 分解GIF图片 -->
+  <script src="./static/libgif.js"></script>
+  <!-- 合成GIF图片 -->
+  <script src="./static/gif.js"></script>
+  <script type="text/javascript">
+    // 分解GIF图片
+    load_gif();
+    var gifImgLen , gifImgList = [];
+    function load_gif() {
+      // 新建gif实例
+      var rub = new SuperGif({
+        gif:document.getElementById('gifImg'), //必需：img 标签的 DOM 元素
+        loop_mode:true, //可选：将此设置为 false 将强制禁用 gif 循环。
+        auto_play:1, //可选：与上面的img标签 rel:auto_play 属性相同，这个 arg 覆盖了 img 标签信息。
+        max_width:350, //可选：将 max_width 上的图像缩小到 max_width。对手机端访问有帮助。
+        rubbable:1, //可选：让它可以擦掉。
+        // on_end:()=>{console.log('gif 到达单个循环（一次迭代）结束')}, //可选：添加当 gif 到达单个循环（一次迭代）结束时的回调。传递的第一个参数是 gif HTMLElement。
+        loop_delay:0, //可选：每次循环（迭代）后暂停的时间（以毫秒为单位）。
+        progressbar_height:10, //可选：进度条的高度。
+        progressbar_background_color:'#00ff00', //可选：进度条的背景颜色。
+        progressbar_foreground_color:'#0000ff', //可选：进度条的前景色。
+      });
+      rub.load(function() {
+        // console.log(rub);
+        gifImgLen = rub.get_length();
+        // console.log(gifImgLen);
+        for (var i = 0; i < gifImgLen; i++) {
+          // console.log(i);
+          // 遍历gif实例的每一帧
+          rub.move_to(i);
+          // console.log(rub.get_current_frame());
+          //canvas生成base64图片数据
+          gifImgList[i] = rub.get_canvas().toDataURL('image/png');
+          // console.log(gifImgList[i]);
+          if (i == gifImgLen-1) {
+            load_head_img();
+          }
+        }
+      })
+    }
+    
+    // 向原GIF中嵌入增加的头像元素
+    var headImg;
+    function load_head_img(){
+      headImg = new Image();
+      headImg.src = './static/uploaded_image.jpg';
+      headImg.onload = function(){
+        make_gif();
+      }
+    }
+    
+    // 合成GIF图片
+    function make_gif() {
+      var gif = new GIF({
+        repeat:0, //重复计数，-1= 不重复，0= 永远
+        quality:10, //质量 像素采样间隔，越低越好
+        workers:2,
+        // workerScript:'https://imgss.github.io/demo/gif/gif.worker.js',
+        // workerScript:'gif.worker.js', //gif.worker.js 与 HTML代码文件在同级目录可以不设置，如不在同级目录，workerScript则必须设置到对应路径
+        // background:'#ff0000', //背景 源图像透明的背景颜色
+        // width:500, //宽度 输出图像宽度 （如果宽度或高度是null图像大小将由添加的第一帧确定）
+        // height:500, //高度 输出图像高度
+        transparent:'rgba(0,0,0,0)', //透明  透明的十六进制颜色，0x00FF00=绿色（实测：如处理每一帧时 铺底色 时，会导致生成的图片有雪花点）
+        // dither:'Stucki-serpentine', //抖动 抖动方法，例如 FloydSteinberg-serpentine
+        // debug:true, //调试 是否将调试信息打印到控制台
+      });
+      
+      for (var i = 0; i < gifImgLen; i++) {
+        (function(i){
+          var img = new Image();
+          img.src = gifImgList[i];
+          img.onload = function(e) {
+            // console.log(i);
+            // console.log(this);
+            //Canvas绘制图片
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            canvas.width = this.width;
+            canvas.height = this.height;
+            // ctx.clearRect(0,0,this.width,this.height);
+            //铺底色
+            // ctx.fillStyle = "#fff";
+            // ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // 写入自定义头像
+            ctx.drawImage(headImg, 105, 15, 85, 121);
+            // 写入GIF当前帧图片
+            ctx.drawImage(this, 0, 0, this.width, this.height);
+            // 写入文字
+            ctx.fillStyle = "greenyellow";
+            ctx.font = 'bold italic 32px "PingFangSC-Regular","sans-serif","STHeitiSC-Light","微软雅黑","Microsoft YaHei"';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.fillText(i,10,15)
+            console.log(canvas.toDataURL('image/jpeg',0.8));
+            // 添加一个画布元素
+            gif.addFrame(canvas, {
+              delay:100, //延迟(帧延迟) 默认500 控制动画速度
+              copy:true, //复制(复制像素数据) 默认false
+              // dispose:-1, //处置(帧处理代码) 默认-1
+            });
+            //图片
+            if (i == gifImgLen-1) {
+              // 渲染
+              gif.render();
+            }
+          }
+        })(i)
+      }
+      
+      // 渲染完成
+      gif.on('finished', function(blob) {
+        //生成图片链接
+        var url = null;
+        if(window.createObjectURL!=undefined){ // basic
+            url = window.createObjectURL(blob);
+        }else if(window.URL!=undefined){ // mozilla(firefox)
+            url = window.URL.createObjectURL(blob);    
+        }else if(window.webkitURL!=undefined){ // webkit or chrome
+            url = window.webkitURL.createObjectURL(blob);
+        }
+        var newImg = document.createElement('img');
+        newImg.src = url;
+        console.log(url);
+        // document.body.appendChild(newImg);
+        document.getElementsByClassName('gif_result')[0].appendChild(newImg);
+      })
+    }
+  </script>
+  
+  
+</body>
+</html>

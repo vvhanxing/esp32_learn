@@ -19,7 +19,7 @@ conut = 0
 audio_data = b""
 J ={}
 app = Flask(__name__)
-cors = CORS(app, resources={r"/*": {"origins": "http://192.168.43.216:5000"}})
+cors = CORS(app, resources={r"/index3": {"origins": "http://192.168.43.185:5000"}})
 
 
 
@@ -32,6 +32,11 @@ def ui():
 def chat():
 
     return render_template("index2.html")
+
+@app.route("/splitgif",methods = ["GET","POST"])
+def splitgif():
+
+    return render_template("splitgif.html")
 
 # @app.route("ui/",methods = ["GET","POST"])
 # def ui():
