@@ -19,19 +19,19 @@
 
 // 任务1
 #define TASK1_TASK_PRIO  1          // 任务优先级 server
-#define TASK1_STK_SIZE   1024*8       // 任务堆栈大小
+#define TASK1_STK_SIZE   1024*4       // 任务堆栈大小
 TaskHandle_t Tasks1_TaskHandle=NULL; // 任务句柄
 void task1(void *pvParameters); //任务函数
 
 // 任务2
 #define TASK2_TASK_PRIO  1        // 任务优先级 screen
-#define TASK2_STK_SIZE   1024*8        // 任务堆栈大小
+#define TASK2_STK_SIZE   1024*4        // 任务堆栈大小
 TaskHandle_t Tasks2_TaskHandle=NULL; // 任务句柄
 void task2(void *pvParameters); //任务函数
 //
 //// 任务3
 #define TASK3_TASK_PRIO  1         // 任务优先级 audio
-#define TASK3_STK_SIZE   1024*8       // 任务堆栈大小
+#define TASK3_STK_SIZE   1024*4       // 任务堆栈大小
 TaskHandle_t Tasks3_TaskHandle=NULL; // 任务句柄
 void task3(void *pvParameters); //任务函数
 //
@@ -227,9 +227,9 @@ void putInfo(){
 //  }
 //#endif
 //  writedata(TFT_MAD_MX  | TFT_MAD_COLOR_ORDER);  // Adjust rotation direction if needed
-//
+// 
 //  _width  = _init_height;
-//  _height = _init_width;
+//  _height = _init_width;  E:\Arduino\hardware\espressif\esp32\libraries\TFT_eSPI\TFT_Drivers\ST7735_Rotation.h
 //  break;
   if (info=="rotate0") {tft.setRotation(0);tft.fillScreen(TFT_WHITE);}
   if (info=="rotate90") {tft.setRotation(1);tft.fillScreen(TFT_WHITE);}
@@ -336,7 +336,7 @@ uint8_t frame_7[1024*6 ] PROGMEM ={0};
 
 
 
-const uint8_t *gif[8] PROGMEM {frame_0,frame_1,frame_2,frame_3,frame_4,frame_5,frame_6,frame_7};
+const uint8_t *gif[9] PROGMEM {frame_0,frame_1,frame_2,frame_3,frame_4,frame_5,frame_6,frame_7,};
 
 void handleGIFUpload() {
   if (server.method() == HTTP_POST) {
@@ -345,12 +345,35 @@ void handleGIFUpload() {
     String frame_index = server.arg("frame_index");
     String encodedImage = server.arg("image");
     Serial.println(frame_index);
-    frame_0 = {0};frame_1 = {0};frame_2 = {0};frame_3 = {0};frame_4 = {0};frame_5 = {0};frame_6 = {0};frame_7 = {0};
-    
+// 
+//    memset(frame_0,0,sizeof(frame_0));
+//    memset(frame_1,0,sizeof(frame_1));
+//    memset(frame_2,0,sizeof(frame_2));
+//    memset(frame_3,0,sizeof(frame_3));
+//    memset(frame_4,0,sizeof(frame_4));
+//    memset(frame_5,0,sizeof(frame_5));
+//    memset(frame_6,0,sizeof(frame_6));
+//    memset(frame_7,0,sizeof(frame_7));
+//    memset(frame_8,0,sizeof(frame_0));
+//    memset(frame_9,0,sizeof(frame_1));
+//    memset(frame_10,0,sizeof(frame_2));
+//    memset(frame_11,0,sizeof(frame_3));
+//    memset(frame_12,0,sizeof(frame_4));
+//    memset(frame_13,0,sizeof(frame_5));
+//    memset(frame_14,0,sizeof(frame_6));
+//    memset(frame_15,0,sizeof(frame_7));    
     if (frame_index =="0"){
       Serial.println( 0);
       Serial.println(sizeof(encodedImage));
       int decoded_size = base64_decode((char*)gif[0] , (char*)encodedImage.c_str(), 1024*6);
+      memset(frame_1,0,sizeof(frame_1));
+      memset(frame_2,0,sizeof(frame_2));
+      memset(frame_3,0,sizeof(frame_3));
+      memset(frame_4,0,sizeof(frame_4));
+      memset(frame_5,0,sizeof(frame_5));
+      memset(frame_6,0,sizeof(frame_6));
+      memset(frame_7,0,sizeof(frame_7));
+    
     }
     if (frame_index =="1"){
       Serial.println(1);
@@ -556,8 +579,8 @@ void loopScreen(){
 
 
      
-        int pic_length = 8;
-        for (int i=0;i<pic_length;i++ ){
+//        int pic_length = 9;
+//        for (int i=0;i<pic_length;i++ ){
           TJpgDec.drawJpg( 0, 0, frame_0, sizeof(frame_0));
           delay(10);
           TJpgDec.drawJpg( 0, 0, frame_1, sizeof(frame_1)); 
@@ -574,13 +597,12 @@ void loopScreen(){
           delay(10);
           TJpgDec.drawJpg( 0, 0, frame_7, sizeof(frame_7)); 
           delay(10);
-     
-          
+   
  
           
       
-           if (click()){break;}else delay(2);
-           }    
+          // if (click()){break;}else delay(2);
+          // }    
             
     
 

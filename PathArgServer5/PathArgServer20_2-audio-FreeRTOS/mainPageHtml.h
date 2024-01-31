@@ -1738,6 +1738,8 @@ function post_pic(imageData,index,url){ //'http://192.168.43.216/upload_image'
   }
   };  
 }
+
+
 function post_gif(img,url){
  // if (file && file.type === 'image/gif') {
     // var arrayBuffer = img.src;
@@ -1750,7 +1752,7 @@ function post_gif(img,url){
         gif:img, //必需：img 标签的 DOM 元素
         loop_mode:true, //可选：将此设置为 false 将强制禁用 gif 循环。
         auto_play:1, //可选：与上面的img标签 rel:auto_play 属性相同，这个 arg 覆盖了 img 标签信息。
-        max_width:350, //可选：将 max_width 上的图像缩小到 max_width。对手机端访问有帮助。
+        max_width:240, //可选：将 max_width 上的图像缩小到 max_width。对手机端访问有帮助。
         rubbable:1, //可选：让它可以擦掉。
         // on_end:()=>{console.log('gif 到达单个循环（一次迭代）结束')}, //可选：添加当 gif 到达单个循环（一次迭代）结束时的回调。传递的第一个参数是 gif HTMLElement。
         loop_delay:0, //可选：每次循环（迭代）后暂停的时间（以毫秒为单位）。
@@ -1767,34 +1769,21 @@ function post_gif(img,url){
           // console.log(i);
           // 遍历gif实例的每一帧
           rub.move_to(i);
-          // console.log(rub.get_current_frame());
-          //canvas生成base64图片数据
+    
+          // var img = new Image();
+          // img.src =rub.get_canvas().toDataURL('image/jpeg'); 
 
-          const canvas_tmp = document.createElement('canvas');
-          const ctx_tmp = canvas_tmp.getContext('2d');
-          const newImage_ = new Image();
-          newImage_.src = rub.get_canvas().toDataURL('image/jpeg');
-          // console.log(newImage_.src);
-          // Resize image to 240x240
+          // const canvas_tmp = document.createElement('canvas');
+          // const ctx_tmp = canvas_tmp.getContext('2d');    
           // canvas_tmp.width = 240;
           // canvas_tmp.height = 240;
-          // ctx_tmp.drawImage(newImage_, 0, 0, 240, 240);
-          const resizedBase64 = rub.get_canvas().toDataURL('image/jpeg',0.1).split(',')[1];
-          console.log(rub.get_canvas().toDataURL('image/jpeg',0.1));
+          // ctx_tmp.drawImage(img, 0, 0, 240, 240);
+
+          const resizedBase64 =rub.get_canvas().toDataURL('image/jpeg',0.2).split(',')[1];
+          console.log(resizedBase64.length);
           post_pic(resizedBase64,i.toString(),url);
+          if (i>8) break;
 
-
-          //gifImgList[i] = rub.get_canvas().toDataURL('image/png',0.1);
-          // console.log("================================");
-          // console.log(i.toString());
-          
-          // imageData =gifImgList[i].split(',')[1] ;
-          
-          // post_pic(imageData,i.toString(),url);
-        
-        //   if (i == gifImgLen-1) {
-        //     load_head_img();
-        //   }
         }
         
       })
@@ -1827,17 +1816,17 @@ function postPIC(file){
         }
         else{
         img.onload = function () {
-            var imageData = get_pic_base64(img,0.85,file);
+            var imageData = get_pic_base64(img,0.8,file);
             var imageData_length = imageData.length;
             console.log(imageData_length);
             url = 'http://xxxxxxxxxx/upload_image';
-            if (imageData_length<=26000){
+            if (imageData_length<=1500){
               
               post_pic(imageData,"0",url);
             }
             else{
               imageData = get_pic_base64(img,0.7,file);
-              post_pic(imageData,url);
+              post_pic(imageData,"0",url);
             }
             console.log(e.target.result);
         };

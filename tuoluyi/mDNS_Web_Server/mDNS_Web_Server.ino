@@ -14,7 +14,14 @@
   - Point your browser to http://esp32.local, you should see a response.
 
  */
-
+//http://www.taodudu.cc/news/show-6518276.html?action=onClick
+//3.3v->VCC
+//
+//GND->GND
+//
+//GPIO22->SCL
+//
+//GPIO21->SDA
 
 #include <WiFi.h>
 #include <ESPmDNS.h>

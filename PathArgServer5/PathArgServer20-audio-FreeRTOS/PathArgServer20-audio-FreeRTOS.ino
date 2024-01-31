@@ -19,19 +19,19 @@
 
 // 任务1
 #define TASK1_TASK_PRIO  1          // 任务优先级 server
-#define TASK1_STK_SIZE   1024*8       // 任务堆栈大小
+#define TASK1_STK_SIZE   1024*4       // 任务堆栈大小
 TaskHandle_t Tasks1_TaskHandle=NULL; // 任务句柄
 void task1(void *pvParameters); //任务函数
 
 // 任务2
 #define TASK2_TASK_PRIO  1        // 任务优先级 screen
-#define TASK2_STK_SIZE   1024*8        // 任务堆栈大小
+#define TASK2_STK_SIZE   1024*4        // 任务堆栈大小
 TaskHandle_t Tasks2_TaskHandle=NULL; // 任务句柄
 void task2(void *pvParameters); //任务函数
 //
 //// 任务3
 #define TASK3_TASK_PRIO  1         // 任务优先级 audio
-#define TASK3_STK_SIZE   1024*8       // 任务堆栈大小
+#define TASK3_STK_SIZE   1024*4       // 任务堆栈大小
 TaskHandle_t Tasks3_TaskHandle=NULL; // 任务句柄
 void task3(void *pvParameters); //任务函数
 //
