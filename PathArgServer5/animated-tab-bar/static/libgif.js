@@ -456,8 +456,8 @@
         var frameOffsets = []; // elements have .x and .y properties
 
         var gif = options.gif;
-        // if (typeof options.auto_play == 'undefined')
-        //     options.auto_play = (!gif.getAttribute('rel:auto_play') || gif.getAttribute('rel:auto_play') == '1');
+        if (typeof options.auto_play == 'undefined')
+            options.auto_play = (!gif.getAttribute('rel:auto_play') || gif.getAttribute('rel:auto_play') == '1');
 
         var onEndListener = (options.hasOwnProperty('on_end') ? options.on_end : null);
         var loopDelay = (options.hasOwnProperty('loop_delay') ? options.loop_delay : 0);
@@ -972,7 +972,7 @@
                 h.send();
             },
             load: function (callback) {
-                this.load_url( gif.src,callback);
+                this.load_url(gif.getAttribute('rel:animated_src') || gif.src,callback);
             },
             load_raw: function(arr, callback) {
                 if (!load_setup(callback)) return;

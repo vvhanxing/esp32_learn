@@ -595,7 +595,7 @@ void loopScreen(){
       if (click_once_count==2){
            TJpgDec.setJpgScale(1);
            if (array[2]==0){
-             tft.fillScreen(TFT_WHITE);
+             tft.fillScreen(TFT_BLACK);
              
              array[0]=0;
              array[1]=0;
@@ -604,34 +604,48 @@ void loopScreen(){
              array[4]=0;
              array[5]=0;}
 
-
-     
-//        int pic_length = 9;
-//        for (int i=0;i<pic_length;i++ ){
+          if (frame_0[0]!=0){
           TJpgDec.drawJpg( 0, 0, frame_0, sizeof(frame_0));
-          delay(10);
-          TJpgDec.drawJpg( 0, 0, frame_1, sizeof(frame_1)); 
-          delay(10);
-          TJpgDec.drawJpg( 0, 0, frame_2, sizeof(frame_2)); 
-          delay(10);
-          TJpgDec.drawJpg( 0, 0, frame_3, sizeof(frame_3)); 
-          delay(10);
-          TJpgDec.drawJpg( 0, 0, frame_4, sizeof(frame_4)); 
-          delay(10);
-          TJpgDec.drawJpg( 0, 0, frame_5, sizeof(frame_5)); 
-          delay(10);
-          TJpgDec.drawJpg( 0, 0, frame_6, sizeof(frame_6)); 
-          delay(10);
-          TJpgDec.drawJpg( 0, 0, frame_7, sizeof(frame_7)); 
-          delay(10);
-   
- 
+          delay(20);}
           
-      
-          // if (click()){break;}else delay(2);
-          // }    
-            
-    
+
+          if (frame_1[0]!=0){
+          TJpgDec.drawJpg( 0, 0, frame_1, sizeof(frame_1));
+          delay(20);}
+               
+
+          if (frame_2[0]!=0){
+          TJpgDec.drawJpg( 0, 0, frame_2, sizeof(frame_2));
+          delay(20);}
+        
+
+
+          if (frame_3[0]!=0){
+          TJpgDec.drawJpg( 0, 0, frame_3, sizeof(frame_3));
+          delay(20);}
+         
+
+          if (frame_4[0]!=0){
+          TJpgDec.drawJpg( 0, 0, frame_4, sizeof(frame_4));
+          delay(20);}
+     
+          
+          if (frame_5[0]!=0){
+          TJpgDec.drawJpg( 0, 0, frame_5, sizeof(frame_5));
+          delay(20);}
+         
+
+          if (frame_6[0]!=0){
+          TJpgDec.drawJpg( 0, 0, frame_6, sizeof(frame_6));
+          delay(20);}
+     
+
+
+          if (frame_7[0]!=0){
+          TJpgDec.drawJpg( 0, 0, frame_7, sizeof(frame_7));
+          delay(20);}
+               
+                        
 
 //      else{
 //        int pic_length = 60;

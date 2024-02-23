@@ -180,7 +180,7 @@ String info_list [] = {info,info};
 
 ///////////////////
 void screenInfo(String info,int posx, int posy ,int font){
-  // 设置起始坐标(20, 10),4 号字体
+  // 设置起始坐标(20, 10),4 号字体  
   if (info_list [0]!= info_list [1]){
      tft.fillScreen(TFT_WHITE);
     }
@@ -337,9 +337,9 @@ uint8_t decodedImage[1024*29] PROGMEM ={0};
 void handleImageUpload() {
   if (server.method() == HTTP_POST) {
     Serial.println("post1");
-    char * encodedImage = (char*)(server.arg("image")).c_str();
+    String encodedImage = (server.arg("image"));
     Serial.println(sizeof(encodedImage));
-    int decoded_size = base64_decode((char*)decodedImage, encodedImage, maxDecodedSize);
+    int decoded_size = base64_decode((char*)decodedImage, (char*)encodedImage.c_str(), maxDecodedSize);
      
     Serial.println("post2");
     Serial.println(decoded_size);
@@ -381,6 +381,7 @@ void handleGIFUpload() {
 // 
 //
     if (frame_index =="0"){
+//      tft.fillScreen(TFT_BLACK);
       Serial.println( 0);
       Serial.println(sizeof(encodedImage));
       int decoded_size = base64_decode((char*)gif[0] , (char*)encodedImage.c_str(), 1024*6);
