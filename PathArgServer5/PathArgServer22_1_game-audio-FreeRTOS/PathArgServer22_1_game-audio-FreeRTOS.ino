@@ -298,8 +298,8 @@ void putPageIndex(){
 
 //
 
-int maxDecodedSize = 1024*29;
-uint8_t decodedImage[1024*29 ] PROGMEM ={0};
+int maxDecodedSize = 1024*32;
+uint8_t decodedImage[1024*32 ] PROGMEM ={0};
 
 void handleImageUpload() {
   if (server.method() == HTTP_POST) {
@@ -319,7 +319,7 @@ void handleImageUpload() {
 
 #define FORMAT_LITTLEFS_IF_FAILED true
 
-uint8_t frame_0[1024*6 ] PROGMEM ={0};
+uint8_t frame_0[1024*16 ] PROGMEM ={0};
 //uint8_t frame_1[1024*6 ] PROGMEM ={0};
 //uint8_t frame_2[1024*6 ] PROGMEM ={0};
 //uint8_t frame_3[1024*6 ] PROGMEM ={0};

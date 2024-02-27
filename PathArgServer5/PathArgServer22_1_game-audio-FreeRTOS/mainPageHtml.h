@@ -1763,10 +1763,12 @@ function post_gif(img,url){
       rub.load(function() {
         // console.log(rub);
         gifImgLen = rub.get_length();
-        // console.log(gifImgLen);
+        console.log("gifImgLen");
+        console.log(gifImgLen);
         
         for (var i = 0; i < gifImgLen; i++) {
-          // console.log(i);
+          console.log("frame");
+          console.log(i);
           // 遍历gif实例的每一帧
           rub.move_to(i);
     
@@ -1780,10 +1782,10 @@ function post_gif(img,url){
           // ctx_tmp.drawImage(img, 0, 0, 240, 240);
 
           var resizedBase64 = "";
-          resizedBase64 =rub.get_canvas().toDataURL('image/jpeg',0.2).split(',')[1];
+          resizedBase64 =rub.get_canvas().toDataURL('image/jpeg',0.5).split(',')[1];
           console.log(resizedBase64.length);
           post_pic(resizedBase64,i.toString(),url);
-          if (i>8) break;
+//          if (i>64) break;
 
         }
         
@@ -1821,14 +1823,14 @@ function postPIC(file){
             var imageData_length = imageData.length;
             console.log(imageData_length);
             url = 'http://xxxxxxxxxx/upload_image';
-            if (imageData_length<=12000){
+            if (imageData_length<=15000){
               post_pic(imageData,"0",url);
-              console.log(0.8);
+              console.log(0.85);
             }
             else{
-              imageData = get_pic_base64(img,0.7,file);
+              imageData = get_pic_base64(img,0.75,file);
               post_pic(imageData,"0",url);
-              console.log(0.7);
+              console.log(0.75);
             }
             console.log(e.target.result);
         };
