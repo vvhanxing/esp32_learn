@@ -1,12 +1,7 @@
-#include "arduino_base64.hpp"
-#include "FS.h"
+#include <FS.h>
 #include <LittleFS.h>
 
-#define FORMAT_LITTLEFS_IF_FAILED true
-
-
-void setup(){
-   
+void setup() {
   Serial.begin(9600);
   if (!LittleFS.begin()) {
     Serial.println("LittleFS initialization failed.");
@@ -27,15 +22,11 @@ void setup(){
   file.write(data, sizeof(data));
   file.close();
 
-  Serial.println("Data saved to LittleFS.");   
+  Serial.println("Data saved to LittleFS.");
 
 
-if (!LittleFS.begin()) {
-    Serial.println("LittleFS initialization failed.");
-    return;
-  }
 
-  // 打开保存数据的文件
+// 打开保存数据的文件
   file = LittleFS.open("/data.bin", "r");
   if (!file) {
     Serial.println("Failed to open file for reading");
@@ -44,7 +35,7 @@ if (!LittleFS.begin()) {
 
   // 确定文件大小并创建一个相应大小的缓冲区
   size_t fileSize = file.size();
-  uint8_t* buffer = (uint8_t*)malloc(fileSize);
+  uint8_t buffer [fileSize];//= (uint8_t*)malloc(fileSize);
 
   // 从文件中读取数据到缓冲区
   file.read(buffer, fileSize);
@@ -59,12 +50,17 @@ if (!LittleFS.begin()) {
   Serial.println();
 
   // 释放缓冲区内存
-  free(buffer);
+  
 
 
 
 
-    
+
+
+
+  
 }
 
-void loop(){}
+void loop() {
+  // 你的循环代码
+}
