@@ -418,50 +418,6 @@ String readFile(fs::FS &fs, const char * path){
 
 
 
-
-void writeVARFile(fs::FS &fs, const char * path, const uint8_t  data[1024*16]){
-    Serial.printf("Writing file: %s\r\n", path);
-
-  File file = fs.open(path, "w");
-  if (!file) {
-    Serial.println("Failed to open file for writing");
-    return;
-  }
-
-  // 假设你有一个名为data的uint8_t数组
-//  uint8_t data[] = {0x01, 0x02, 0x03, 0x04, 0x05};
-
-  // 将数据写入文件
-  file.write(data, sizeof(data));
-  file.close();
-}
-
-uint8_t* readVARFile(fs::FS &fs, const char * path){
-    //Serial.printf("Reading file: %s\r\n", path);
-  
-    File file = fs.open(path, "r");
-    if(!file || file.isDirectory()){
-        Serial.println("- failed to open file for reading");
-        return {0};
-    }
-
-    //Serial.println("- read from file:");
- 
-    size_t fileSize = file.size();
-  
-    uint8_t *buffer = new uint8_t[1024*16] ;
-    //Serial.printf("get var 2s");
-
-    // 从文件中读取数据到缓冲区
-    file.read(buffer, fileSize);
-    //Serial.printf("get var 3s");
-    file.close();   
-    return buffer;
-
-}
-
-
-
 int frame_num = 0;
 void handleGIFUpload() {
   if (server.method() == HTTP_POST) {
@@ -481,19 +437,7 @@ void handleGIFUpload() {
         return;
     }
       createDir(LittleFS, "/gif");
-      base64::decode((char*) encodedImage.c_str(), frame_0);
-          Serial.println("frame0");
-          Serial.println(frame_0[0]);
-          Serial.println(frame_0[1]);
-          Serial.println(frame_0[2]);
-          Serial.println(frame_0[3]);
-          Serial.println(frame_0[4]);
-          Serial.println(frame_0[5]);
-          Serial.println(frame_0[6]);
-          Serial.println(frame_0[7]);         
-          
-      writeVARFile(LittleFS, (char*)("/gif/gif"+frame_index+".bin").c_str(), frame_0);  //(char*)r.c_str()
-      //writeFile(LittleFS, (char*)("/gif/gif"+frame_index+".txt").c_str(), (char*)encodedImage.c_str());  //(char*)r.c_str()
+      writeFile(LittleFS, (char*)("/gif/gif"+frame_index+".txt").c_str(), (char*)encodedImage.c_str());  //(char*)r.c_str()
       frame_num = frame_index.toInt();
       Serial.println("frame_num");
       Serial.println(frame_num);
@@ -561,7 +505,7 @@ void loopURLaudio() {
   }
 }
 
-
+String r ="";
 void loopScreen(){
 
 //如果点击click()便会返回true
@@ -656,22 +600,11 @@ void loopScreen(){
           Serial.println(frame_num);
            
           for (int i=0; i<frame_num;i++){
-          //Serial.println((char*)("/gif/gif"+String(i)+".txt").c_str()); 
-          uint8_t *frame_1 = readVARFile(LittleFS, (char*)("/gif/gif"+String(i)+".bin").c_str());
-//          base64::decode((char*) r.c_str(), frame_0);
-          Serial.printf("get var form flash sucess");
-          Serial.println(frame_1[0]);
-          Serial.println(frame_1[1]);
-          Serial.println(frame_1[2]);
-          Serial.println(frame_1[3]);
-          Serial.println(frame_1[4]);
-          Serial.println(frame_1[5]);
-          Serial.println(frame_1[6]);
-          Serial.println(frame_1[7]);
-          
-          Serial.println(sizeof(frame_1));
-          TJpgDec.drawJpg( 0, 0, frame_1, sizeof(frame_1));
-          delay(100);}
+          Serial.println((char*)("/gif/gif"+String(i)+".txt").c_str()); 
+          r = readFile(LittleFS, (char*)("/gif/gif"+String(i)+".txt").c_str());
+          base64::decode((char*) r.c_str(), frame_0);
+          TJpgDec.drawJpg( 0, 0, frame_0, sizeof(frame_0));
+          delay(1);}
           
         
           

@@ -13,7 +13,7 @@ const char* serverAddress = "http://192.168.43.185:5000/upload";
 
 // INMP441麦克风设置
 #define SAMPLE_RATE     (16000)
-#define SAMPLE_SIZE     (2048)  // 减小采样大小以减少延迟
+#define SAMPLE_SIZE     (1024)  // 减小采样大小以减少延迟
 
 // 音频数据缓冲区
 uint8_t sample_buffer[SAMPLE_SIZE];
