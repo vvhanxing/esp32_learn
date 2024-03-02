@@ -320,6 +320,7 @@ void handleImageUpload() {
 #define FORMAT_LITTLEFS_IF_FAILED true
 
 uint8_t frame_0[1024*16 ] PROGMEM ={0};
+uint8_t frame_1[1024*16 ] PROGMEM ={0};
 //uint8_t frame_1[1024*6 ] PROGMEM ={0};
 //uint8_t frame_2[1024*6 ] PROGMEM ={0};
 //uint8_t frame_3[1024*6 ] PROGMEM ={0};
@@ -437,7 +438,27 @@ void handleGIFUpload() {
         return;
     }
       createDir(LittleFS, "/gif");
-      writeFile(LittleFS, (char*)("/gif/gif"+frame_index+".txt").c_str(), (char*)encodedImage.c_str());  //(char*)r.c_str()
+//      writeFile(LittleFS, (char*)("/gif/gif"+frame_index+".txt").c_str(), (char*)encodedImage.c_str());  //(char*)r.c_str()
+
+        File file_w = LittleFS.open((char*)("/gif/gif"+frame_index+".bin").c_str(), "w");
+        if (!file_w) {
+          Serial.println("Failed to open file for writing");
+        }
+          // 将数据写入文件
+        base64::decode((char*) encodedImage.c_str(), frame_0);
+        file_w.write(frame_0, sizeof(frame_0));
+        file_w.close();
+        Serial.println("Data saved to LittleFS.");  
+
+
+
+
+  Serial.println("Data saved to LittleFS."); 
+
+
+  
+      
+      
       frame_num = frame_index.toInt();
       Serial.println("frame_num");
       Serial.println(frame_num);
@@ -603,9 +624,25 @@ void loopScreen(){
           //Serial.println((char*)("/gif/gif"+String(i)+".txt").c_str()); 
           //r = readFile(LittleFS, (char*)("/gif/gif"+String(i)+".txt").c_str());
           //base64::decode((char*) r.c_str(), frame_0);
-          //TJpgDec.drawJpg( 0, 0, frame_0, sizeof(frame_0));
-          tft.drawString(String(i)+" "+"Picture", 80, 180, GFXFF);
-          delay(1);}
+            File file_ = LittleFS.open((char*)("/gif/gif"+String(i)+".bin").c_str(), "r");
+            if (!file_) {
+            Serial.println("Failed to open file for reading");
+            }
+            size_t fileSize = file_.size();
+            //uint8_t* buffer = (uint8_t*)malloc(fileSize);
+
+             // 从文件中读取数据到缓冲区
+             file_.read(frame_1, fileSize);
+             TJpgDec.drawJpg( 0, 0, frame_1, sizeof(frame_1));
+             file_.close();
+             //free(buffer);
+
+          //
+
+
+          
+          //tft.drawString(String(i)+" "+"Picture", 80, 180, GFXFF);
+          delay(10);}
           
         
           

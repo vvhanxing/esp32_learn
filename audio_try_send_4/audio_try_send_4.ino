@@ -11,16 +11,12 @@ const char* password = "12345678";
 
 
 //##################################################################
-
-
+////////////////////audio
+#include <Arduino.h>
 #include "AudioFileSourceICYStream.h"
 #include "AudioFileSourceBuffer.h"
 #include "AudioGeneratorMP3.h"
 #include "AudioOutputI2SNoDAC.h"
-
-
-
-// Randomly picked URL
 const char *URL="http://192.168.43.185:5000/audio/mp3";
 
 AudioGeneratorMP3 *mp3;
@@ -59,6 +55,7 @@ void StatusCallback(void *cbData, int code, const char *string)
 }
 
 
+
 void initURLaudio(){
 
   audioLogger = &Serial;
@@ -71,8 +68,6 @@ void initURLaudio(){
   mp3->RegisterStatusCB(StatusCallback, (void*)"mp3");
   mp3->begin(buff, out);
   }
-  
-/////////////////////////////////////////////////////////////
 
 
 void loopURLaudio() {
@@ -91,6 +86,10 @@ void loopURLaudio() {
   }
 }
 
+/////////////////////////////////////////////////////////////
+
+
+
 
 //##################################################################
 // Flask服务器设置
@@ -98,7 +97,7 @@ const char* serverAddress = "http://192.168.43.185:5000/record";
 
 // INMP441麦克风设置
 #define SAMPLE_RATE     (16000)
-#define SAMPLE_SIZE     (2048)  // 减小采样大小以减少延迟
+#define SAMPLE_SIZE     (1024*2)  // 减小采样大小以减少延迟
 
 // 音频数据缓冲区
 uint8_t sample_buffer[SAMPLE_SIZE];
@@ -116,6 +115,10 @@ void setup() {
   connectToWiFi();
 
   
+  // 初始化I2S总线
+  
+  //initI2S();
+   
   
 
   //////
@@ -153,7 +156,7 @@ void loop() {
       if (click_once_count==0){
            
         
-          if (array[0]==-2){
+          if (array[0]==0){
           array[0]=1;
           array[1]=0;
           array[2]=0;
@@ -161,10 +164,15 @@ void loop() {
           array[4]=0;
           array[5]=0;
           
-          initURLaudio();
+          
+          initI2S();
           delay(1000); // 等待一秒钟
           Serial.println("0"); }
-          loopURLaudio();
+
+          collectAndSendAudio();
+          
+          
+         
 
         
         
@@ -177,12 +185,13 @@ void loop() {
           array[3]=0;
           array[4]=0;
           array[5]=0;
-          // 初始化I2S总线
-          initI2S();
+          initURLaudio();
           delay(1000); // 等待一秒钟
           Serial.println("1"); }
+
+          loopURLaudio();
         
-        collectAndSendAudio();
+        
  
         }
       if (click_once_count==2){
@@ -239,7 +248,7 @@ void initI2S() {
 }
 
 void collectAndSendAudio() {
-  //while(true) {
+  
     size_t bytesIn = 0;
     esp_err_t result = i2s_read(I2S_PORT, sample_buffer, SAMPLE_SIZE, &bytesIn, portMAX_DELAY);
     if (result == ESP_OK) {
@@ -266,7 +275,7 @@ void collectAndSendAudio() {
       // 关闭HTTP连接
       http.end();
     }
-  //}
+
 }
 
 
