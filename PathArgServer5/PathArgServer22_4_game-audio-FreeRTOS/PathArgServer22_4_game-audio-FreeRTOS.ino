@@ -46,7 +46,7 @@
 
 // 任务1
 #define TASK1_TASK_PRIO  1          // 任务优先级 server
-#define TASK1_STK_SIZE   1024*4       // 任务堆栈大小
+#define TASK1_STK_SIZE   1024*8       // 任务堆栈大小
 TaskHandle_t Tasks1_TaskHandle=NULL; // 任务句柄
 void task1(void *pvParameters); //任务函数
 
@@ -58,7 +58,7 @@ void task2(void *pvParameters); //任务函数
 //
 //// 任务3
 #define TASK3_TASK_PRIO  1         // 任务优先级 audio
-#define TASK3_STK_SIZE   1024*4       // 任务堆栈大小
+#define TASK3_STK_SIZE   1024*8       // 任务堆栈大小
 TaskHandle_t Tasks3_TaskHandle=NULL; // 任务句柄
 void task3(void *pvParameters); //任务函数
 //
@@ -428,11 +428,13 @@ void handleGIFUpload() {
     
     String frame_index = server.arg("frame_index");
     String encodedImage = server.arg("image");
-    image_hight =(int) (server.arg("image_scale").toFloat()*240.0);
+    image_hight =server.arg("image_height").toInt();
     
     Serial.println(frame_index);
     Serial.println("image_hight");
     Serial.println(image_hight);
+    
+    
 // 
    
     
@@ -466,12 +468,12 @@ void handleGIFUpload() {
         frame_info[2] = image_hight;
         
         
-        File file_w2 = LittleFS.open("/gif/gif_info.bin", "w");
-        if (!file_w2) {
-          Serial.println("Failed to open file for writing");
-        }
-        file_w2.write(frame_info, sizeof(frame_info));
-        file_w2.close();  
+//        File file_w2 = LittleFS.open("/gif/gif_info.bin", "w");
+//        if (!file_w2) {
+//          Serial.println("Failed to open file for writing");
+//        }
+//        file_w2.write(frame_info, sizeof(frame_info));
+//        file_w2.close();  
     
  
    
@@ -610,7 +612,7 @@ void loopScreen(){
           
         }
 
-        
+      int p_y = 0;
       if (click_once_count==2){
            TJpgDec.setJpgScale(1);
            if (array[2]==0){
@@ -622,18 +624,26 @@ void loopScreen(){
              array[3]=0;  
              array[4]=0;
              array[5]=0;
-             listDir(LittleFS, "/gif", 1);
-             File file_info = LittleFS.open("/gif/gif_info.bin", "r");
-             if (!file_info) {
-               Serial.println("Failed to open file for reading");
-              }
-             size_t fileSize = file_info.size();
-             // 从文件中读取数据到缓冲区
-             file_info.read(frame_info, fileSize);
-             file_info.close();
-             Serial.println("frame_info");
+//             listDir(LittleFS, "/gif", 1);
+//             File file_info = LittleFS.open("/gif/gif_info.bin", "r");
+//             if (!file_info) {
+//               Serial.println("Failed to open file for reading");
+//              }
+//             size_t fileSize = file_info.size();
+//             // 从文件中读取数据到缓冲区
+//             file_info.read(frame_info, fileSize);
+//             file_info.close();
+//             Serial.println("frame_info");
              Serial.println(frame_info[0]);
+             if (frame_info[2]==0){
+              p_y = 0;
+             }
+             else {
+              p_y = (int)((240-frame_info[2])/2)-(int)(frame_info[2]/2);
+              }
+              
              Serial.println(frame_info[2]);
+
              
              
              
@@ -663,7 +673,8 @@ void loopScreen(){
 
           
           //tft.drawString(String(i)+" "+"Picture", 80, 180, GFXFF);
-          delay(10);}
+          if (click()){break;}
+          else delay(10);}
           
         
           

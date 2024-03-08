@@ -3,13 +3,17 @@
 #include <HTTPClient.h>
 #include <Arduino.h>
 #include <driver/i2s.h>
+#include "AudioFileSourceHTTPStream.h"
+#include "AudioOutputI2S.h"
 
 // WiFi网络设置
 const char* ssid = "HUAWEI P50 Pro";
 const char* password = "12345678";
 
 // Flask服务器设置
-const char* serverAddress = "http://192.168.43.185:5000/record";
+const String serverAddress = "http://192.168.43.185:5000";
+const String recordEndpoint = "/record";
+const String audioEndpoint = "/audio/wav";
 
 // INMP441麦克风设置
 #define SAMPLE_RATE     (16000)
@@ -24,6 +28,8 @@ uint8_t sample_buffer[SAMPLE_SIZE];
 // 使用I2S处理器
 #define I2S_PORT I2S_NUM_0
 
+bool recordingCompleted = false;
+
 void setup() {
   Serial.begin(115200);
 
@@ -37,6 +43,12 @@ void setup() {
 
   // 开始采集音频并发送到服务器
   collectAndSendAudio();
+
+  // 等待10秒钟
+  delay(10000);
+
+  // 获取录音数据并播放
+  playAudioFromServer();
 }
 
 void loop() {
@@ -78,7 +90,7 @@ void initI2S() {
 }
 
 void collectAndSendAudio() {
-  while(true) {
+  while(!recordingCompleted) {
     size_t bytesIn = 0;
     esp_err_t result = i2s_read(I2S_PORT, sample_buffer, SAMPLE_SIZE, &bytesIn, portMAX_DELAY);
     if (result == ESP_OK) {
@@ -86,7 +98,7 @@ void collectAndSendAudio() {
       HTTPClient http;
 
       // 设置HTTP请求头
-      http.begin(serverAddress);
+      http.begin(serverAddress + recordEndpoint);
       
       // 发送音频数据
       int httpResponseCode = http.POST(sample_buffer, SAMPLE_SIZE);
@@ -106,4 +118,36 @@ void collectAndSendAudio() {
       http.end();
     }
   }
+}
+
+void playAudioFromServer() {
+  Serial.println("Playing audio from server");
+  
+  AudioFileSourceHTTPStream *file = new AudioFileSourceHTTPStream(String(serverAddress) + audioEndpoint);
+  AudioOutputI2S *out = new AudioOutputI2S();
+
+  out->SetPinout(I2S_WS, I2S_SCK, I2S_SD);
+  out->SetGain(1.0);
+  
+  file->RegisterOnStatus([](AudioFileSourceHTTPStream::Status status) {
+    Serial.println("File Status: " + String((int)status));
+  });
+
+  out->RegisterOnStatus([](AudioOutputI2S::Status status) {
+    Serial.println("Output Status: " + String((int)status));
+  });
+
+  out->RegisterOnDataRequested([&](size_t bytesRequested) -> size_t {
+    uint8_t buf[bytesRequested];
+    size_t bytesRead = file->Read(buf, bytesRequested);
+    out->Feed(buf, bytesRead);
+    return bytesRead;
+  });
+
+  while (out->IsRunning()) {
+    delay(100);
+  }
+
+  delete file;
+  delete out;
 }

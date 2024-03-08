@@ -30,6 +30,8 @@ void setup(){
   Serial.println("Data saved to LittleFS.");   
 
 
+
+
 if (!LittleFS.begin()) {
     Serial.println("LittleFS initialization failed.");
     return;

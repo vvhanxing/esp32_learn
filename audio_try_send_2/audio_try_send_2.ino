@@ -24,7 +24,7 @@ void setup() {
 
   Serial.println("Data saved to LittleFS.");
 
-
+ 
 
 // 打开保存数据的文件
   file = LittleFS.open("/data.bin", "r");

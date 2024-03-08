@@ -1536,6 +1536,12 @@ function putJson(value,route){
               if (options.c_w && options.c_h) setSizes(options.c_w, options.c_h);
               initialized=true;
           };
+
+          var get_canvas_height = function(){
+
+            return hdr.height;
+            
+            }
   
           var get_canvas_scale = function() {
               var scale;
@@ -1579,6 +1585,7 @@ function putJson(value,route){
               get_playing      : function() { return playing },
               get_canvas       : function() { return canvas },
               get_canvas_scale : function() { return get_canvas_scale() },
+              get_canvas_height: function() { return get_canvas_height() },
               get_loading      : function() { return loading },
               get_auto_play    : function() { return options.auto_play },
               get_length       : function() { return player.length() },
@@ -1721,14 +1728,14 @@ function get_pic_base64(img,img_quality){
 }
 
 
-function post_pic(imageData,index,url,image_scale){ //'http://192.168.43.216/upload_image'
+function post_pic(imageData,index,url,image_height){ //'http://192.168.43.216/upload_image'
 
   var xhr = new XMLHttpRequest();
   xhr.open('POST',url , true); // 替换为ESP32的IP地址和端口
   var formData = new FormData();   
   formData.append('image', imageData); // 将图像数据添加到FormData对象
   formData.append('frame_index', index); // 将图像数据添加到FormData对象
-  formData.append('image_scale', image_scale); // 将图像数据添加到FormData对象
+  formData.append('image_height', image_height); // 将图像数据添加到FormData对象
   // formData.append('image1', "0"); // 将图像数据添加到FormData对象
   // formData.append('image2', "0"); // 将图像数据添加到FormData对象
   xhr.send(formData);
@@ -1785,7 +1792,7 @@ function post_gif(img,url){
           var resizedBase64 = "";
           resizedBase64 =rub.get_canvas().toDataURL('image/jpeg',0.5).split(',')[1];
           console.log(resizedBase64.length);
-          post_pic(resizedBase64,i.toString(),url,rub.get_canvas_scale());
+          post_pic(resizedBase64,i.toString(),url,rub.get_canvas_scale() * rub.get_canvas_height());
 //          if (i>64) break;
 
         }
@@ -1825,12 +1832,12 @@ function postPIC(file){
             console.log(imageData_length);
             url = 'http://xxxxxxxxxx/upload_image';
             if (imageData_length<=16000){
-              post_pic(imageData,"0",url,1);
+              post_pic(imageData,"0",url,0);
               console.log(0.85);
             }
             else{
               imageData = get_pic_base64(img,0.75,file);
-              post_pic(imageData,"0",url,1);
+              post_pic(imageData,"0",url,0);
               console.log(0.75);
             }
             console.log(e.target.result);

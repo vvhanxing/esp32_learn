@@ -83,15 +83,7 @@ if (!LittleFS.begin()) {
     return;
   }
 
-  // 假设你有一个名为data的uint8_t数组
-//  uint8_t data[] = {0x01, 0x02, 0x03, 0x04, 0x05};
-  Serial.println("Data read from flask:");
-  Serial.print(sizeof(Tiger));
-  for (size_t i = 0; i < sizeof(Tiger); i++) {
-    Serial.print(Tiger[i], HEX);
-    Serial.print(" ");
-  }
-  Serial.println();
+
   // 将数据写入文件
   file.write(Tiger, sizeof(Tiger));
   file.close();
@@ -123,15 +115,6 @@ if (!LittleFS.begin()) {
   // 从文件中读取数据到缓冲区
   file.read(buffer, fileSize);
   file.close();
-
-  Serial.print("size");
-  Serial.print(fileSize);
-  for (size_t i = 0; i < fileSize; i++) {
-    Serial.print(buffer[i], HEX);
-    Serial.print(" ");
-  }
-  Serial.println("sizeof(buffer)");
-  Serial.println(sizeof(buffer));
 
    
   tft.setRotation(0);  // portrait
