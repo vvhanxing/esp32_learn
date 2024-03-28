@@ -88,28 +88,22 @@ void StatusCallback(void *cbData, int code, const char *string)
 void initURLaudio(){
 
  // 初始化I2S
-  i2s_config_t i2s_config = {
-    .mode = (i2s_mode_t)(I2S_MODE_MASTER |  I2S_MODE_TX ), // 加上 I2S_MODE_TX
-    .sample_rate = 44100,
-    .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
-    .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,   // 单声道
-    .communication_format = I2S_COMM_FORMAT_I2S_MSB, // 修改通信格式
-    .intr_alloc_flags = 0,
-    .dma_buf_count = 8,
-    .dma_buf_len = 1024*2,
-    .use_apll = true, // Audio PLL is needed for low clock jitter
-    .tx_desc_auto_clear = false, // Silence on underflow
-    .fixed_mclk = 0, // Unused    
-    
-  
-//    .mclk_multiple = I2S_MCLK_MULTIPLE_256,
-//    .bits_per_chan = I2S_BITS_PER_CHAN_DEFAULT
-    
-    
-  };
-  i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
+   i2s_config_t i2s_config = {
+    .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX ),
+    .sample_rate =  44100,              // The format of the signal using ADC_BUILT_IN
+    .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT, // is fixed at 12bit, stereo, MSB
+    .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
+    .communication_format = I2S_COMM_FORMAT_I2S_MSB,
+    .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
+    .dma_buf_count = 4,
+    .dma_buf_len = 8,
+    .use_apll = false,
+    .tx_desc_auto_clear = false,
+    .fixed_mclk = 0
+   };
+   i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
   int port = 22;
-  i2s_set_pin((i2s_port_t)port, NULL);
+  //i2s_set_pin((i2s_port_t)port, NULL);
 //
 //  // 设置I2S的引脚连接
 //  i2s_set_pin(I2S_NUM_0, NULL);
@@ -166,15 +160,27 @@ uint8_t sample_buffer[SAMPLE_SIZE];
 
 void initI2S() {
   i2s_config_t i2s_config = {
-    .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX), // 接收模式
-    .sample_rate = SAMPLE_RATE,
-    .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
-    .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT, // 只采集左声道
+    .mode = (i2s_mode_t)(I2S_MODE_MASTER  |I2S_MODE_RX | I2S_MODE_TX), // 接收模式
+    .sample_rate =  44100,              // The format of the signal using ADC_BUILT_IN
+    .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT, // is fixed at 12bit, stereo, MSB
+    .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
     .communication_format = I2S_COMM_FORMAT_I2S_MSB,
     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
-    .dma_buf_count = 2,
-    .dma_buf_len = 1024,
-    .use_apll = false
+    .dma_buf_count = 4,
+    .dma_buf_len = 8,
+    .use_apll = false,
+    .tx_desc_auto_clear = false,
+    .fixed_mclk = 0
+  
+      
+//    .sample_rate = SAMPLE_RATE,
+//    .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
+//    .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT, // 只采集左声道
+//    .communication_format = I2S_COMM_FORMAT_I2S_MSB,
+//    .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
+//    .dma_buf_count = 2,
+//    .dma_buf_len = 1024,
+//    .use_apll = false
   };
 
   const i2s_pin_config_t pin_config = {
