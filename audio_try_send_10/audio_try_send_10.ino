@@ -95,8 +95,8 @@ void initURLaudio(){
     .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
     .communication_format = I2S_COMM_FORMAT_I2S_MSB,
     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
-    .dma_buf_count = 8,
-    .dma_buf_len = 256,
+    .dma_buf_count = 32,
+    .dma_buf_len = 64,
     .use_apll = false,
     .tx_desc_auto_clear = false,
     .fixed_mclk = 0
@@ -146,7 +146,7 @@ const char* serverAddress = "http://192.168.43.185:5000/record";
 
 // INMP441麦克风设置
 #define SAMPLE_RATE     (16000)
-#define SAMPLE_SIZE     (1024*2)  // 减小采样大小以减少延迟
+#define SAMPLE_SIZE     (1024*4)  // 减小采样大小以减少延迟
 
 // 音频数据缓冲区
 uint8_t sample_buffer[SAMPLE_SIZE];
@@ -164,7 +164,7 @@ void initI2S() {
     .mode = (i2s_mode_t)(I2S_MODE_MASTER  |I2S_MODE_RX | I2S_MODE_TX), // 接收模式
     .sample_rate = SAMPLE_RATE,
     .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
-    .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT, // 只采集左声道   I2S_CHANNEL_FMT_RIGHT_LEFT   I2S_CHANNEL_FMT_ONLY_LEFT
+    .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT, // 只采集左声道
     .communication_format = I2S_COMM_FORMAT_I2S_MSB,
     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
     .dma_buf_count = 2,
