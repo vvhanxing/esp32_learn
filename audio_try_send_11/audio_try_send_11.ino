@@ -27,7 +27,7 @@ void connectToWiFi() {
 #include "AudioGeneratorMP3.h"
 #include "AudioOutputI2SNoDAC.h"
 //// Flask服务器播放mp3 ip地址
-const char *URL="http://192.168.43.185:5000/audio/mp3";
+const char *URL="http://192.168.43.220:5002/audio/mp3";
 
 AudioGeneratorMP3 *mp3;
 AudioFileSourceICYStream *file;
@@ -64,24 +64,7 @@ void StatusCallback(void *cbData, int code, const char *string)
   }
 }
 
-//
-//      i2s_config_t i2s_config_dac = {
-//          .mode = mode,
-//          .sample_rate = 44100,
-//          .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
-//          .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
-//          .communication_format = comm_fmt,
-//          .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // lowest interrupt priority
-//          .dma_buf_count = dma_buf_count,
-//          .dma_buf_len = 128,
-//          .use_apll = use_apll, // Use audio PLL
-//          .tx_desc_auto_clear = true, // Silence on underflow
-//          .fixed_mclk = use_mclk, // Unused
-//#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(4, 4, 0)
-//          .mclk_multiple = I2S_MCLK_MULTIPLE_256, // Unused
-//          .bits_per_chan = I2S_BITS_PER_CHAN_DEFAULT // Use bits per sample
-//#endif
-//      };
+
 #define I2S_PORT I2S_NUM_0
 
 // 播放设置
@@ -120,6 +103,8 @@ void initURLaudio(){
   mp3->begin(buff, out);
   }
 
+bool play_mp3_ready = false;
+bool strat_init_audio = true;
 
 void loopURLaudio() {
   static int lastms = 0;
@@ -134,6 +119,7 @@ void loopURLaudio() {
   } else {
     Serial.printf("MP3 done\n");
     delay(1000);
+    play_mp3_ready=false;
   }
 }
 
@@ -142,11 +128,11 @@ void loopURLaudio() {
 
 
 // Flask服务器录音ip地址
-const char* serverAddress = "http://192.168.43.185:5000/record";
+const char* serverAddress = "http://192.168.43.220:5002/record";
 
 // INMP441麦克风设置
 #define SAMPLE_RATE     (16000)
-#define SAMPLE_SIZE     (1024*4)  // 减小采样大小以减少延迟
+#define SAMPLE_SIZE     (1024*2)  // 减小采样大小以减少延迟
 
 // 音频数据缓冲区
 uint8_t sample_buffer[SAMPLE_SIZE];
@@ -157,8 +143,6 @@ uint8_t sample_buffer[SAMPLE_SIZE];
 // 使用I2S处理器
 //#define I2S_PORT I2S_NUM_0
 
-
-
 void initI2S() {
   i2s_config_t i2s_config = {
     .mode = (i2s_mode_t)(I2S_MODE_MASTER  |I2S_MODE_RX | I2S_MODE_TX), // 接收模式
@@ -167,19 +151,9 @@ void initI2S() {
     .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT, // 只采集左声道
     .communication_format = I2S_COMM_FORMAT_I2S_MSB,
     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
-    .dma_buf_count = 2,
+    .dma_buf_count = 8,
     .dma_buf_len = 1024,
     .use_apll = false
-  
-      
-//    .sample_rate = SAMPLE_RATE,
-//    .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
-//    .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT, // 只采集左声道
-//    .communication_format = I2S_COMM_FORMAT_I2S_MSB,
-//    .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
-//    .dma_buf_count = 4,
-//    .dma_buf_len = 8,
-//    .use_apll = false
   };
 
   const i2s_pin_config_t pin_config = {
@@ -198,9 +172,9 @@ void initI2S() {
 int16_t sBuffer_[bufferLen_];
 
 // 定义阈值和计时变量
-const float threshold = 90; // 设置阈值
+const float threshold = 100; // 设置阈值
 unsigned long lastAboveThresholdTime = 0; // 上次超过阈值的时间
-bool printEnabled = true; // 控制打印的开关
+bool printEnabled = true; // 控制录音的开关
 
 void collectAndSendAudio() {
   
@@ -232,6 +206,7 @@ void collectAndSendAudio() {
             Serial.println("Stopped printing due to no signal above threshold for 3 seconds");
             printEnabled = false; // 关闭打印  #结束完成后post信息，后端判断声音时间长度来决定立即返回还是翻译文本返回
             GetText();
+            
           }
         }
       }
@@ -247,9 +222,11 @@ void collectAndSendAudio() {
          if (result == ESP_OK ) {
             // 创建HTTP客户端
             HTTPClient http;
+            
 
             // 设置HTTP请求头
             http.begin(serverAddress);
+             
             
             // 发送音频数据
             int httpResponseCode = http.POST(sample_buffer, SAMPLE_SIZE);
@@ -259,6 +236,7 @@ void collectAndSendAudio() {
               Serial.print("HTTP Response code: ");
               Serial.println(httpResponseCode);
               String payload = http.getString();
+
               Serial.println(payload); // 打印服务器返回的内容
             } else {
               Serial.print("Error code: ");
@@ -284,7 +262,8 @@ void collectAndSendAudio() {
 void GetText(){
   Serial.print("Connecting to website: ");
     HTTPClient http;
-    http.begin("http://192.168.43.185:5000/audio2text"); //HTTPS example connection
+    http.setTimeout(10000);
+    http.begin("http://192.168.43.220:5002/audio2text"); //HTTPS example connection
     //http.begin("http://www.arduino.php5.sk/rele/rele1.txt"); //HTTP example connection
     //if uncomment HTTP example, you can comment root CA certificate too!
     int httpCode = http.GET();
@@ -294,6 +273,10 @@ void GetText(){
       if(httpCode == HTTP_CODE_OK) {
         String payload = http.getString();
         Serial.println(payload);
+        if (payload=="start speaking") {
+                play_mp3_ready=true;
+                initURLaudio();
+                }
       }
      }else{
       Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
@@ -307,7 +290,7 @@ void setup() {
 
   // 初始化WiFi连接
   connectToWiFi();
-  initI2S();
+  
 }
 int click_push_count = 0;
 int click_once_count = 0;
@@ -315,7 +298,16 @@ int array [] ={0,0,0,0,0,0};
 bool click();
 void collectAndSendAudio();
 void loop() {
-  collectAndSendAudio();
+  if (play_mp3_ready==false){
+
+      if (strat_init_audio==true){
+          initI2S();
+          strat_init_audio=false;
+          }
+      collectAndSendAudio();}
+
+  else {loopURLaudio();
+        strat_init_audio = true;}
 
   
 //  
