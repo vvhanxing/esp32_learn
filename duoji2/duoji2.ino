@@ -3,7 +3,7 @@
 Servo myservo;
 int servoPin = 13;
 
-int pos = 90; // 定義舵機轉動位置
+int pos = 0; // 定義舵機轉動位置
 void turn_mid_light()
 {
   myservo.write(90);
@@ -11,15 +11,15 @@ void turn_mid_light()
 
 void turn_light()
 {
-  myservo.write(90 + 90);
+  myservo.write(90 + 0);
   delay(200);
-  turn_mid_light();
+//  turn_mid_light();
 }
 void turn_off_light()
 {
-  myservo.write(90 - 90);
+  myservo.write(90 + 180);
   delay(200);
-  turn_mid_light();
+//  turn_mid_light();
 }
 
 void setup()
@@ -36,8 +36,14 @@ void setup()
 
 void loop()
 {
-  turn_light();
-  delay(500);
-  turn_off_light();
-  delay(500);
+//  turn_light();
+//  delay(500);
+//  turn_off_light();
+  for (int i=0;i<18;i++){
+    myservo.write( i*10);
+    //Serial.printf("rotate(%s)", i*10);
+    delay(1000);
+    
+    }
+//  delay(500);
 }

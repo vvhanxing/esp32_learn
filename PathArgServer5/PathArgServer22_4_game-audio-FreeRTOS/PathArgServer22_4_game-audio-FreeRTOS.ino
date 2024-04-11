@@ -72,7 +72,7 @@ void task3(void *pvParameters); //任务函数
 
 
 // Randomly picked URL
-const char *URL="http://192.168.43.185:5000/audio/mp3";
+const char *URL="http://192.168.43.220:5002/audio/mp3";
 
 AudioGeneratorMP3 *mp3;
 AudioFileSourceICYStream *file;
