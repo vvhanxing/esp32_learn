@@ -142,9 +142,13 @@ const char* serverAddress = "http://192.168.43.220:5002/record";
 // 音频数据缓冲区
 uint8_t sample_buffer[SAMPLE_SIZE];
 //按照接线确定编号
-#define I2S_WS 15
+//#define I2S_WS 15
+//#define I2S_SD 32
+//#define I2S_SCK 14
+
+#define I2S_WS 21
 #define I2S_SD 32
-#define I2S_SCK 14
+#define I2S_SCK 19
 // 使用I2S处理器
 //#define I2S_PORT I2S_NUM_0
 

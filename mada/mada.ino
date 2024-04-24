@@ -4,7 +4,7 @@ void setup(){
 }
 
 void loop(){
-  analogWrite(4, 75);
+  analogWrite(4, 120);
   analogWrite(5, 0);
 //  delay(2000);
 //  analogWrite(4, 0);

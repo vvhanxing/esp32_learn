@@ -106,6 +106,6 @@ if __name__ == '__main__':
     # for i in range(1,7):
     #     print("============","icon"+str(i)+"a.jpg")
     #     processImage("icon"+str(i)+"a.jpg", True)
-    processImage("a9.gif", True)
+    processImage("monkey.gif", True)
     # im=Image.open("foo0.bmp")
     # print ("img info:",im.format,im.size)
