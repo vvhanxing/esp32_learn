@@ -267,7 +267,7 @@ void setup()
   WriteFile("/txt4.txt", "hello worlD");
   
   // 读取测试文件"/test.txt"的内容
-  String picTxt =ReadFile_txt("/pic.txt");
+  String picTxt =ReadFile_txt("/sys/Picture/icon.txt");
   base64::decode((char*) picTxt.c_str(), frame_0);
   TJpgDec.drawJpg( 0, 0,frame_0, sizeof(frame_0));
   //打印读取到的内容
@@ -300,70 +300,98 @@ void setup()
 
 }
 
+int OSIndexMap[16][3] = {
+  {1,0,0},
+  {0,0,0},
+  {0,0,0},
+  {0,0,0},
+  {0,0,0},
+  {0,0,0},
+  {0,0,0},
+  {0,0,0},
+  {0,0,0},
+  {0,0,0},
+  {0,0,0},
+  {0,0,0},
+  {0,0,0},
+  {0,0,0},
+  {0,0,0},
+  {0,0,0}
+  };
+int OSIndexX = 0;
+int OSIndexY = 0;
+
 void loop()
 {
   runOS();
-
+  
 }
 
-
+void plotMap(){
+  
+  for(int i = 0;i<16;i++){
+    for(int j = 0;j<3;j++){
+      Serial.print(OSIndexMap[i][j]);
+      }
+    Serial.println();
+    
+    }
+  }
 
 void runOS(){
 
 
 
             if (clickB()) {
-              clickB_once_count =1;
-              clickC_once_count =0;
-              //p1++;
-              //tft.fillRect(0, 0 , 120 , 240, TFT_WHITE);
-              //tft.fillRect(0, 10+p1 , 50 , 100+p1, YELLOW);
-              delay(10);
-              Serial.println("clickB()"); 
+                clickB_push_count = clickB_push_count+1;
+                if (clickB_push_count==2){ //短按
+                  clickB_once_count +=1;
+                  Serial.println("clickB Click");
+                  OSIndexMap[OSIndexX][OSIndexY]=0;
+                  OSIndexX+=1;
+                  if (OSIndexX>15) OSIndexX=0;
+                  OSIndexMap[OSIndexX][OSIndexY]=1;
+                  plotMap();
+                  renderPage(OSIndexX);
+                 
+                  }     
+                if (clickB_push_count==1000){//长按
+                  clickB_once_count -=2;
+                  Serial.println("clickB Push");
+                  }
+                
               }
-//      
-//
-            if (clickC()) {
-               clickB_once_count =0;
-              clickC_once_count =1;
-              //p1--;
-              //tft.fillRect(0, 0 , 120 , 240, TFT_WHITE);
-              //tft.fillRect(0, 10 +p1, 50 , 100+p1, YELLOW);
-              Serial.println("clickC()"); 
-              delay(10);
+           else{
+             clickB_push_count = 1;}
+                   
+           if (clickC()) {
+                clickC_push_count = clickC_push_count+1;
+                if (clickC_push_count==2){ //短按
+                  clickC_once_count +=1;
+                  Serial.println("clickC Click");
+                  OSIndexMap[OSIndexX][OSIndexY]=0;
+                  OSIndexX-=1;
+                  if (OSIndexX<0) OSIndexX=15;
+                  OSIndexMap[OSIndexX][OSIndexY]=1;
+                  plotMap();
+                  renderPage(OSIndexX);
+                  
+                  }     
+                if (clickC_push_count==1000){//长按
+                  clickC_once_count -=2;
+                  Serial.println("clickC Push");
+                  }
+                
               }
-  
+            else{
+               clickC_push_count = 1;}  
+
+         
   }
 
 
 
-bool clickA(){
 
-   const int touchPin = 2; // 使用 T0 获取数据
-   const int threshold = 40;
-   // variable for storing the touch pin value 
-   int touchValue;
-  // read the state of the pushbutton value:
-  touchValue = touchRead(touchPin);
-  //Serial.print(touchValue);
-  //Serial.print("\n");
-
-  // check if the touchValue is below the threshold
-  // if it is, set ledPin to HIGH
-  if(touchValue < threshold){
-    // turn LED on
-    //digitalWrite(ledPin, HIGH);
-     //Serial.println("有触控，灯亮");
-    return true;
-  }
-  else{
-    // turn LED off
-    //digitalWrite(ledPin, LOW);
-    //Serial.println(" - LED off");
-    return false;
-  }
-  //delay(500);  
-  }
 
 bool clickB(){
 
@@ -413,4 +441,83 @@ bool clickC(){
     return false;
   }
   //delay(500);  
+  }
+
+void renderPage(int index){
+ //tft.fillScreen(TFT_WHITE);
+ tft.fillRect(0, 0 , 120 , 240, TFT_WHITE);
+ tft.fillRect(120, 0 , 120 , 240, YELLOW);
+
+//tft.fillRect(225, 40 , 2 , 190, TFT_WHITE);//bar
+//tft.fillRect(225-8, 40 , 8 , 20, TFT_WHITE);//bar
+              //x  y  dx  dy 
+
+ 
+// String page[] = {"Video.","Music.","Game.","Image.","MSG.","Setting."};
+
+
+        tft.setFreeFont(FF23);                 // Select the font
+        tft.setTextColor(TFT_WHITE, YELLOW);
+        tft.drawString("MENU",-40+ 2*w/3 +10, 4, GFXFF);
+
+  
+  bool txt_ani = true;
+  for (int i = 0;i<6;i++){
+    if (i!=index)
+      {
+          tft.setFreeFont(FF21);                 // Select the font
+           tft.setTextColor(TFT_WHITE, YELLOW);
+        tft.drawString(page[i],   2*w/3-5, 35*i +40, GFXFF);
+      
+      }
+    else
+      {
+        tft.setFreeFont(FF22);                 // Select the font
+        tft.setTextColor(TFT_WHITE, YELLOW);
+        
+        if (txt_ani==true){
+        for (int j =0;j<30;j++){
+
+        tft.drawString(page[i],-j+ 2*w/3-5, 35*i +40, GFXFF);}
+        
+      
+        txt_ani = false;
+        }
+        
+      }
+      
+
+      
+    //tft.fillRect(0, 40*index-20,    20,  40*index+20, TFT_BLACK); //20-60   60-100  100-140
+    
+      
+    
+    }
+
+
+
+//
+//          if(index==0){
+//          for (int t=0;t<20;t++)
+//          drawArrayJpeg(icon1a[0], icon1a_size[0], t-10, 120-50); }
+//          if(index==1){
+//          for (int t=0;t<20;t++)
+//          drawArrayJpeg(icon2a[0], icon2a_size[0], t-10, 120-50); }
+//          if(index==2){
+//          for (int t=0;t<20;t++)
+//          drawArrayJpeg(icon3a[0], icon3a_size[0], t-10, 120-50); }
+//          if(index==3){   
+//          for (int t=0;t<20;t++)
+//          drawArrayJpeg(icon4a[0], icon4a_size[0], t-10, 120-50); }
+//          if(index==4){   
+//          for (int t=0;t<20;t++)
+//          drawArrayJpeg(icon5a[0], icon5a_size[0], t-10, 120-50); }
+//          if(index==5){   
+//          for (int t=0;t<20;t++)
+//          drawArrayJpeg(icon6a[0], icon6a_size[0], t-10, 120-50); }
+
+
+
+
+  
   }
