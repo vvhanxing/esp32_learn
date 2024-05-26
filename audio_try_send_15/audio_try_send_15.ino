@@ -101,7 +101,7 @@ void initURLaudio(){
   buff->RegisterStatusCB(StatusCallback, (void*)"buffer");
 //  out = new AudioOutputI2SNoDAC();
   out = new AudioOutputI2S();
-  out -> SetGain(0.6);            //设置音量
+  out -> SetGain(1.0);            //设置音量
   out -> SetPinout(12,26,13);     //设置接到MAX98357A的引脚, GPIO12(串行时钟SCK)-->SCLK, GPIO26(字选择WS)-->LRC, GPIO13(串行数据SD)-->DIN
   mp3 = new AudioGeneratorMP3();
   mp3->RegisterStatusCB(StatusCallback, (void*)"mp3");
