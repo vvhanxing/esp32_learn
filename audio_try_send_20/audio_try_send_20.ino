@@ -14,10 +14,10 @@ const char* htmlPage = R"rawliteral(
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ESP32 WiFi Configuration</title>
+    <title>AI Bot WiFi Configuration</title>
   </head>
   <body>
-    <h1>ESP32 WiFi Configuration</h1>
+    <h1>AI Bot WiFi Configuration</h1>
     <form action="/config" method="post">
       <label for="ssid">SSID:</label><br>
       <input type="text" id="ssid" name="ssid"><br>
@@ -242,13 +242,13 @@ void collectAndSendAudio() {
           Serial.println("============mean");
           Serial.println(mean);
           lastAboveThresholdTime = millis(); // 更新最后超过阈值的时间
-          printEnabled = true; // 使能打印
+          printEnabled = true; // 使能打印  printEnabled标识开始录音
 //          digitalWrite(LED, HIGH);
         } else {
           // 如果连续三秒没有超过阈值，则停止打印
           if (millis() - lastAboveThresholdTime > 3000 && printEnabled) {
             Serial.println("Stopped printing due to no signal above threshold for 3 seconds");
-            printEnabled = false; // 关闭打印  #结束完成后post信息，后端判断声音时间长度来决定立即返回还是翻译文本返回
+            printEnabled = false; // 关闭打印  #结束完成后post信息，后端判断声音时间长度来决定立即返回还是翻译文本返回 printEnabled标识停止录音
             GetText();
 //            digitalWrite(LED, LOW);
             
@@ -292,7 +292,7 @@ void collectAndSendAudio() {
             
       
       
-    }
+        }
     }
 //    else {
 //      if (stop_recoeding==0)
@@ -392,7 +392,7 @@ void loop() {
   else {
       if (play_mp3_ready==false){
           if (strat_init_audio==true){
-              initI2S();
+              initI2S();//初始化录音
               strat_init_audio=false;
           }
       collectAndSendAudio();}
