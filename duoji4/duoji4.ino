@@ -46,6 +46,7 @@ const char index_html[] PROGMEM = R"rawliteral(
   <button onclick="sendCommand('stand')">Stand</button>
   <button onclick="sendCommand('sit')">Sit</button>
   <button onclick="sendCommand('shake')">Shake</button>
+   <button onclick="sendCommand('sleep')">Sleep</button>
 
   <script>
     function sendCommand(command) {
@@ -125,6 +126,11 @@ void setup() {
     request->send(200, "text/plain", "Shaking");
   });
 
+  server.on("/sleep", HTTP_GET, [](AsyncWebServerRequest *request){
+    Action = "TaskSleep";
+    request->send(200, "text/plain", "Sleeping");
+  });
+
   // Start server
   server.begin();
 }
@@ -138,6 +144,7 @@ void loop() {
   if (Action=="TaskStand") taskStand();
   if (Action=="TaskSit") taskSit();
   if (Action=="TaskShake") taskShake();
+  if (Action=="TaskSleep") taskSleep();
 //  taskForward();
 
 
@@ -263,8 +270,24 @@ void taskSit() {
     delay(100);
     servo4.write(20);
     delay(100);  // Adjust delay as needed for smoother movement
-
 }
+
+
+//taskSleep
+
+void taskSleep() {
+    Serial.println("sleeping motion");
+    // Define the sitting motion for the servos
+    servo1.write(0);  // Example angles, adjust as needed
+    delay(100);
+    servo2.write(0);
+    delay(100);
+    servo3.write(180);
+    delay(100);
+    servo4.write(180);
+    delay(100);  // Adjust delay as needed for smoother movement
+}
+
 
 void taskShake() {
     Serial.println("shaking motion");
